@@ -1,17 +1,17 @@
 import { Languages, Puzzle } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
-import { FencedCodeBlock } from '@/views/pluginDevGuide/FencedCodeBlock';
+import Markdown from '@/components/design/Markdown';
 import { Button, ScrollArea } from '@/components/ui';
 import { useI18n } from '@/i18n';
-import {
-	getPluginGuideIntro,
-	getPluginGuideSections,
-} from './pluginDevGuideSections';
+import guideEn from './pluginDevGuide.en-US.md?raw';
+import guideZh from './pluginDevGuide.zh-CN.md?raw';
 
 export default function PluginDevGuidePage() {
 	const { t, locale, setLocale } = useI18n();
-	const intro = useMemo(() => getPluginGuideIntro(locale), [locale]);
-	const sections = useMemo(() => getPluginGuideSections(locale), [locale]);
+	const markdown = useMemo(
+		() => (locale === 'en-US' ? guideEn : guideZh),
+		[locale],
+	);
 
 	const onToggleLanguage = useCallback(() => {
 		setLocale(locale === 'en-US' ? 'zh-CN' : 'en-US');
@@ -41,43 +41,12 @@ export default function PluginDevGuidePage() {
 
 			<ScrollArea className="min-h-0 flex-1" viewportClassName="pb-1">
 				<main className="mx-auto w-full max-w-4xl px-4 py-6">
-					<p className="mb-10 whitespace-pre-line text-[15px] leading-7 text-textcolor/72">
-						{intro}
-					</p>
-
-					{sections.map((section) => (
-						<section
-							key={`${section.id}-${locale}`}
-							className="pb-14 last:pb-4"
-						>
-							<h2 className="mb-6 text-base font-semibold text-textcolor sm:text-lg">
-								{section.title}
-							</h2>
-							<div className="flex flex-col gap-8">
-								{section.items.map((item) => {
-									const codeBlockId = `codeblock-${section.id}-${item.id}-${locale}`;
-									return (
-										<article
-											key={`${section.id}-${item.id}-${locale}`}
-											className="scroll-mt-4"
-										>
-											<h3 className="text-[15px] font-medium leading-snug text-textcolor">
-												{item.title}
-											</h3>
-											{item.description ? (
-												<p className="mt-2.5 whitespace-pre-line text-[14px] leading-7 text-textcolor/68">
-													{item.description}
-												</p>
-											) : null}
-											{item.code ? (
-												<FencedCodeBlock id={codeBlockId} code={item.code} />
-											) : null}
-										</article>
-									);
-								})}
-							</div>
-						</section>
-					))}
+					<Markdown
+						markdown={markdown}
+						documentIdentity={`plugin-dev-guide-${locale}`}
+						enableMermaid={false}
+						withScrollArea={false}
+					/>
 				</main>
 			</ScrollArea>
 		</div>
