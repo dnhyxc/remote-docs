@@ -2,6 +2,7 @@ import { useRef, type RefObject } from 'react';
 import { NavigationProvider, browserPathname } from '@/router/NavigationContext';
 import { AppRouter } from '@/router/AppRouter';
 import { I18nProvider } from '@/i18n';
+import { DocsStandaloneProvider } from '@/hooks/useDocsStandalone';
 import {
 	useHostLocale,
 	useHostTheme,
@@ -62,19 +63,21 @@ function App(props: AppProps = {}) {
 			className="bg-theme-background text-textcolor h-full min-h-0 w-full"
 		>
 			<I18nProvider>
-				<BridgeSync
-					api={props.api}
-					standalone={standalone}
-					pluginRootRef={pluginRootRef}
-				/>
-				<NavigationProvider
-					initialPath={initialPath}
-					syncBrowserUrl={standalone}
-				>
-					<AppRouter
-						bridge={hasBridge ? (props as HostBridgeProps) : undefined}
+				<DocsStandaloneProvider standalone={standalone}>
+					<BridgeSync
+						api={props.api}
+						standalone={standalone}
+						pluginRootRef={pluginRootRef}
 					/>
-				</NavigationProvider>
+					<NavigationProvider
+						initialPath={initialPath}
+						syncBrowserUrl={standalone}
+					>
+						<AppRouter
+							bridge={hasBridge ? (props as HostBridgeProps) : undefined}
+						/>
+					</NavigationProvider>
+				</DocsStandaloneProvider>
 			</I18nProvider>
 		</div>
 	);
