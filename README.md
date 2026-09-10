@@ -28,31 +28,35 @@ pnpm dev   # http://127.0.0.1:9013/
 ```
 
 - manifest：`http://127.0.0.1:9013/mf-manifest.json`
-- 插件手册代码块与 Host `pluginDevGuide` 一致：`@dnhyxc-ai/markdown-kit`（fenced Markdown → `MarkdownParser` + 围栏复制/下载）
+- 插件手册代码块与 Host `pluginDevGuide` 一致：`@/components/design/Markdown`（fenced → MarkdownParser + 围栏复制/下载）
 
-## 日后 Host registry（本轮 Host 未改）
+Host 外链（`get*AbsoluteUrl` → `openExternalUrl`）默认打开本独立站，例如：
 
-当前 `apps/frontend` 仍自带 `/update-info`、`/project-guide`、`/plugin-dev-guide`。接入本 Remote 时再改 Host `paths` / 路由或删除原 view，并增加类似条目：
+- `http://127.0.0.1:9013/update-info?lang=zh-CN&theme=…`
+- `http://127.0.0.1:9013/project-guide?…`
+- `http://127.0.0.1:9013/plugin-dev-guide?…`
 
-```json
-{
-  "id": "remoteDocs",
-  "title": { "zh-CN": "产品文档", "en-US": "Product docs" },
-  "remoteName": "remoteDocs",
-  "expose": "./App",
-  "framework": "react",
-  "entry": "http://127.0.0.1:9013/mf-manifest.json",
-  "version": "1.0.0",
-  "hostApiRange": "^1.0.0",
-  "routePath": "/docs",
-  "injectRoute": true,
-  "trust": "first-party",
-  "permissions": [],
-  "enabled": true
-}
+可用 Host 环境变量 `VITE_REMOTE_DOCS_ORIGIN` 覆盖 origin。
+
+## Host registry
+
+`apps/backend/uploads/remotes/plugins-registry.json` 已挂三条（共用 `remoteDocs` / `./App` / `:9013`）：
+
+| id | routePath |
+|---|---|
+| `remoteDocsUpdateInfo` | `/update-info` |
+| `remoteDocsProjectGuide` | `/project-guide` |
+| `remoteDocsPluginDevGuide` | `/plugin-dev-guide` |
+
+- `injectRoute: true`，省略 `menu`（不进侧栏）
+- 壳按 `plugin.routePath` 打开对应内部页
+- Host 已去掉同路径静态 view，由插件注入承接
+
+本地需同时跑 Host 与本 Remote：
+
+```bash
+pnpm dev   # http://127.0.0.1:9013/
 ```
-
-省略 `menu` = 仅注入路由、不进侧栏。
 
 ## 文案同源
 

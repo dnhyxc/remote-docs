@@ -1,6 +1,5 @@
-import { Languages } from 'lucide-react';
+import { Languages, ScrollText } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
-import { DocHomeButton } from '@/components/DocHomeButton';
 import { Button, ScrollArea } from '@/components/ui';
 import { useI18n } from '@/i18n';
 import {
@@ -19,16 +18,18 @@ export default function UpdateInfoPage() {
 
 	return (
 		<div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-theme-background text-textcolor">
-			<header className="flex h-12.5 shrink-0 items-center gap-3 border-b border-theme/5 pl-4 pr-2">
-				<DocHomeButton />
-				<h1 className="min-w-0 flex-1 truncate text-base font-semibold">
-					{t('route.updateInfo.title')}
-				</h1>
+			<header className="flex h-12.5 shrink-0 items-center border-b border-theme/5 pl-4 pr-2">
+				<div className="flex min-w-0 flex-1 items-center gap-2">
+					<ScrollText className="size-5 shrink-0 text-amber-400" />
+					<h1 className="min-w-0 truncate text-base font-semibold">
+						{t('route.updateInfo.title')}
+					</h1>
+				</div>
 				<Button
 					type="button"
 					variant="ghost"
 					size="icon-sm"
-					className="shrink-0 text-textcolor/70 hover:text-textcolor"
+					className="ml-4 shrink-0 text-textcolor/70 hover:text-textcolor"
 					title={t('header.toggleLanguage')}
 					aria-label={t('header.toggleLanguage')}
 					onClick={onToggleLanguage}

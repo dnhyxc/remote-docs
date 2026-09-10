@@ -735,7 +735,8 @@ const CODE_IFRAME_APPEARANCE_TYPE = String.raw`export type HostIframeAppearance 
 };
 `;
 
-const CODE_IFRAME_APPLY_APPEARANCE = String.raw`/** Host 外观快照 → 写进本页 :root / body（untrusted iframe） */
+/** 须用普通模板串：\` 与 \${ 会煮成真正的模板字面量；String.raw 会原样留下反斜杠，hljs 整段变绿 */
+const CODE_IFRAME_APPLY_APPEARANCE = `/** Host 外观快照 → 写进本页 :root / body（untrusted iframe） */
 
 export type HostIframeAppearance = {
 	theme: 'light' | 'dark';
@@ -834,7 +835,8 @@ export function applyHostAppearance(appearance: HostIframeAppearance) {
 }
 `;
 
-const CODE_IFRAME_HOST_CLIENT = String.raw`/** Host ↔ untrusted iframe 协议客户端（与 federation-kit attachIframeBridge 对齐） */
+/** 同上：内含模板字面量示例，勿用 String.raw */
+const CODE_IFRAME_HOST_CLIENT = `/** Host ↔ untrusted iframe 协议客户端（与 federation-kit attachIframeBridge 对齐） */
 
 import type { HostBridgeProps } from '@/types/host';
 import {
@@ -1648,13 +1650,12 @@ const sectionsZh: PluginGuideSection[] = [
 			item(
 				'iframe-protocol',
 				'10.4 通信协议（6 种消息）',
-				'| 消息 | 方向 | 载荷 | 触发 |\n' +
-					'| ready | iframe→Host | { channel, type, pluginId } | embed 加载后轮询直至握手成功 |\n' +
-					'| init | Host→iframe | { channel, type, theme, locale, plugin, appearance? } | 收到 ready / iframe load / 120ms kick |\n' +
-					'| locale | Host→iframe | { channel, type, locale } | Host 语言切换 |\n' +
-					'| appearance | Host→iframe | { channel, type, appearance } | 主题/强调色变化（指纹去重） |\n' +
-					'| rpc | iframe→Host | { channel, type, id, method, args } | 调用受限能力 |\n' +
-					'| rpc-result | Host→iframe | { channel, type, id, ok, value\\|error } | RPC 完成 |\n\n' +
+				'1. ready｜iframe→Host｜载荷 { channel, type, pluginId }｜embed 加载后轮询直至握手成功\n' +
+					'2. init｜Host→iframe｜载荷 { channel, type, theme, locale, plugin, appearance? }｜收到 ready / iframe load / 120ms kick\n' +
+					'3. locale｜Host→iframe｜载荷 { channel, type, locale }｜Host 语言切换\n' +
+					'4. appearance｜Host→iframe｜载荷 { channel, type, appearance }｜主题/强调色变化（指纹去重）\n' +
+					'5. rpc｜iframe→Host｜载荷 { channel, type, id, method, args }｜调用受限能力\n' +
+					'6. rpc-result｜Host→iframe｜载荷 { channel, type, id, ok, value|error }｜RPC 完成\n\n' +
 					'Host 内置 RPC：http.get/post/put/delete；ui.showToast；ui.downloadBlob；ui.pickLocalFiles。额外方法经 Host iframeRpcHandlers 扩展（如 ebook.*）。\n' +
 					'ready 只应答一次（readyAcked），避免 Strict Mode / 泄漏 interval 打爆主线程；load 发 init 但不占 ready 槽。',
 			),
@@ -2221,13 +2222,12 @@ const sectionsEn: PluginGuideSection[] = [
 			item(
 				'iframe-protocol',
 				'10.4 Protocol (6 message types)',
-				'| msg | direction | payload | when |\n' +
-					'| ready | iframe→Host | { channel, type, pluginId } | poll until handshake |\n' +
-					'| init | Host→iframe | { channel, type, theme, locale, plugin, appearance? } | ready / load / 120ms kick |\n' +
-					'| locale | Host→iframe | { channel, type, locale } | Host language change |\n' +
-					'| appearance | Host→iframe | { channel, type, appearance } | theme/accent change (fingerprint dedupe) |\n' +
-					'| rpc | iframe→Host | { channel, type, id, method, args } | restricted capability call |\n' +
-					'| rpc-result | Host→iframe | { channel, type, id, ok, value\\|error } | RPC done |\n\n' +
+				'1. ready｜iframe→Host｜payload { channel, type, pluginId }｜poll until handshake\n' +
+					'2. init｜Host→iframe｜payload { channel, type, theme, locale, plugin, appearance? }｜ready / load / 120ms kick\n' +
+					'3. locale｜Host→iframe｜payload { channel, type, locale }｜Host language change\n' +
+					'4. appearance｜Host→iframe｜payload { channel, type, appearance }｜theme/accent change (fingerprint dedupe)\n' +
+					'5. rpc｜iframe→Host｜payload { channel, type, id, method, args }｜restricted capability call\n' +
+					'6. rpc-result｜Host→iframe｜payload { channel, type, id, ok, value|error }｜RPC done\n\n' +
 					'Built-in RPC: http.get/post/put/delete; ui.showToast; ui.downloadBlob; ui.pickLocalFiles. Extra methods via Host iframeRpcHandlers (e.g. ebook.*).\n' +
 					'ready is acked once (readyAcked); load may send init without consuming the ready slot.',
 			),
@@ -2402,4 +2402,24 @@ export function getPluginGuideIntro(locale: string): string {
 
 export function getPluginGuideSections(locale: string): PluginGuideSection[] {
 	return locale === 'en-US' ? sectionsEn : sectionsZh;
+}
+
+/** 把现行 sections 拼成一篇 Markdown（迁移到 .md 用） */
+export function buildPluginGuideMarkdown(locale: string): string {
+	const intro = getPluginGuideIntro(locale);
+	const sections = getPluginGuideSections(locale);
+	const parts: string[] = [intro.trim(), ''];
+	for (const section of sections) {
+		parts.push(`## ${section.title}`, '');
+		for (const it of section.items) {
+			parts.push(`### ${it.title}`, '');
+			if (it.description?.trim()) {
+				parts.push(it.description.trim(), '');
+			}
+			if (it.code?.code) {
+				parts.push(`\`\`\`${it.code.lang}`, it.code.code.replace(/\n$/, ''), '```', '');
+			}
+		}
+	}
+	return `${parts.join('\n').replace(/\n{3,}/g, '\n\n').trim()}\n`;
 }

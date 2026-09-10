@@ -1,0 +1,24 @@
+{
+	"serverInfo": {
+		"host": "101.43.50.15",
+		"username": "root",
+		"port": "22"
+	},
+	"nginxInfo": {
+		"remoteFilePath": "/usr/local/nginx/conf",
+		"restartPath": "/usr/local/nginx/sbin"
+	},
+	"serviceInfo": {
+		"restartPath": "/usr/local/dnhyxc-ai/server"
+	},
+	"restartScript": "pm2 restart server",
+	"remoteDocs": {
+		"name": "remote-docs",
+		"localFilePath": {
+			"mac": "/Users/dnhyxc/Documents/code/micro-apps/remote-docs",
+			"windows": "E:\\code\\micro-apps\\remote-docs"
+		},
+		"remoteFilePath": "/usr/local/nginx/remote-docs",
+		"isServer": false
+	}
+}

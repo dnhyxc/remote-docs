@@ -1,7 +1,6 @@
 import { Languages, Puzzle } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
-import { DocHomeButton } from '@/components/DocHomeButton';
-import { FencedCodeBlock } from '@/components/FencedCodeBlock';
+import { FencedCodeBlock } from '@/views/pluginDevGuide/FencedCodeBlock';
 import { Button, ScrollArea } from '@/components/ui';
 import { useI18n } from '@/i18n';
 import {
@@ -21,7 +20,6 @@ export default function PluginDevGuidePage() {
 	return (
 		<div className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-theme-background text-textcolor">
 			<header className="flex h-12.5 shrink-0 items-center border-b border-theme/5 pl-4 pr-2">
-				<DocHomeButton />
 				<div className="flex min-w-0 flex-1 items-center gap-2">
 					<Puzzle className="size-5 shrink-0 text-violet-400" />
 					<h1 className="min-w-0 truncate text-base font-semibold">

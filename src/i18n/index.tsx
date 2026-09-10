@@ -24,6 +24,8 @@ const messages = {
 		'home.intro': '独立预览入口。Host 嵌入后默认进入「更新信息」。',
 		'code.copy': '复制',
 		'code.download': '下载',
+		'markdown.preview.loading': '内容加载中…',
+		'markdown.preview.empty': '预览内容为空',
 	},
 	'en-US': {
 		'route.updateInfo.title': 'Release notes',
@@ -39,6 +41,8 @@ const messages = {
 			'Standalone preview. When embedded in Host, opens Release notes by default.',
 		'code.copy': 'Copy',
 		'code.download': 'Download',
+		'markdown.preview.loading': 'Loading…',
+		'markdown.preview.empty': 'Preview is empty',
 	},
 } as const;
 

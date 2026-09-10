@@ -435,12 +435,12 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 			'From About: Service Policy and User Agreement open in the system browser (desktop) or a new tab (web), not inside the small About window—same full-page scroll feel as share pages, without main chrome. Routes /service-policy and /user-agreement; available logged out.\nBesides changing UI language in Settings, those pages have a header toggle like the product guide: ?lang= switches zh/en and refreshes body copy immediately.\nLegal copy is product-level; maintainer-edited in code.',
 	},
 	'pg-s15-2': {
-		title: '15.2 Release notes (standalone structured page)',
+		title: '15.2 Release notes (independent docs site)',
 		description:
-			'About also opens Release Notes in the browser. Route /update-info; no main chrome; header plus scroll body like share pages. Regular section layout (not a Markdown preview wall); wording stays aligned with the external release-notes write-up—update structured frontend data when that prose changes.',
+			'About also opens Release Notes in the system browser or a new tab on the independent docs site. The app builds the URL with the current language, theme, and accent color; it no longer occupies an in-app page. Regular section layout (not a Markdown preview wall); wording stays aligned with the external release-notes write-up. Content and rendering live on the independent docs site, so updates do not require republishing the app.',
 	},
 	'pg-s15-3': {
-		title: '15.3 Product guide (standalone structured page)',
+		title: '15.3 Product guide (independent docs site)',
 		description:
 			'Home “Learn more” opens this guide in the default browser or a new tab. Route /project-guide; full-page scroll; logged-out OK. Header title plus language toggle (?lang=), same pattern as legal standalone pages. Structured sections like release notes; keep frontend guide modules (including English overlay) in sync when this prose changes.',
 	},

@@ -130,6 +130,11 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		description:
 			'The membership payment page adapts to the new profile route shell—content scrolls within the page when overflowing, no longer spills or gets clipped. The redundant header and badges are removed; copy is more concise (e.g. "Start payment" instead of "Open checkout in page"); overall visuals are cleaner.',
 	},
+	's2-17': {
+		title: 'Docs pages moved to independent site',
+		description:
+			'The "Update notes", "Product guide", and "Plugin dev guide" pages are no longer in-app pages—they now open in the system browser or a new tab as an independent docs site. The current language, theme, and accent color are passed along automatically, so the visuals stay consistent with the app. Doc content can now be updated independently without app releases.',
+	},
 	's3-1': {
 		title: 'One frontend for desktop and browser',
 		description:
