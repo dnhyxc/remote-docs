@@ -133,7 +133,7 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 	'pg-s5-4': {
 		title: '5.4 Local folders: scan, open, delete, external editors',
 		description:
-			'Folders are scanned recursively for Markdown. Edit in-app or open in an external editor (e.g. Cursor). On desktop, delete behavior depends on source: local files affect disk only; cloud entries linked to local files may offer delete local only, cloud only, or both.',
+			'Folders are scanned recursively for Markdown. Edit in-app or open in an external editor (e.g. Cursor). On desktop, hovering a list row also shows a Reveal in Finder button that opens the system file manager (macOS Finder / Windows Explorer) and selects the file. On desktop, delete behavior depends on source: local files affect disk only; cloud entries linked to local files may offer delete local only, cloud only, or both.',
 	},
 	'pg-s5-5': {
 		title: '5.5 Recycle bin',

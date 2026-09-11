@@ -573,6 +573,11 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		description:
 			'The duplicated default page size and scroll-load-threshold constants used by the ebook shelf and the knowledge list store have been consolidated into a single global constants export. The shelf-specific name is replaced by a generic default page size name so future changes cannot accidentally miss one consumer. Values are unchanged, so first-page counts and scroll-to-load-more behavior remain identical.',
 	},
+	's6-41': {
+		title: 'Knowledge list: Reveal in Finder',
+		description:
+			'In desktop local-folder mode, hovering over a list row now shows a "Reveal in Finder" button (left of "Open in Editor"). Clicking it opens the system file manager (macOS Finder / Windows Explorer) and selects the Markdown file, making it easy to locate the file on disk or use other tools in the same directory.',
+	},
 	's7-1': {
 		title: 'IME (input method editor) compatibility',
 		description:
