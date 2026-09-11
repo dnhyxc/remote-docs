@@ -368,6 +368,11 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		description:
 			'Raw HTML is disabled by default (e.g. <script> is escaped as text), reducing XSS risk when mounting via innerHTML/dangerouslySetInnerHTML; enable HTML explicitly with sanitization if needed.',
 	},
+	's5-7': {
+		title: 'External links open in new tab',
+		description:
+			'External links (http:// / https://) in Markdown now open in a new tab by default, no longer replacing the current app page; in-page # anchor links are unaffected and still scroll within the page. Desktop still retains click interception to open in the system browser.',
+	},
 	's6-1': {
 		title: 'Cloud & local modes',
 		description:
@@ -616,6 +621,11 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		title: 'Code block toolbar',
 		description:
 			'Friendlier actions (copy, download, etc.) in chat code blocks with better layout inside scroll containers.',
+	},
+	's8-3': {
+		title: 'Code block & Mermaid fence visual unification',
+		description:
+			'Code blocks and Mermaid diagram blocks now have symmetric shells (border + background), unified toolbar coloring (accent color at 8% opacity), and consistent corner radius; highlight.js theme solid backgrounds no longer cover the shell background, so dark theme code area matches the shell. Mermaid toolbar button heights tightened to align with code block toolbars.',
 	},
 	's9-1': {
 		title: 'Shortcut conflict protection',

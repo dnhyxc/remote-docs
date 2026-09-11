@@ -511,6 +511,13 @@ const UPDATE_INFO_SECTIONS_ZH: UpdateInfoSection[] = [
 				description:
 					'工具包默认禁用 raw HTML（例如 <script> 会被转义为文本），降低 innerHTML/dangerouslySetInnerHTML 挂载时的 XSS（跨站脚本攻击）风险；如业务确需渲染少量 HTML，可显式开启并配合清洗策略。',
 			},
+			{
+				id: 's5-7',
+				title: '外链默认新标签打开',
+				dateLabel: '2026-09-11',
+				description:
+					'Markdown 正文中的外部链接（http:// / https://）默认在新标签页打开，不再顶掉当前应用页面；页内 # 锚点链接不受影响，仍走页内滚动。桌面端仍同时保留点击拦截走系统浏览器的能力。',
+			},
 		],
 	},
 	{
@@ -876,6 +883,13 @@ const UPDATE_INFO_SECTIONS_ZH: UpdateInfoSection[] = [
 				dateLabel: '2026-04-02',
 				description:
 					'在聊天等场景中为代码块提供更友好的操作（如复制、下载等），并优化滚动容器内的工具条布局体验。',
+			},
+			{
+				id: 's8-3',
+				title: '代码块与 Mermaid 围栏视觉统一',
+				dateLabel: '2026-09-11',
+				description:
+					'代码块和 Mermaid 图表块现在拥有对称的外壳（边框 + 底色）、统一的工具条配色（跟随强调色 8% 透明度）和一致的圆角节奏；highlight.js 主题的实色底不再覆盖外壳底色，暗色主题下代码区底色与外壳视觉一致。Mermaid 工具条按钮高度收紧，与代码块工具条视觉节奏对齐。',
 			},
 		],
 	},

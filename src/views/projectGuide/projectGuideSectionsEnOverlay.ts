@@ -43,7 +43,7 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 	'pg-s1-3': {
 		title: 'Rich Markdown',
 		description:
-			'Math (KaTeX), code highlighting, task lists, Mermaid diagrams—suited for technical notes and specs.',
+			'Math (KaTeX), code highlighting, task lists, Mermaid diagrams—suited for technical notes and specs. External links in the text open in a new tab by default, without replacing the current app page.',
 	},
 	'pg-s1-4': {
 		title: 'Desktop experience',
@@ -93,7 +93,7 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 	'pg-s4-2': {
 		title: '4.2 Streaming, stop, and continue',
 		description:
-			'Streaming: replies appear as they generate.\nStop: end early if you already have what you need.\nContinue: extend the current answer.\nCode block horizontal scroll: while a reply is streaming, scroll sideways inside a fenced code block to read long lines; this works even after the closing fence if the model keeps writing prose below.\nBranches & regeneration: work in a message tree; shared read-only pages try to keep order and layout consistent in complex branch cases.\nServer-side generation now goes through the SiliconFlow-compatible API; you use Chat the same way—no extra setup.',
+			'Streaming: replies appear as they generate.\nStop: end early if you already have what you need.\nContinue: extend the current answer.\nCode block horizontal scroll: while a reply is streaming, scroll sideways inside a fenced code block to read long lines; this works even after the closing fence if the model keeps writing prose below.\n- **Code block & diagram visual unification**: Code blocks and Mermaid diagram blocks have symmetric shells and consistent coloring; toolbars (copy, download, toggle code/diagram) keep bottom-only rounded corners when pinned; borders and toolbar backgrounds follow the accent color.\nBranches & regeneration: work in a message tree; shared read-only pages try to keep order and layout consistent in complex branch cases.\nServer-side generation now goes through the SiliconFlow-compatible API; you use Chat the same way—no extra setup.',
 	},
 	'pg-s4-3': {
 		title: '4.3 Web search and citations',

@@ -21,6 +21,7 @@ import { ScrollArea, Spinner } from '@/components/ui';
 import { useHighlightTheme, usePreferDark, applyScopedHighlightTheme } from '@/hooks/useHighlightTheme';
 import { useI18n } from '@/i18n';
 import { cn } from '@/lib/utils';
+import { attachExternalLinkClickInterceptor } from '@/utils/open-external';
 
 type MarkdownPreviewT = (
 	key: string,
@@ -100,11 +101,17 @@ const Markdown = memo(function Markdown({
 	useEffect(() => {
 		const el = markdownRef.current;
 		if (!el) return;
-		return bindMarkdownCodeFenceActions(el, {
+		const detachCodeFence = bindMarkdownCodeFenceActions(el, {
 			onDownload(payload) {
 				downloadCodeFence(payload);
 			},
 		});
+		// 外链：与 kit target=_blank 互补；嵌桌面须拦（见 docs/app/外链系统浏览器打开.md）
+		const detachExternalLinks = attachExternalLinkClickInterceptor(el);
+		return () => {
+			detachCodeFence();
+			detachExternalLinks();
+		};
 	}, []);
 
 	const assignViewportRef = useCallback(
