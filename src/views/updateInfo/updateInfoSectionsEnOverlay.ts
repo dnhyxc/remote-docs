@@ -578,6 +578,16 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		description:
 			'In desktop local-folder mode, hovering over a list row now shows a "Reveal in Finder" button (left of "Open in Editor"). Clicking it opens the system file manager (macOS Finder / Windows Explorer) and selects the Markdown file, making it easy to locate the file on disk or use other tools in the same directory.',
 	},
+	's6-42': {
+		title: 'Skill management and try-run',
+		description:
+			'A dedicated Skill page lets you create, edit, and delete personal Skills (name, description, and body), then try or generate replies on the right. Try-run sessions keep their own history and do not appear in the English-learning Agent list.',
+	},
+	's6-43': {
+		title: 'Use Skills in the knowledge assistant',
+		description:
+			'Type / in the document assistant input to multi-select saved Skills. Replies use Agent tooling while messages stay in the current document assistant history; applied Skill names show on the reply. Unsaved drafts can also use Skills, with storage rules separate from saved documents so sessions do not cross into other product areas.',
+	},
 	's7-1': {
 		title: 'IME (input method editor) compatibility',
 		description:
@@ -740,6 +750,16 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		title: 'Multi-collection RAG with custom vectors',
 		description:
 			'When custom vector settings are enabled, RAG searches saved collections in parallel and always queries the system default bge collection; active members also get the member default Qwen3 collection merged in; ties to Section 9 vector settings and Section 6 vector indexing.',
+	},
+	's13-5': {
+		title: 'Skill chats persist in the same document history',
+		description:
+			'On a saved document, multi-turn Skill chats write into that document’s assistant session and history drawer. After switching sessions or refreshing, you can continue—same history source as AI mode without Skills.',
+	},
+	's13-6': {
+		title: 'Applied Skill tip survives refresh',
+		description:
+			'After you pick Skills, the tip next to the reply is saved with the session. Refreshing, switching history, or moving a draft chat into a saved document still shows which Skills were used for that turn.',
 	},
 	's14-1': {
 		title: 'Sharing & public reading',
@@ -1247,6 +1267,11 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		title: 'Learning-notes popout window with multi-window sync',
 		description:
 			'Desktop users can now pop out learning notes into a standalone window — click "Open in window" on the notes card in the sidebar, and notes open in an independent window alongside the main window, so you can study and take notes at the same time. Real-time bidirectional sync is built between the popout and the main window: edit a draft in one window and the other sees it instantly; save or delete a note in one window and the list and preview refresh automatically in the other; note mutations are auto-broadcast at the host layer, transparent to the plugin. Closing the popout does a managed save — the native close button is intercepted, unsaved drafts are written to the backend before the window is actually destroyed, and network failures do not freeze the window. The popout follows the main window theme (light / dark), accent color, and language in real time, so there is no mismatch. Clicking "Open in window" again when the popout is already open brings it to the front instead of opening a duplicate.',
+	},
+	's24-71': {
+		title: 'English Agent history isolated from Skill try-run',
+		description:
+			'English-learning Agent turns are stored separately. The history drawer only lists English-learning sessions and no longer mixes in knowledge-base Skill or Skill try-run runs. Sharing and session switching behave as before.',
 	},
 	's25-1': {
 		title: 'E-book bookshelf',
