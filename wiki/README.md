@@ -273,6 +273,7 @@
 | 主包体积大 / 首屏慢 / React.lazy / mermaid 动态加载（含形态修复见 §4.6.1）/ Monaco·Prettier 懒加载 / barrel 瘦身 | [app/构建优化.md](./app/构建优化.md) |
 | 英语 Agent 选中文本右键朗读 / 复制 / 选区菜单复用 | [english/选中文本朗读菜单.md](./english/选中文本朗读菜单.md)（`useSelectionContextMenu` + `PositionedQuickMenu` + 按段云端 TTS + 悬浮条） |
 | 英语学习 Agent 流式输出输入框卡顿 / 视觉抖动 | [english/英语Agent流式性能隔离.md](./english/英语Agent流式性能隔离.md) |
+| 英语 Agent / 词包生成反复联网后「生成失败」/ GRAPH_RECURSION_LIMIT | [english/英语Agent联网次数封顶.md](./english/英语Agent联网次数封顶.md)（联网硬顶 3 + 中间件 + recursionLimit） |
 | 听书切句落后听感 / 首句尾音到下句高亮滞后 / rAF 进度轮询 | [ebook/EPUB听书节奏引导影响.md](./ebook/EPUB听书节奏引导影响.md)（`CLOUD_CADENCE_LEAD_SEC=0.35` + `requestAnimationFrame` + `onPlaybackProgress` + kick ≥0.8 提前切句） |
 | 插件加载失败只能重试 / 想离开当前页或查接入文档 | [app/插件宿主错误处理.md](./plugins/插件宿主错误处理.md)（错误卡片新增「返回首页」「插件开发指南」按钮） |
 | 首页色块/按钮饱和度过高 / 滚动 FAB 圆形过大 / 下拉菜单内边距 | [ui/UI色调打磨.md](./ui/UI色调打磨.md)（`HUE_STYLES` 透明度 + `Button` variant + `ScrollFab` 尺寸 + `DropdownMenuContent` 内边距） |

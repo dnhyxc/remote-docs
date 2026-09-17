@@ -1902,6 +1902,13 @@ const UPDATE_INFO_SECTIONS_ZH: UpdateInfoSection[] = [
 				description:
 					'英语学习 Agent 的多轮消息改为独立保存；历史抽屉只展示英语学习会话，不再混入知识库 Skill 或 Skill 试跑产生的运行记录。分享与切换会话行为不变。',
 			},
+			{
+				id: 's24-72',
+				title: '英语学习 Agent 联网次数封顶',
+				dateLabel: '2026-09-17',
+				description:
+					'修复英语学习右侧 Agent（及词包主检索）单轮反复联网导致整轮失败的问题——同一轮联网检索至多约三次，搜完即作答；界面「已阅读网页」不再堆积到上百条，也不再因图步耗尽显示「生成失败」。',
+			},
 		],
 	},
 	{

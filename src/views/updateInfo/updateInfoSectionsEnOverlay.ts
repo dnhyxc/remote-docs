@@ -1283,6 +1283,11 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		description:
 			'English-learning Agent turns are stored separately. The history drawer only lists English-learning sessions and no longer mixes in knowledge-base Skill or Skill try-run runs. Sharing and session switching behave as before.',
 	},
+	's24-72': {
+		title: 'English Agent web-search capped per turn',
+		description:
+			'Fixed a failure mode where the English-learning Agent (and pack master research) kept calling web search in a single turn until the whole reply failed. Each turn now caps web search at about three calls and answers once results are in; the “pages read” count no longer balloons into the hundreds, and the reply no longer dies with a generic generation-failed error from exhausting graph steps.',
+	},
 	's25-1': {
 		title: 'E-book bookshelf',
 		description:

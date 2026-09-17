@@ -33,6 +33,7 @@
 | [../ideas/第三方联邦插件接入.md](../ideas/plugins/第三方联邦插件接入.md) | **第三方/自建 Remote 接入契约**（registry + 对方 CORS，不改 capabilities） |
 | [英语学习实现概述.md](./英语学习实现概述.md) | 产品能力总览 |
 | [英语学习后端实现.md](./英语学习后端实现.md) | 后端模块总览 |
+| [英语Agent联网次数封顶.md](./英语Agent联网次数封顶.md) | **增量**：右侧 Agent / 词包主检索单轮联网 ≤3，`beforeSearch` 硬顶 + 中间件 + `recursionLimit`，修复无限 search 触发 GRAPH_RECURSION_LIMIT |
 | [英语学习主Agent联网搜索转LLM.md](./英语学习主Agent联网搜索转LLM.md) | 主 Agent 与联网 |
 
 ## 词包 / 流式 / 会话
