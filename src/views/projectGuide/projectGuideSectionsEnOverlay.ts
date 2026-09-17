@@ -178,7 +178,7 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 	'pg-s5-13': {
 		title: '5.13 Skill management and try-run',
 		description:
-			'Open Skill from the sidebar (/skills) to manage personal Skills and try them on the right.\n\n• List and edit: browse saved Skills on the left; create, rename, edit description/body, save or delete\n• Try / generate: validate Skills in a side chat with multiple try-run sessions and history. Try-run history stays on this page and does not appear in the English-learning Agent drawer\n• Relation to the knowledge assistant: / in the document assistant selects Skills saved here; editing and try-run stay on this page while document chats remain in the knowledge assistant shell',
+			'Open Skill from the sidebar (/skills) to manage personal Skills and try them on the right.\n\n• List and edit: browse saved Skills on the left; create, rename, edit description/body, save or delete\n• Try / generate: validate Skills in a side chat with multiple try-run sessions and history. Try-run history stays on this page and does not appear in the English-learning Agent drawer\n• Rename sessions: hover a session in the history drawer to reveal an edit icon; click to edit the title inline. Pressing Enter during IME composition does not submit prematurely\n• Relation to the knowledge assistant: / in the document assistant selects Skills saved here; editing and try-run stay on this page while document chats remain in the knowledge assistant shell',
 	},
 	'pg-s6-1': {
 		title: '6.1 Task lists',
@@ -207,7 +207,7 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 	'pg-s7-2': {
 		title: '7.2 In-page shortcuts (Knowledge)',
 		description:
-			'Shortcuts such as save or clear draft apply only on the Knowledge page to avoid accidental triggers elsewhere.',
+			'The Knowledge page provides in-page shortcuts. Save and New are universal shortcuts (work on any document page); others such as import, open list, and toggle toolbar are Knowledge- or editor-specific and only apply on the corresponding page. View and edit them in Settings → System → Shortcuts.',
 	},
 	'pg-s7-3': {
 		title: '7.3 Form filling tips',

@@ -340,6 +340,11 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		description:
 			'The send buttons in the main chat input and the knowledge-base assistant input now share one visual style — a lighter tinted gradient with a soft ring, less harsh in dark themes and better matched to card backgrounds. The stop-generation button and the desktop voice input-mode menu (hover to expand, leave to close after a delay, tap to send) keep their existing interactions. The two buttons were previously duplicated with slightly different styles; they now converge into one component so future style changes apply in sync.',
 	},
+	's4-18': {
+		title: 'Manually rename session titles',
+		description:
+			'In the Skill try-run page history drawer, hovering a session reveals an edit icon; click it to edit the title inline in the list. Chinese IME is supported — pressing Enter during composition does not submit prematurely. Save by pressing Enter, clicking the confirm button, or blurring the input; an empty title shows a hint and cancels the rename. The title-rename APIs for the knowledge-base assistant and English Agent are ready and will be wired in a later release.',
+	},
 	's5-1': {
 		title: 'Markdown rendering',
 		description:
@@ -690,6 +695,11 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		title: 'Configurable accent color',
 		description:
 			'Settings → Theme adds an “Accent color” section with 10 presets (default teal, lime, peach pink, indigo, ochre, xiang yellow, apricot, dai teal, pine flower, evergreen). Pick one and hover, selected, link, and button accents across the app update instantly; the choice is saved per signed-in account and syncs across devices. Refreshing or restarting no longer flashes back to the default color. Accent color is orthogonal to the color theme (white / dark / red / beige) and they can be combined freely. Decorative areas that are teal by design—home gradient buttons, English-learning sidebar gradients, and vocabulary-stream progress bars—keep the original teal and do not follow the accent color.',
+	},
+	's9-11': {
+		title: 'Save and New promoted to universal shortcuts',
+		description:
+			'Save and New are no longer Knowledge-only shortcuts; they are now universal and handled at the app level. In Settings, the items were renamed from “Knowledge: Save” / “Knowledge: Clear draft” to “Universal: Save” / “Universal: New”, and the editor bottom-bar items were moved to an “Editor:” category. The default New shortcut changed to ⌘/Ctrl+Shift+N (the previous ⌘/Ctrl+Shift+D can be reserved by some systems).',
 	},
 	's10-1': {
 		title: 'Image component improvements',
