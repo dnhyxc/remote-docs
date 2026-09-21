@@ -42,6 +42,13 @@
 | [模块联邦样式隔离实现.md](./plugins/模块联邦样式隔离实现.md) | **微前端样式隔离实现思路**（核心已落地）：Host 侧「选择器前缀 + CSSOM insertRule patch + Portal body 收编」三层架构，覆盖静态 CSS / CSS-in-JS / body 弹层 / HMR / 同 Remote 多插件共享 realm / 嵌套插件引用计数 / Host 关键样式保护 / untrusted iframe 兜底；含架构图 + 主流程图 + 时序图 + 完整 TS 代码逐行中文注释 + 分阶段落地 + 验收清单 + 读者 5 步复用方案 |
 | [联邦工具提取.md](./plugins/联邦工具提取.md) | **微前端通用包 `@dnhyxc-ai/federation-kit` 抽离**（落地中）：内核 + HostCapabilities DI、style-isolation / react 子路径、本仓薄适配层、M0–M5 与兼容 barrel；任意项目可接入 |
 | [非会员Token用量限制.md](./非会员Token用量限制.md) | **非会员 token 按模型记账（Chat + 向量）**（规划）：已确认免费白名单 `glm-4.7-flash` / `BAAI/bge-large-zh-v1.5` / `BAAI/bge-reranker-v2-m3`；计费模型共用 billable 额度；超额 Confirm |
+| [经典句整集标注预热.md](./english/经典句整集标注预热.md) | **经典句库/Pack 一键标注预热**（SSE 已落地）：前端只传源 id；后端分批 LLM + **SSE 进度**（start/progress/complete）；≤6000 一次取句、>6000 批读；不含收藏/错题入口 |
+| [整集标注省Token.md](./english/整集标注省Token.md) | **整集标注省 Token**（规划）：不改 SSE/验收/落库/练习契约；窗口清 priorThread + 入参/出参去冗余；M1–M3 主路径、M4 封闭词可选 |
+| [标注任务持久化续跑.md](./english/标注任务持久化续跑.md) | **标注任务持久化与暂停继续**（核心已落地）：任务表+再开 SSE/句缓存 hit；暂停 force 快照、Token seed 累计；failed>0→部分失败可 resume；不含离线 Job |
+| [语句库导出JSON.md](./english/语句库导出JSON.md) | **语句库 / 拉取历史导出 JSON**（规划）：行内按钮、复用 items 分页拉全、`saveFileWithPicker` 存原句四字段；不含单词库与词性标注 |
+| [英语学习DOCX导出.md](./english/英语学习DOCX导出.md) | **收藏 / 错题 / 今日复习导出 Word**（核心已落地）：共用 builder、`POST …/export-docx`、勾选则仅导出所选否则全量≤3000；含架构/流程/时序/状态四图与验收 |
+| [语句库标注手动导入.md](./english/语句库标注手动导入.md) | **标注按钮 hover 二选菜单**（核心已落地）：在线走 SSE；手动导入对齐 `batch2`（可**部分句**、忽略 `id`）→ `cache_key` upsert；不要求覆盖库/Pack 全集 |
+| [练习题量上限对齐.md](./english/练习题量上限对齐.md) | **单场练习硬顶统一 100**（核心已落地）：`ENGLISH_PRACTICE_SESSION_MAX` ↔ `PRACTICE_MAX_WORDS`；覆盖复习/记词队列、结算 attempts、错题 batch、开局标注 batch |
 
 **生成 Skill**：主仓 `dnhyxc-ai/.cursor/skills/feature-implementation-idea/SKILL.md`（默认落盘根目录：**本目录**）
 

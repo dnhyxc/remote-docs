@@ -1288,6 +1288,46 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		description:
 			'Fixed a failure mode where the English-learning Agent (and pack master research) kept calling web search in a single turn until the whole reply failed. Each turn now caps web search at about three calls and answers once results are in; the “pages read” count no longer balloons into the hundreds, and the reply no longer dies with a generic generation-failed error from exhausting graph steps.',
 	},
+        's24-73': {
+                title: "Classic 'look-and-write' upgraded to per-word slots",
+                description:
+                        "Classic-sentence 'look-and-write' has been upgraded from whole-sentence input to per-word slots — each word gets its own input box, with real-time grading as you type (green when correct, red when wrong); once all words are correct the answer is auto-submitted. Press Enter to jump to the next incomplete slot, or Backspace in an empty slot to go back to the previous one. Above each slot the part of speech, British IPA, and Chinese meaning are shown to make spelling easier.",
+        },
+        's24-74': {
+                title: 'Bulk word-metadata annotation warm-up for classic sentences',
+                description:
+                        "Classic-sentence libraries / packs can be warm-annotated before practice — the system automatically annotates each word of every sentence with part of speech, IPA, and meaning. Results are cached globally and shared across users, so practice hits the cache instantly with no waiting. Warm-up shows progress on a task card (annotated / failed / remaining / tokens used) and supports pause / resume; closing the page or losing the network auto-saves progress, and clicking 'Resume' continues from where it left off. If the model keeps failing, the circuit breaker trips automatically to avoid burning tokens.",
+        },
+        's24-75': {
+                title: "Today's review list and DOCX export",
+                description:
+                        "Today's Review grows from a sidebar number into a standalone list page, showing all due classic sentences and words with pagination, and you can jump straight into practice. You can also export everything to Word (.docx) in one click — the document includes the original sentence, its meaning, and a per-word table of part of speech / IPA / meaning, handy for printing or offline review.",
+        },
+        's24-76': {
+                title: 'Favorites / mistakes DOCX export completed',
+                description:
+                        'All four lists — word favorites, word mistakes, classic-sentence favorites, classic-sentence mistakes — now support one-click Word export. Documents use multi-level heading outlines, and classic-sentence exports include a per-word part-of-speech / IPA / meaning table for offline review and printing.',
+        },
+        's24-77': {
+                title: 'Export original-sentence JSON and manually import word annotations',
+                description:
+                        "Classic-sentence libraries / packs can export original-sentence JSON (with English text and Chinese meaning) for backup or external processing. You can also import word-annotation JSON — bulk-annotate part of speech, IPA, and meaning in Excel or a script, then import it straight into the system cache without calling the model. Import accepts an entry only when the system word segmentation matches the file's word sequence exactly; partial imports are allowed.",
+        },
+        's24-78': {
+                title: 'Daily-vocab run-state URL that can be shared and resumed',
+                description:
+                        'Daily vocab supports a ?run=<sessionId> run-state URL — after entering practice the address bar carries a run ID; share the link with someone else or open it on another device to jump straight into the same session and keep answering, without reselecting a list. Exiting the run state returns to the list-selection page.',
+        },
+        's24-79': {
+                title: 'Unified session header and practice UI',
+                description:
+                        'The top of practice pages (classic-sentence practice, daily-vocab run state, etc.) is now a unified session header with breadcrumb + question index + exit, so you can navigate back step by step. Slot spacing, metadata labels, and the reveal layout have been visually unified; the old scattered header component has been replaced.',
+        },
+        's24-80': {
+                title: 'Unified accent-color badges site-wide',
+                description:
+                        "Accent-color badges such as 'Member' and 'New' across the site, as well as part-of-speech tags in English learning, now uniformly follow the user's theme accent color (contrast adapts automatically in light / dark themes), replacing scattered hard-coded colors.",
+        },
 	's25-1': {
 		title: 'E-book bookshelf',
 		description:

@@ -91,6 +91,19 @@
 | 听写 / 拼写 | `/english-learning/practice`；`contentKind=vocab`（默认）或 `classic`；设置页总量显示「词」/「句」 |
 | 错题集（单词/语句） | `/english-learning/mistakes?kind=vocab\|classic`；顶栏 Tab + 底栏练习；`/mistakes/classic` 会 replace |
 
+## 经典句看中写与标注
+
+| 文档 | 说明 |
+|------|------|
+| [句内词标注缓存与批量标注.md](./句内词标注缓存与批量标注.md) | **句内词标注全局缓存**：`cache_key=sha256(version+规范化句+分词序列)`、`isUsableSentenceWordAnnotations` 严格验收、单句/批量/自适应多轮续标、手动导入 |
+| [整集标注任务持久化与续跑.md](./整集标注任务持久化与续跑.md) | **整集标注任务**：DB 任务表 + SSE 进度 + 暂停/续跑 + `StreamAbortRegistry` 中断 + 续跑以缓存表为准幂等 |
+| [经典句看中写词槽练习.md](./经典句看中写词槽练习.md) | **逐词词槽练习**：`SentenceWordSlots` + `ClassicSpellingBoard` + `usePracticeSessionKeyboard` + `usePracticePlayback`，词性/IPA/释义提示，Enter/Backspace 跳转 |
+| [今日复习列表与导出.md](./今日复习列表与导出.md) | **今日复习列表页 + DOCX 导出**：`listPracticeReviewDuePage` 分页、`exportPracticeReviewDueDocxBuffer` 导出 |
+| [收藏错题DOCX导出.md](./收藏错题DOCX导出.md) | **四类 DOCX 导出**：单词/经典句 × 收藏/错题，`english-favorites-docx.builder.ts` 构建 |
+| [经典句导出与标注导入.md](./经典句导出与标注导入.md) | **原句 JSON 导出 + 标注 JSON 手动导入**：`exportClassicQuotesJson`、`parseAnnotationImportJson`、`saveFileWithPicker` JSON MIME |
+| [每日运行态与练习UI重构.md](./每日运行态与练习UI重构.md) | **每日记词 `?run=1` 运行态标记 + 会话顶栏统一**：`englishDaily` store、`SessionHeader` 三槽布局（返回/内容/操作） |
+| [主题徽章与路由i18n.md](./主题徽章与路由i18n.md) | **强调色徽章统一 + 路由/i18n**：`accentBadgeStyle`、`posToneStyle` 跟随主题、review/annotate 路由与词条 |
+
 ## UI / 目录约定
 
 | 文档 | 说明 |
