@@ -1289,9 +1289,9 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 			'Fixed a failure mode where the English-learning Agent (and pack master research) kept calling web search in a single turn until the whole reply failed. Each turn now caps web search at about three calls and answers once results are in; the “pages read” count no longer balloons into the hundreds, and the reply no longer dies with a generic generation-failed error from exhausting graph steps.',
 	},
         's24-73': {
-                title: "Classic 'look-and-write' upgraded to per-word slots",
+                title: "'Look-and-write' upgraded to per-word slots (incl. vocabulary phrases)",
                 description:
-                        "Classic-sentence 'look-and-write' has been upgraded from whole-sentence input to per-word slots — each word gets its own input box, with real-time grading as you type (green when correct, red when wrong); once all words are correct the answer is auto-submitted. Press Enter to jump to the next incomplete slot, or Backspace in an empty slot to go back to the previous one. Above each slot the part of speech, British IPA, and Chinese meaning are shown to make spelling easier.",
+                        "Both classic-sentence and vocabulary 'look-and-write' now use per-word slots — each word gets its own input box, with real-time grading as you type (green when correct, red when wrong); once all words are correct the answer is auto-submitted. Press Enter to jump to the next incomplete slot, or Backspace in an empty slot to go back. Above each slot the part of speech, British IPA, and Chinese meaning are shown. For vocabulary phrases, the POS and meaning sit on the first slot, and IPA is split across slots when the segments match the word count; phrase POS is labelled as 'verb phrase', 'noun phrase', etc., with the tone following the core POS.",
         },
         's24-74': {
                 title: 'Bulk word-metadata annotation warm-up for classic sentences',

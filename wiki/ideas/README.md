@@ -49,6 +49,8 @@
 | [英语学习DOCX导出.md](./english/英语学习DOCX导出.md) | **收藏 / 错题 / 今日复习导出 Word**（核心已落地）：共用 builder、`POST …/export-docx`、勾选则仅导出所选否则全量≤3000；含架构/流程/时序/状态四图与验收 |
 | [语句库标注手动导入.md](./english/语句库标注手动导入.md) | **标注按钮 hover 二选菜单**（核心已落地）：在线走 SSE；手动导入对齐 `batch2`（可**部分句**、忽略 `id`）→ `cache_key` upsert；不要求覆盖库/Pack 全集 |
 | [练习题量上限对齐.md](./english/练习题量上限对齐.md) | **单场练习硬顶统一 100**（核心已落地）：`ENGLISH_PRACTICE_SESSION_MAX` ↔ `PRACTICE_MAX_WORDS`；覆盖复习/记词队列、结算 attempts、错题 batch、开局标注 batch |
+| [短语词槽标注.md](./english/短语词槽标注.md) | **多词短语词槽挂载**（核心已落地）：`phr.n.` → 名词短语；音标段数等于词数才拆到各槽；词性与释义整组居中，不改分词、不调标注模型 |
+| [练习报告存档.md](./english/练习报告存档.md) | **练习报告入库与回看页**（规划）：Setup 选手动（默认）/ 自动保存；手动点按钮、自动进结算静默写入一行（抬头 + items JSON）；重练继承同一设置；列表分页、详情复用卡片；不替代 SRS / 错题集 |
 
 **生成 Skill**：主仓 `dnhyxc-ai/.cursor/skills/feature-implementation-idea/SKILL.md`（默认落盘根目录：**本目录**）
 
