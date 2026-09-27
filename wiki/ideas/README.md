@@ -7,6 +7,8 @@
 | [EPUB标注分层.md](./epub/EPUB标注分层.md)                                 | EPUB **用户划线 / 想法虚线 / 播放背景** 三层架构、sync 编排、分阶段验收                                                                                         |
 | [EPUB标注epubjs基础.md](./epub/EPUB标注epubjs基础.md)           | 同上三层的 **epub.js 原语详解**：选区、文本提取、CFI、annotations、marks-pane                                                                                   |
 | [讯飞云TTS.md](./tts/讯飞云TTS.md)                                   | **讯飞在线云端 TTS**（已上线）：三选一选路、Nest `ws` 代理、前后端架构/时序/分阶段                                                                              |
+| [TTS合成结果缓存.md](./tts/TTS合成结果缓存.md) | **TTS 音频 Redis bytes 缓存**（前一版）：固定 TTL；云 Redis 大 value 延迟差 → **推荐改看** [TTS本地文件缓存.md](./tts/TTS本地文件缓存.md) |
+| [TTS本地文件缓存.md](./tts/TTS本地文件缓存.md) | **TTS 落盘 uploads/tts + Redis 路径**（M0–M2 已落地）：TTL 到期才删盘；预算/磁盘不够则跳过落盘并记 `logs`；禁止磁盘满删最早 |
 | [EPUB滚动多iframe听书.md](./epub/EPUB滚动多iframe听书.md)   | **EPUB 连续滚动多 iframe 听书续播**（已上线）：问题根因、逐点改动清单、架构/时序/复现步骤、类似问题通用套路                                                     |
 | [电子书阅读进度保存.md](./ebook/电子书阅读进度保存.md)           | **阅读进度保存**（已上线）：EPUB CFI / PDF 页码、三层防抖、keepalive flush、端到端架构与时序                                                                   |
 | [知识预览助手性能.md](./knowledge/知识预览助手性能.md) | **知识库预览+助手同开卡顿**（已上线）：规划态思路；**归档见** [knowledge/知识预览助手性能.md](../knowledge/知识预览助手性能.md) |
@@ -50,7 +52,11 @@
 | [语句库标注手动导入.md](./english/语句库标注手动导入.md) | **标注按钮 hover 二选菜单**（核心已落地）：在线走 SSE；手动导入对齐 `batch2`（可**部分句**、忽略 `id`）→ `cache_key` upsert；不要求覆盖库/Pack 全集 |
 | [练习题量上限对齐.md](./english/练习题量上限对齐.md) | **单场练习硬顶统一 100**（核心已落地）：`ENGLISH_PRACTICE_SESSION_MAX` ↔ `PRACTICE_MAX_WORDS`；覆盖复习/记词队列、结算 attempts、错题 batch、开局标注 batch |
 | [短语词槽标注.md](./english/短语词槽标注.md) | **多词短语词槽挂载**（核心已落地）：`phr.n.` → 名词短语；音标段数等于词数才拆到各槽；词性与释义整组居中，不改分词、不调标注模型 |
-| [练习报告存档.md](./english/练习报告存档.md) | **练习报告入库与回看页**（规划）：Setup 选手动（默认）/ 自动保存；手动点按钮、自动进结算静默写入一行（抬头 + items JSON）；重练继承同一设置；列表分页、详情复用卡片；不替代 SRS / 错题集 |
+| [练习报告存档.md](./english/练习报告存档.md) | **练习报告入库与回看页**（核心已落地）：Setup 手动/自动、`POST …/reports`、列表/详情；同 id 覆盖续写见续篇 |
+| [练习多轮结算与报告续练.md](./english/练习多轮结算与报告续练.md) | **继续练习多轮明细 + 报告 rounds + 详情续练**（核心已落地）：`sessionRounds`、`sourceMeta`、同 reportId upsert、`resumeFromReport`；今日记词已对齐 |
+| [今日记词与今日复习.md](./english/今日记词与今日复习.md) | **今日记词 → 今日复习入队**（核心已落地）：整场词入复习调度、不自动写错题；内容 `mistake ∪ daily_record`（优先错题）；`markReviewDueNow` 与加错题重置分离 |
+| [听写TTS分批预取.md](./english/听写TTS分批预取.md) | **听写/拼写云端 TTS 预取**（核心已落地）：首题 stream + 出声后 `speech/batch`；每批 5 条**未启动**题；会话 LRU=100；修「已预取占窗口→一句一批」 |
+| [练习听写请求防阻塞.md](./english/练习听写请求防阻塞.md) | **听写防阻塞定稿**：Abort + 应用层超时 + TTS 复用 CACHE_MANAGER/配额/mtime GC + 标注两步预热；含 §14 TTS·Redis·配额、§15 标注详解；**不改**验证码/Bull 连接 |
 
 **生成 Skill**：主仓 `dnhyxc-ai/.cursor/skills/feature-implementation-idea/SKILL.md`（默认落盘根目录：**本目录**）
 

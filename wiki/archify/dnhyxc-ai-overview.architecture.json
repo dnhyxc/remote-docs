@@ -1,0 +1,303 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "dnhyxc-ai 高层架构",
+    "locale": "zh-CN",
+    "output": "dnhyxc-ai-overview.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/dnhyxc/dnhyxc-ai",
+      "revision": "327663d299896f4e8011a7b607727b8d8de05305",
+      "provider": "github"
+    },
+    "views": [
+      {
+        "id": "request-path",
+        "label": "主请求路径",
+        "focus": ["users", "client", "api", "mysql"],
+        "note": "客户端经 /api 进入 Nest，TypeORM 读写 MySQL。"
+      },
+      {
+        "id": "identity",
+        "label": "身份鉴权",
+        "focus": ["client", "auth", "api"],
+        "note": "Bearer token；AuthModule 以 JWT + Passport 校验。"
+      },
+      {
+        "id": "rag-llm",
+        "label": "RAG 与大模型",
+        "focus": ["api", "qdrant", "llm", "redis"],
+        "note": "Qdrant 向量检索；OpenAI 兼容网关；Redis 缓存与 BullMQ。"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "users",
+      "type": "external",
+      "label": "用户",
+      "sublabel": "Browser / Desktop",
+      "pos": [40, 250],
+      "size": [130, 56]
+    },
+    {
+      "id": "client",
+      "type": "frontend",
+      "label": "Frontend",
+      "sublabel": "React · Vite · Tauri",
+      "brand": "react",
+      "tag": "apps/frontend",
+      "pos": [250, 250],
+      "size": [150, 56],
+      "sources": [
+        {
+          "path": "apps/frontend/src/main.tsx",
+          "line": 25,
+          "end_line": 31,
+          "label": "SPA / Tauri 入口"
+        },
+        {
+          "path": "apps/frontend/src/utils/axios.ts",
+          "line": 5,
+          "end_line": 16,
+          "label": "axios /api + Bearer"
+        },
+        {
+          "path": "apps/frontend/vite.config.ts",
+          "line": 113,
+          "end_line": 117,
+          "label": "dev proxy → :9112"
+        }
+      ]
+    },
+    {
+      "id": "auth",
+      "type": "security",
+      "label": "Auth",
+      "sublabel": "JWT · Passport",
+      "tag": "7d Bearer",
+      "pos": [250, 90],
+      "size": [150, 56],
+      "sources": [
+        {
+          "path": "apps/backend/src/services/auth/auth.module.ts",
+          "line": 21,
+          "end_line": 33,
+          "label": "JwtModule + Passport"
+        }
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Backend API",
+      "sublabel": "NestJS · /api :9112",
+      "tag": "apps/backend",
+      "pos": [520, 250],
+      "size": [160, 56],
+      "sources": [
+        {
+          "path": "apps/backend/src/main.ts",
+          "line": 36,
+          "end_line": 37,
+          "label": "globalPrefix api"
+        },
+        {
+          "path": "apps/backend/src/main.ts",
+          "line": 100,
+          "end_line": 101,
+          "label": "listen PORT||9112"
+        },
+        {
+          "path": "apps/backend/src/app.module.ts",
+          "line": 55,
+          "end_line": 78,
+          "label": "TypeORM · Redis · BullMQ"
+        }
+      ]
+    },
+    {
+      "id": "redis",
+      "type": "database",
+      "label": "Redis",
+      "sublabel": "cache · BullMQ",
+      "brand": "redis",
+      "pos": [520, 90],
+      "size": [150, 56],
+      "sources": [
+        {
+          "path": "apps/backend/src/factorys/redis-config.factory.ts",
+          "line": 11,
+          "end_line": 15,
+          "label": "Keyv Redis cache"
+        },
+        {
+          "path": "apps/backend/src/factorys/bull-redis-connection.factory.ts",
+          "line": 9,
+          "end_line": 14,
+          "label": "BullMQ :6379"
+        }
+      ]
+    },
+    {
+      "id": "mysql",
+      "type": "database",
+      "label": "MySQL",
+      "sublabel": "TypeORM · :3090",
+      "brand": "mysql",
+      "pos": [800, 250],
+      "size": [140, 56],
+      "sources": [
+        {
+          "path": "apps/backend/ormconfig.ts",
+          "line": 13,
+          "end_line": 20,
+          "label": "TypeORM 连接"
+        },
+        {
+          "path": "docker-compose.yml",
+          "line": 2,
+          "end_line": 14,
+          "label": "mysql:8.0 服务"
+        }
+      ]
+    },
+    {
+      "id": "qdrant",
+      "type": "database",
+      "label": "Qdrant",
+      "sublabel": "向量 · :6333",
+      "pos": [800, 390],
+      "size": [140, 56],
+      "sources": [
+        {
+          "path": "apps/backend/src/services/qdrant/qdrant.module.ts",
+          "line": 11,
+          "end_line": 17,
+          "label": "QdrantClient URL"
+        },
+        {
+          "path": "docker-compose.yml",
+          "line": 75,
+          "end_line": 80,
+          "label": "qdrant 容器"
+        }
+      ]
+    },
+    {
+      "id": "llm",
+      "type": "external",
+      "label": "LLM 网关",
+      "sublabel": "OpenAI 兼容",
+      "tag": "SiliconFlow 等",
+      "pos": [800, 90],
+      "size": [150, 56],
+      "sources": [
+        {
+          "path": "apps/backend/src/services/llm-config/llm-config.service.ts",
+          "line": 307,
+          "end_line": 319,
+          "label": "resolve chat credentials"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "pnpm monorepo · apps/",
+      "wraps": ["client", "auth", "api", "redis"]
+    },
+    {
+      "kind": "security-group",
+      "label": "Nest 进程 · helmet · rate-limit",
+      "wraps": ["api", "auth"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "users-to-client",
+      "from": "users",
+      "to": "client",
+      "label": "WebView / HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "client-to-api",
+      "from": "client",
+      "to": "api",
+      "label": "HTTP /api + Bearer",
+      "variant": "emphasis"
+    },
+    {
+      "id": "auth-to-api",
+      "from": "auth",
+      "to": "api",
+      "label": "verify JWT",
+      "variant": "security",
+      "fromSide": "right",
+      "toSide": "top"
+    },
+    {
+      "id": "api-to-redis",
+      "from": "api",
+      "to": "redis",
+      "label": "cache / queue",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "labelDy": -58
+    },
+    {
+      "id": "api-to-mysql",
+      "from": "api",
+      "to": "mysql",
+      "label": "TypeORM SQL",
+      "labelDy": 24
+    },
+    {
+      "id": "api-to-qdrant",
+      "from": "api",
+      "to": "qdrant",
+      "label": "RAG upsert/search",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "left"
+    },
+    {
+      "id": "api-to-llm",
+      "from": "api",
+      "to": "llm",
+      "label": "HTTPS chat/embed",
+      "variant": "dashed",
+      "fromSide": "right",
+      "toSide": "left"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "客户端",
+      "items": [
+        "React + Vite + Tauri；dev 代理 /api → :9112",
+        "Module Federation Host（远程插件略）"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "后端域",
+      "items": [
+        "Nest：Chat / Knowledge / EnglishLearning 等",
+        "前缀 /api；Swagger /api-docs；同进程 uploads"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "数据与外部",
+      "items": [
+        "MySQL :3090；Redis 环境变量；Qdrant :6333",
+        "LLM 为 OpenAI 兼容 baseURL（用户/环境配置）"
+      ]
+    }
+  ]
+}

@@ -367,7 +367,7 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 	'pg-s13-11': {
 		title: '13.11 Dictation & spelling (vocab & classic quotes)',
 		description:
-			'Entries and grading as in the Chinese guide. Header shows word vs sentence mode. First wrong: field hints + circular Show answer; full reveal field layout. Show answer or → does not stop audio already playing. Footer Previous when not on the first item. Shift+Space play/stop; on wrong screens ↑ previous, ← try again, → show answer, ↓ next. Dictation triple-play on new question, retry, and main play when hint is closed. ? icon lists shortcuts. Summary and mistake book unchanged. Both classic-quote and vocabulary see-and-write use per-word slots: each word has its own input box with real-time grading (green when correct, red when wrong); auto-submit once all words are correct. Press Enter to jump to the next incomplete slot, or Backspace in an empty slot to go back. Above each slot the part of speech, British IPA, and Chinese meaning are shown (classic quotes from bulk annotation warm-up or live annotation, see §13.24; for vocabulary phrases the POS and meaning sit on the first slot, and IPA is split across slots when the segments match the word count — phrase POS is labelled as 'verb phrase', 'noun phrase', etc.).',
+			'Entries and grading as in the Chinese guide. Header shows word vs sentence mode. First wrong: field hints + circular Show answer; full reveal field layout. Show answer or → does not stop audio already playing. Footer Previous when not on the first item. Shift+Space play/stop; on wrong screens ↑ previous, ← try again, → show answer, ↓ next. Dictation triple-play on new question, retry, and main play when hint is closed. ? icon lists shortcuts. Summary and mistake book unchanged. Both classic-quote and vocabulary see-and-write use per-word slots: each word has its own input box with real-time grading (green when correct, red when wrong); auto-submit once all words are correct. Press Enter to jump to the next incomplete slot, or Backspace in an empty slot to go back. Above each slot the part of speech, British IPA, and Chinese meaning are shown (classic quotes from bulk annotation warm-up or live annotation, see §13.24; for vocabulary phrases the POS and meaning sit on the first slot, and IPA is split across slots when the segments match the word count — phrase POS is labelled as "verb phrase", "noun phrase", etc.).',
 	},
 	'pg-s13-12': {
 		title: '13.12 Mistake book (vocab & classic)',
@@ -428,6 +428,46 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 		title: '13.24 Classic-quote bulk annotation warm-up & JSON export/import',
 		description:
 			'The part-of-speech, IPA, and meaning hints in classic-quote see-and-write come from in-sentence word annotation. You can warm-annotate an entire library ahead of time so practice hits the cache instantly, or export original sentences and manually import annotations. Bulk annotation warm-up: on a classic-quote library or pack detail page, tap "Annotate warm-up" — the system automatically annotates every word of every sentence with part of speech, British IPA, and Chinese meaning. Results are cached globally and shared across all users (anyone\'s annotation benefits everyone). Warm-up shows progress on a task card (annotated / failed / remaining / tokens used) and supports pause / resume; closing the page or losing the network auto-saves progress, and tapping "Resume" continues from where it left off; if the model keeps failing, the circuit breaker trips automatically. Export original-sentence JSON: on a library / pack page, tap "Export / Import → Export original JSON" to download a JSON file with English sentences and Chinese meanings. Import word-annotation JSON: tap "Export / Import → Import annotation JSON" and select a JSON file bulk-annotated in Excel or a script (structure: an items array, each item with english and a words array whose elements contain word, posZh, ipa, meaningZh). The system accepts an entry only when its word segmentation matches the file\'s word sequence exactly; partial imports are allowed. Import does not call the model — it writes directly to the cache. Mistakes / favorites DOCX export: all four lists — word favorites, word mistakes, classic-quote favorites, classic-quote mistakes — support one-click Word export (the "Export DOCX" button on each list page). Documents use multi-level heading outlines, and classic-quote exports include a per-word part-of-speech / IPA / meaning table.',
+	},
+	'pg-s13-25': {
+		title: '13.25 Practice reports',
+		description:
+			'After dictation, spelling, or see-Chinese-write practice ends, the summary page can save the session as a "practice report" for later review. Save report: the summary footer has a "Save report" button — tap to save; if you do not save manually, exiting the summary page auto-saves once. The report records a snapshot of every item (prompt, your answer, correct/wrong) plus summary stats; saving the same report multiple times produces only one record, never duplicates. Report list: from the English-learning sidebar or the practice entry, open "My reports"; the list has two tabs — word practice and classic-quote practice — with load-more paging. Each report shows date, stats, and item count; tap to open the detail. Report detail: opening a report restores the original summary layout — the stats panel, wrong-item list, and play buttons all match the original, so you can replay each item. Reports store item snapshots, so even if the underlying entries are later edited or deleted, the historical report content stays unchanged.',
+	},
+	'pg-s13-26': {
+		title: '13.26 Practice report deletion',
+		description:
+			'Each report row in the list has a trash button for single deletion; select multiple rows and tap "Delete selected (N)" in the top-right to delete in batch; the detail page also has a "Delete report" entry in the top-right. Every deletion shows a confirmation dialog and is irreversible once confirmed. On success, the list auto-refreshes; deleting from the detail page returns you to the list.',
+	},
+	'pg-s13-27': {
+		title: '13.27 Practice reports: multi-round and resume',
+		description:
+			'A practice session can be completed across multiple rounds. On the summary page, tap "Continue practice" to pull un-practiced items from the same pool and append a new round; tap "Retry wrong items" to practice only the items you got wrong — correct answers improve accuracy in place without adding a redundant round. The summary shows per-round right/wrong detail and overall accuracy. From a report detail page you can launch three resume actions: "Continue practice" (excluding already-seen items), "Retry wrong items", or "Reset to setup" (go back to setup and start a brand-new report). Resuming reuses the same report, so the list puts the most recently resumed report at the top.',
+	},
+	'pg-s13-28': {
+		title: '13.28 Daily memorize: recognition mode',
+		description:
+			'Daily memorize adds a "recognition" mode and makes it the default, great for quickly going through words: it first shows the word form, IPA, part of speech, Chinese meaning, and example sentence for you to memorize, then tap "Start quiz" to pick the correct Chinese meaning from four options. Distractors are preferentially picked from other words in the current round that share the same part of speech and have a similar length, so they are not obviously wrong; the same meaning is not reused across multiple questions. If you prefer output practice, switch to "dictation" (listen and write the word) or "spelling" (see the meaning and write the word) on the daily memorize setup page. After a round you can continue practice or retry wrong items, and save a practice report.',
+	},
+	'pg-s13-29': {
+		title: '13.29 Mistake source and memorize-reset protection',
+		description:
+			'Each mistake now carries a source tag: mistakes answered wrong in daily memorize are tagged "Daily memorize", mistakes answered wrong in practice are tagged "Practice". When you reset daily memorize progress on the memorized-records page, only mistakes whose source is "Daily memorize" are removed — mistakes you accumulated in practice for the same word form are kept. If a word is first answered wrong in practice and then wrong again in daily memorize, its source stays "Practice", so it will not be accidentally removed by a memorize reset.',
+	},
+	'pg-s13-30': {
+		title: '13.30 Practice cloud TTS batch prefetch',
+		description:
+			'During dictation / spelling practice, cloud TTS no longer waits per item: after the current item starts playing, the system automatically batch-prefetches audio for the next ~5 items (one HTTP request synthesizes multiple texts), so playback on the next item starts almost instantly. During practice the cloud TTS cache is temporarily enlarged so a 100-item session does not evict unplayed prefetched audio, and it is released when you leave. A single failed synthesis does not block the rest — playback falls back to per-item fetch automatically.',
+	},
+	'pg-s13-31': {
+		title: '13.31 Annotate progress page visual restructure',
+		description:
+			'The classic-sentence whole-set annotation progress page is upgraded: tasks are shown in a card grid consistent with the practice report page; each card displays total / hit / annotated / failed in four colored stat cells; the progress bar and status text use four tones (running / done / can-continue / error), and running-but-disconnected streaming shows as "can-continue". Numbers in annotation-related copy now render correctly.',
+	},
+	'pg-s13-32': {
+		title: '13.32 Cloud TTS persistent disk cache',
+		description:
+			'Cloud TTS synthesized audio is now persisted to server disk: the same sentence with the same parameters (voice, speed, etc.) is synthesized only once, so reading it again hits the cache instantly with consistent pronunciation. The cache survives service restarts and replica switches. It has a size budget and disk-space protection — when space is low it skips writing without affecting playback — and expired files are cleaned up automatically, no manual maintenance needed.',
 	},
 	'pg-s13-13': {
 		title: '13.13 Classic mistake row fields',

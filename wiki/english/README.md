@@ -76,6 +76,11 @@
 | [每日记词实现.md](./每日记词实现.md) | **今日记词**：词汇库随机抽词、认读/四选一、记词记录与 SRS（前后端详解） |
 | [每日测验干扰项UI.md](./每日测验干扰项UI.md) | **今日记词 UX**：四选一干扰项迷惑度/去重、底栏按钮间距 |
 | [练习复习SRS.md](./练习复习SRS.md) | **今日复习（SRS）**、侧栏整合、复习设置页入口、随机分页补足 |
+| [练习报告.md](./练习报告.md) | **练习报告持久化**：结算页保存报告（手动/自动、幂等 reportId）、报告列表（vocab/classic Tab、分页）、报告详情（复用结算组件回放、items 快照） |
+| [练习报告删除.md](./练习报告删除.md) | **练习报告删除**：批量删除（多选 + 二次确认）、列表页单条删除、详情页删除入口；后端单端点 `POST /practice/reports/remove-batch` + `(userId, In(ids))` 越权防护 |
+| [练习报告多轮续练.md](./练习报告多轮续练.md) | **练习报告多轮与续练**：`rounds`/`sourceMeta` 字段、`resumeFromReport` 三态（continue/retryWrong/setup）、`serializeSessionRounds`、覆盖写入刷新 createdAt |
+| [今日记词认读模式.md](./今日记词认读模式.md) | **今日记词认读四选一 + 多轮续练**：`buildQuizOptions` 干扰项评分、`DailyCardSession` 按 mode 切换 quiz、多轮状态机、报告 `source=dailyMemorize` |
+| [错题来源标记.md](./错题来源标记.md) | **错题来源标记**：`english_vocabulary_mistake.source` 字段、`batchAddVocabularyMistakes` 仅新建行写 source、`resetDailyMemorizeLibraryProgress` 按 `source=dailyMemorize` 删错题 |
 | [练习总结UI.md](./练习总结UI.md) | 听写/拼写练习与结算页 UI、作答明细、统计条 |
 | [练习会话提示.md](./练习会话提示.md) | 单题练习「提示」：听写释义/音标、拼写音标、固定高度无滚动 |
 | [练习会话控件.md](./练习会话控件.md) | 两档答错、再试连播、软揭示布局、音波动画、播放钮 |
@@ -97,6 +102,7 @@
 |------|------|
 | [句内词标注缓存与批量标注.md](./句内词标注缓存与批量标注.md) | **句内词标注全局缓存**：`cache_key=sha256(version+规范化句+分词序列)`、`isUsableSentenceWordAnnotations` 严格验收、单句/批量/自适应多轮续标、手动导入 |
 | [整集标注任务持久化与续跑.md](./整集标注任务持久化与续跑.md) | **整集标注任务**：DB 任务表 + SSE 进度 + 暂停/续跑 + `StreamAbortRegistry` 中断 + 续跑以缓存表为准幂等 |
+| [标注进度页UI重构.md](./标注进度页UI重构.md) | **增量（本轮）**：标注进度页对齐练习报告卡片网格 + `PracticePageShell`，`TONE` 配色 + `StatCell` 统计格，自绘进度条；部分失败去掉冗余 `errorMessage`；i18n `{{var}}`→`{var}` 插值修正 |
 | [经典句看中写词槽练习.md](./经典句看中写词槽练习.md) | **逐词词槽练习**：`SentenceWordSlots` + `ClassicSpellingBoard` + `usePracticeSessionKeyboard` + `usePracticePlayback`，词性/IPA/释义提示，Enter/Backspace 跳转 |
 | [今日复习列表与导出.md](./今日复习列表与导出.md) | **今日复习列表页 + DOCX 导出**：`listPracticeReviewDuePage` 分页、`exportPracticeReviewDueDocxBuffer` 导出 |
 | [收藏错题DOCX导出.md](./收藏错题DOCX导出.md) | **四类 DOCX 导出**：单词/经典句 × 收藏/错题，`english-favorites-docx.builder.ts` 构建 |
@@ -137,6 +143,8 @@
 | [英语TTS停止清理.md](./英语TTS停止清理.md) | **增量**：`stopAllPlayback` 彻底释放音频元素与 MediaSession（修复 Touch Bar/控制中心残留进度条）、路由壳子页切换自动停播、经典句朗读统一 `cloudSingleUtterance` |
 | [TTS本地取消结算影响.md](./TTS本地取消结算影响.md) | **增量**：本机 `cancel()` 后 50ms settle，修复首句无声（听当前/听书本机路径） |
 | [英语TTS缓存一致性.md](./英语TTS缓存一致性.md) | 云端同句 MP3 LRU |
+| [TTS文件缓存L2持久化.md](./TTS文件缓存L2持久化.md) | **增量（本轮）**：后端 L2 磁盘文件缓存——`uploads/tts/` + Redis 路径索引 + ZSET 懒 GC，三级命中 L1→L2→厂商；Edge/MiniMax/讯飞/硅基四厂商接入；配额只跳不删、磁盘保护、JSON sidecar；默认关闭 |
+| [练习TTS批量预取管道.md](./练习TTS批量预取管道.md) | **增量（本轮）**：练习云端 TTS 滑动窗口批量预取——后端 3 厂商 `.../speech/batch` 端点（texts[] 一次 HTTP）、前端 `prefetchCloudTtsBatch` + 练习会话 LRU 扩容至 100、`practiceTtsPrefetchPipe.ts` 出声后 kick 预取后续 5 题、`usePracticePlayback` `onPlaybackStart` 接入 |
 | [选中文本朗读菜单.md](./选中文本朗读菜单.md) | **增量（本轮）**：英语 Agent 消息正文「选中文本 → 右键 → 朗读/复制」；抽取通用 `useSelectionContextMenu` hook + `PositionedQuickMenu` 组件（供 `ChatAssistantMessage` / `Markdown` 预览 / EPUB 右键复用）；朗读复用听书同款按段云端 TTS，悬浮条支持拖动/倍速/软暂停（含改动前/后对比与逐行注释） |
 | [TTS回调优化.md](./TTS回调优化.md) | **增量**：`onAwaitingPlayback` 语义修正——仅「尚未出声且在等当前段就绪」点亮，本机分段停顿/预取不点亮；`clearAwaitingAndNotifyStart` 重构消除时序错位；修复本机 Web Speech 多段朗读 loading 卡死（含改动前/后对比与逐行注释） |
 | [英语Agent流式性能隔离.md](./英语Agent流式性能隔离.md) | **增量**：英语学习 Agent 流式渲染隔离——`useEnglishAgentSignals` 精细化订阅、`EnglishAgentMessageList` 独立 observer、`EnglishAgentScrollShell` 组件拆分 + Store 层 rAF Patch 调度 |

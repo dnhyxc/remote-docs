@@ -241,6 +241,8 @@ await playCloudMp3Blob(blob, generation);
 | 说明 | 路径 |
 |------|------|
 | 播放世代 / preferLocal | [`英语TTS播放.md`](./英语TTS播放.md) |
+| 练习 TTS 批量预取 + LRU 会话扩容 | [`练习TTS批量预取管道.md`](./练习TTS批量预取管道.md) |
+| 后端 L2 磁盘文件缓存（Redis 索引 + ZSET 懒 GC） | [`TTS文件缓存L2持久化.md`](./TTS文件缓存L2持久化.md) |
 | 前端朗读工具 | `apps/frontend/src/utils/speech.ts` |
 | 硅基合成服务 | `apps/backend/src/services/speech-transcription/siliconflow-transcription.service.ts` |
 | 控制器 | `apps/backend/src/services/speech-transcription/speech-transcription.controller.ts` |

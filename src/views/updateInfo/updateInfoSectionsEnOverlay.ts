@@ -1328,6 +1328,51 @@ export const UPDATE_INFO_BULLETS_EN: Record<
                 description:
                         "Accent-color badges such as 'Member' and 'New' across the site, as well as part-of-speech tags in English learning, now uniformly follow the user's theme accent color (contrast adapts automatically in light / dark themes), replacing scattered hard-coded colors.",
         },
+        's24-81': {
+                title: 'Practice reports: save, list, and replay',
+                description:
+                        'The summary page of dictation, spelling, and see-Chinese-write practice can now save a practice report — either manually via "Save report" or automatically on exit. Reports capture item snapshots and answers, and saving the same report twice will not create duplicates. A "My reports" list lets you browse by word / classic-quote tabs with load-more paging; opening any report replays the original summary page — stats, wrong items, and audio playback all match the original, and later edits to the underlying entries do not affect saved reports.',
+        },
+        's24-82': {
+                title: 'Practice reports: delete',
+                description:
+                        'The "My reports" list now supports multi-select batch deletion — each report row has a single-delete button on the right, and the detail page adds a "Delete report" entry in the top-right. Every deletion shows a confirmation dialog and is irreversible once confirmed. Batch deletion refreshes the list from the first page; deleting from the detail page automatically returns you to the list.',
+        },
+        's24-83': {
+                title: 'Practice reports: multi-round and resume',
+                description:
+                        'Practice reports now support multi-round detail and resuming. In the summary you can "Continue practice" to append a new round from the same pool, or "Retry wrong items" to re-practice only the wrong ones (correct answers improve accuracy in place without adding a round). The summary shows per-round detail and overall accuracy. From a report detail page you can launch three resume intents — continue practice (excluding already-seen items), retry wrong items, or reset to setup for a brand-new report. Resuming reuses the same report ID and overwrites it, so the list sorts by the most recent resume time.',
+        },
+        's24-84': {
+                title: 'Daily memorize: recognition multiple-choice mode',
+                description:
+                        'Daily memorize adds a "recognition" mode and makes it the default: first study the word form, IPA, part of speech, Chinese meaning, and example sentence, then pick the correct Chinese meaning from four options. Distractors are intelligently chosen from other words in the current round by matching part of speech, similar length, and shared Chinese characters to avoid obviously wrong options; the same meaning is not reused across questions. If you prefer output practice, switch to "dictation" (listen and write) or "spelling" (see meaning and write) in the daily memorize setup. After a round you can continue practice or retry wrong items, and save a practice report (source marked as "Daily memorize").',
+        },
+        's24-85': {
+                title: 'Mistake source tagging and memorize-reset protection',
+                description:
+                        'Each mistake now carries a source tag: mistakes from daily memorize are tagged "Daily memorize", mistakes from practice are tagged "Practice". When you reset daily memorize progress on the memorized-records page, only mistakes whose source is "Daily memorize" are removed — mistakes accumulated in practice for the same word form are kept. If a word is first answered wrong in practice and then wrong again in daily memorize, its source stays "Practice" so it is not accidentally removed by a memorize reset.',
+        },
+        's24-86': {
+                title: 'Practice cloud TTS batch prefetch',
+                description:
+                        'During dictation / spelling practice, after the current item starts playing, the system automatically batch-prefetches cloud TTS audio for the next ~5 items (one HTTP request synthesizes multiple texts), so playback on the next item starts almost instantly. During practice the cloud TTS cache is temporarily enlarged so a 100-item session does not evict unplayed prefetched audio; a single failed synthesis does not block the rest, and playback falls back to per-item fetch automatically.',
+        },
+        's24-87': {
+                title: 'Annotate progress page visual restructure',
+                description:
+                        'The classic-sentence whole-set annotation progress page is restructured into a card grid consistent with the practice report page. Each card shows total / hit / annotated / failed in four colored stat cells; the progress bar and status text use four tones (running / done / can-continue / error); partial failures no longer show redundant error copy. Annotation-related i18n interpolation is also fixed so numbers (e.g. "N sentences annotated") render correctly.',
+        },
+        's24-88': {
+                title: 'Cloud TTS persistent disk cache',
+                description:
+                        'Synthesized audio for cloud TTS (MiniMax / iFlytek / Edge / SiliconFlow) is now persisted to server disk. The same sentence with the same parameters is synthesized only once — even after a service restart or switching replicas, reading the same sentence again hits the cache instantly with consistent pronunciation. The cache has a size budget and disk-space protection: when space is low it skips writing without affecting playback; expired files are cleaned up automatically.',
+        },
+        's24-89': {
+                title: 'Backend logging unified',
+                description:
+                        'Logging from e-book parsing, payments, sharing, operation logs, membership, and all cloud TTS services is now routed through the unified project logging pipeline for easier troubleshooting and consistent management. No user-visible change.',
+        },
 	's25-1': {
 		title: 'E-book bookshelf',
 		description:

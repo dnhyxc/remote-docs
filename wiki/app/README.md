@@ -22,6 +22,7 @@
 | [个人主页路由重构.md](./个人主页路由重构.md) | `/profile` 路由改为 `ProfileLayout` + 子路由（资料 / 账号 / 充值），`/account`、`/pay` 旧路径用 `Navigate` 重定向到 `/profile/account`、`/profile/pay` |
 | [独立文档站迁移.md](./独立文档站迁移.md) | `/update-info`、`/project-guide`、`/plugin-dev-guide` 从本地 SPA 路由迁移到 `remote-docs` 独立站（`getRemoteDocsOrigin` + `openExternalUrl`），主站删除对应视图与路由，跳转自动携带 lang/theme/accent |
 | [文档快捷键统一.md](./文档快捷键统一.md) | **保存/新建提升为应用级快捷键**：`useDocumentShortcuts` 由 Layout 统一监听，`bindDocumentShortcutHandlers` 页面注册回调；设置页分类重命名为「通用/编辑器」；新建默认键改 `Meta+Shift+N` |
+| [后端日志统一注入.md](./后端日志统一注入.md) | **后端横切（本轮）**：Ebook/EPUB/Logs/Membership/Pay/Share + 4 个 TTS 服务的 `new Logger()` 改为 `@Inject(WINSTON_MODULE_NEST_PROVIDER) LoggerService`，统一走 Winston 管线；含改动前/后对比 |
 
 ---
 
