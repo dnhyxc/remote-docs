@@ -169,7 +169,10 @@
 | 设置页预设 / Combobox                                             | [llm/LLM设置UI预设.md](./llm/LLM设置UI预设.md)                                                                                         |
 | 英语学习 Agent + LLM                                              | [llm/Agent创建LLM统一.md](./llm/Agent创建LLM统一.md)                                                                                         |
 | 今日记词无词可抽 / 时间不对                                       | [english/每日记词实现.md](./english/每日记词实现.md) §9                                                                |
-| 云端朗读 404 / MiniMax 502 余额不足                               | [english/MiniMax云端TTS.md](./english/MiniMax云端TTS.md) §12                                                                                       |
+| 云端朗读卡顿 / Redis 连接打满 / TTS 落盘过期不删 | [english/TTS缓存复用全局Cache.md](./english/TTS缓存复用全局Cache.md)（定稿：全局 Cache + mtime GC）· 历史 [english/TTS文件缓存L2持久化.md](./english/TTS文件缓存L2持久化.md) |
+| 资源库列表 Redis 慢导致接口卡死 | [english/词库Cache超时旁路.md](./english/词库Cache超时旁路.md) |
+| 练习切题旧请求覆盖新题 / 收藏 status 刷屏 | [english/练习请求作用域与预热.md](./english/练习请求作用域与预热.md) |
+| 句内词标注切题后后端仍调 LLM | [english/句内词标注断连取消.md](./english/句内词标注断连取消.md) |
 | 讯飞云端 WebSocket is not defined / File is not defined（Node 18） | [english/讯飞云TTS.md](./english/讯飞云TTS.md) §3.3、§5                                                                                    |
 | 设置页云端朗读参数不生效 / 改音色仍播旧音                         | [english/云端TTS设置.md](./english/云端TTS设置.md) §5–§6                                                                                   |
 | 语言增强中文但音色列表仍是英文                                    | [english/MiniMax中文语音.md](./english/MiniMax中文语音.md)                                                                                 |

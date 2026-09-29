@@ -467,7 +467,22 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 	'pg-s13-32': {
 		title: '13.32 Cloud TTS persistent disk cache',
 		description:
-			'Cloud TTS synthesized audio is now persisted to server disk: the same sentence with the same parameters (voice, speed, etc.) is synthesized only once, so reading it again hits the cache instantly with consistent pronunciation. The cache survives service restarts and replica switches. It has a size budget and disk-space protection — when space is low it skips writing without affecting playback — and expired files are cleaned up automatically, no manual maintenance needed.',
+			'Cloud TTS synthesized audio is now persisted to server disk: the same sentence with the same parameters (voice, speed, etc.) is synthesized only once, so reading it again hits the cache instantly with consistent pronunciation. The cache survives service restarts and replica switches. It has a size budget and disk-space protection — when space is low it skips writing without affecting playback — and expired files are cleaned up by age, no manual maintenance needed. Path index and byte quota reuse the existing cache channel, so practice peaks are less likely to stall TTS when connection limits are tight.',
+	},
+	'pg-s13-33': {
+		title: '13.33 Practice question-switch cancellation & favorite pre-warm',
+		description:
+			'In dictation / spelling practice, switching questions / queues / going to the previous question now auto-cancels the previous question\'s in-flight annotation, cloud TTS prefetch, and favorite-status requests, preventing stale results from overwriting the new question or competing for bandwidth / quota — switching feels smoother with no UI flicker. At session start / continue / retry-wrong, the entire queue\'s favorite status is written to the session cache in one pass, so the favorite toggle hits the cache on mount with zero extra requests (items carrying a favorite id skip the HTTP call entirely). Word-list paging is also hardened: library rows use row.id as key (avoiding same-content duplicate rows being merged into one), random mode picks one unused page first, the last page is returned even if shorter than the round size, continue-practice excludes all rounds\' practiced keys, and an empty queue reconciles the remaining count to avoid false "N left" hints.',
+	},
+	'pg-s13-34': {
+		title: '13.34 Sentence-word annotation disconnect cancellation',
+		description:
+			'Sentence-word annotation (part-of-speech / IPA / meaning) for classic-sentence dictation now supports client-disconnect cancellation. When you switch questions, close the page, or the network drops, the backend immediately stops the running LLM annotation loop — no more wasted quota or connections. Mid-loop cancellation is logged as "aborted" rather than "failed", keeping error logs clean. The frontend also truly cancels the fetch (instead of just discarding the result); on cancel it skips writing the cache and suppresses error toasts.',
+	},
+	'pg-s13-35': {
+		title: '13.35 Redis cache timeout bypass protection',
+		description:
+			'Redis cache reads/writes for the English-learning library now have a 1500ms timeout bypass. When Redis is slow or hiccupping, a single cache command waits at most 1.5s; on timeout it falls back to a direct DB lookup (read) or silently skips (write), so requests are no longer blocked and you no longer see interface stalls or 504s. This also silences the BullMQ maxRetriesPerRequest startup warning and removes a dead test-connection code block.',
 	},
 	'pg-s13-13': {
 		title: '13.13 Classic mistake row fields',

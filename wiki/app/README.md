@@ -23,6 +23,7 @@
 | [独立文档站迁移.md](./独立文档站迁移.md) | `/update-info`、`/project-guide`、`/plugin-dev-guide` 从本地 SPA 路由迁移到 `remote-docs` 独立站（`getRemoteDocsOrigin` + `openExternalUrl`），主站删除对应视图与路由，跳转自动携带 lang/theme/accent |
 | [文档快捷键统一.md](./文档快捷键统一.md) | **保存/新建提升为应用级快捷键**：`useDocumentShortcuts` 由 Layout 统一监听，`bindDocumentShortcutHandlers` 页面注册回调；设置页分类重命名为「通用/编辑器」；新建默认键改 `Meta+Shift+N` |
 | [后端日志统一注入.md](./后端日志统一注入.md) | **后端横切（本轮）**：Ebook/EPUB/Logs/Membership/Pay/Share + 4 个 TTS 服务的 `new Logger()` 改为 `@Inject(WINSTON_MODULE_NEST_PROVIDER) LoggerService`，统一走 Winston 管线；含改动前/后对比 |
+| [Redis缓存超时旁路.md](./Redis缓存超时旁路.md) | **后端横切（本轮）**：词库 `EnglishLearningLibraryCache` 新增 `raceTimeout(p, label)`——`Promise.race` 1500ms 定时器（常量 `CACHE_COMMAND_TIMEOUT_MS`），超时即 reject 由 `getSafe` / `setSafe` catch 兜底（`get` 返 `undefined` 回源、`set` 静默不写），避免慢 / 挂起的 Redis 阻塞请求路径；BullMQ 连接显式 `maxRetriesPerRequest: null` 消除 WARNING；删除 `redis-config.factory.ts` 死代码测试连接块 |
 
 ---
 

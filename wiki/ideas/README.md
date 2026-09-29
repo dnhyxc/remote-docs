@@ -8,7 +8,7 @@
 | [EPUB标注epubjs基础.md](./epub/EPUB标注epubjs基础.md)           | 同上三层的 **epub.js 原语详解**：选区、文本提取、CFI、annotations、marks-pane                                                                                   |
 | [讯飞云TTS.md](./tts/讯飞云TTS.md)                                   | **讯飞在线云端 TTS**（已上线）：三选一选路、Nest `ws` 代理、前后端架构/时序/分阶段                                                                              |
 | [TTS合成结果缓存.md](./tts/TTS合成结果缓存.md) | **TTS 音频 Redis bytes 缓存**（前一版）：固定 TTL；云 Redis 大 value 延迟差 → **推荐改看** [TTS本地文件缓存.md](./tts/TTS本地文件缓存.md) |
-| [TTS本地文件缓存.md](./tts/TTS本地文件缓存.md) | **TTS 落盘 uploads/tts + Redis 路径**（M0–M2 已落地）：TTL 到期才删盘；预算/磁盘不够则跳过落盘并记 `logs`；禁止磁盘满删最早 |
+| [TTS本地文件缓存.md](./tts/TTS本地文件缓存.md) | **TTS 落盘 uploads/tts + Cache 路径索引**（M0–M2 已落地）：**默认 TTL 30 天**；mtime 到期才删盘；预算/磁盘不够则跳过落盘并记 `logs`；禁止磁盘满删最早 |
 | [EPUB滚动多iframe听书.md](./epub/EPUB滚动多iframe听书.md)   | **EPUB 连续滚动多 iframe 听书续播**（已上线）：问题根因、逐点改动清单、架构/时序/复现步骤、类似问题通用套路                                                     |
 | [电子书阅读进度保存.md](./ebook/电子书阅读进度保存.md)           | **阅读进度保存**（已上线）：EPUB CFI / PDF 页码、三层防抖、keepalive flush、端到端架构与时序                                                                   |
 | [知识预览助手性能.md](./knowledge/知识预览助手性能.md) | **知识库预览+助手同开卡顿**（已上线）：规划态思路；**归档见** [knowledge/知识预览助手性能.md](../knowledge/知识预览助手性能.md) |
