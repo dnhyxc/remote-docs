@@ -650,6 +650,12 @@ const PROJECT_GUIDE_SECTIONS_ZH: ProjectGuideSection[] = [
 				description:
 					'英语学习资源库的 Redis 缓存读写新增超时旁路保护。当 Redis 抖动或响应慢时，单次缓存命令最多等 1.5 秒，超时即回退到直接查库（读）或静默跳过（写），不再阻塞请求、不再出现接口卡死或 504。同时消除了 BullMQ 队列启动时的 maxRetriesPerRequest 警告日志，并清理了无用的测试连接死代码。',
 			},
+			{
+				id: 'pg-s13-36',
+				title: '13.36 启动期 Router 延迟挂载',
+				description:
+					'应用启动时的路由加载体验优化。插件加载完成后才挂载路由，启动期间显示全屏加载动画，不再出现先空白再切到真实页面的路由闪烁；Router 只创建一次，导航更稳定；Tauri「关于 / 退出登录」菜单在路由就绪后才注册监听，避免重复挂载导致的偶发无响应。',
+			},
 		],
 	},
 	{

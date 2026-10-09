@@ -2049,6 +2049,13 @@ const UPDATE_INFO_SECTIONS_ZH: UpdateInfoSection[] = [
 				description:
 					'英语学习资源库的 Redis 缓存读写新增 1500ms 超时旁路——当 Redis 抖动或响应慢时，单次缓存命令最多等 1.5 秒，超时即回退到直接查库（读）或静默跳过（写），不再阻塞请求、不再出现接口卡死或 504。同时消除了 BullMQ 队列启动时的 maxRetriesPerRequest 警告日志，并清理了无用的测试连接死代码。',
 			},
+			{
+				id: 's24-93',
+				title: '启动期 Router 延迟挂载',
+				dateLabel: '2026-10-09',
+				description:
+					'应用启动时，路由 Router 现在等插件加载完成后才创建——插件加载期间显示全屏加载动画，不再出现路由闪烁（先空白后切到真实页面）。插件加载完成后 Router 只创建一次，导航更稳定，桌面端「关于 / 退出登录」菜单也不再因路由重建而短暂失效。',
+			},
 		],
 	},
 	{

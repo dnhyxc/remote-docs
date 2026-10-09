@@ -484,6 +484,11 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 		description:
 			'Redis cache reads/writes for the English-learning library now have a 1500ms timeout bypass. When Redis is slow or hiccupping, a single cache command waits at most 1.5s; on timeout it falls back to a direct DB lookup (read) or silently skips (write), so requests are no longer blocked and you no longer see interface stalls or 504s. This also silences the BullMQ maxRetriesPerRequest startup warning and removes a dead test-connection code block.',
 	},
+	'pg-s13-36': {
+		title: '13.36 Router deferred mounting on startup',
+		description:
+			'On app startup, the Router is created only after plugin loading finishes. During plugin loading a full-screen spinner is shown, eliminating the route flicker (blank page then real page). The Router is created exactly once, making navigation more stable; the desktop About / Logout menu is registered only after the Router is ready, avoiding occasional non-responses from repeated mounting.',
+	},
 	'pg-s13-13': {
 		title: '13.13 Classic mistake row fields',
 		description:

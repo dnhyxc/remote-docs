@@ -24,6 +24,7 @@
 | [文档快捷键统一.md](./文档快捷键统一.md) | **保存/新建提升为应用级快捷键**：`useDocumentShortcuts` 由 Layout 统一监听，`bindDocumentShortcutHandlers` 页面注册回调；设置页分类重命名为「通用/编辑器」；新建默认键改 `Meta+Shift+N` |
 | [后端日志统一注入.md](./后端日志统一注入.md) | **后端横切（本轮）**：Ebook/EPUB/Logs/Membership/Pay/Share + 4 个 TTS 服务的 `new Logger()` 改为 `@Inject(WINSTON_MODULE_NEST_PROVIDER) LoggerService`，统一走 Winston 管线；含改动前/后对比 |
 | [Redis缓存超时旁路.md](./Redis缓存超时旁路.md) | **后端横切（本轮）**：词库 `EnglishLearningLibraryCache` 新增 `raceTimeout(p, label)`——`Promise.race` 1500ms 定时器（常量 `CACHE_COMMAND_TIMEOUT_MS`），超时即 reject 由 `getSafe` / `setSafe` catch 兜底（`get` 返 `undefined` 回源、`set` 静默不写），避免慢 / 挂起的 Redis 阻塞请求路径；BullMQ 连接显式 `maxRetriesPerRequest: null` 消除 WARNING；删除 `redis-config.factory.ts` 死代码测试连接块 |
+| [Router启动期延迟挂载.md](./Router启动期延迟挂载.md) | **前端壳层（本轮）**：`App` 组件将 `createBrowserRouter` 延迟到 `mf.start()` 完成后执行——`pluginsReady` 为 false 时 `useMemo` 返回 null，渲染全屏 Loading；新增 `started` 门闩使 start 期间 `onRoutesChange` 不 bump epoch；移除 `.finally()` 中的 `setRouteEpoch`；`buildRoutes(true)` 写死；Tauri 监听 effect 在 `router===null` 时提前返回剪贴板 detach；启动期 Router 仅创建一次，消除路由闪烁与 `setNavigate` 短暂失效 |
 
 ---
 
