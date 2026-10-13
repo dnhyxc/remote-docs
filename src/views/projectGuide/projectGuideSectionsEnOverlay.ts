@@ -489,6 +489,36 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 		description:
 			'On app startup, the Router is created only after plugin loading finishes. During plugin loading a full-screen spinner is shown, eliminating the route flicker (blank page then real page). The Router is created exactly once, making navigation more stable; the desktop About / Logout menu is registered only after the Router is ready, avoiding occasional non-responses from repeated mounting.',
 	},
+	'pg-s13-37': {
+		title: '13.37 Practice & daily word session draft resume',
+		description:
+			'Dictation / spelling practice and daily memorization sessions now save their progress automatically, so refreshing or reopening a link resumes where you left off. Refreshing mid-session restores the original question order and position — random order is not reshuffled. On the practice setup or daily intro page, an unfinished session shows a banner describing the source and progress; click "Continue" to resume or "Discard" to clear it. Changing the question count or order while a session exists shows a confirmation dialog before discarding the old progress and starting a new one, preventing accidental data loss. Signing out clears the current account\'s drafts, so switching accounts never exposes the previous account\'s unfinished sessions.',
+	},
+	'pg-s13-38': {
+		title: '13.38 Practice IME keyboard guard',
+		description:
+			'In dictation / spelling practice and classic-sentence word-slot practice, using a Chinese IME to compose and pressing Enter to commit no longer mistakenly triggers "Next question" or the play shortcut. After composition end, a one-tick guard flag swallows the extra Enter that the IME fires; the slot composing flag is also cleared one tick later, with a keyCode 229 fallback for broader browser / IME coverage. During composition, all shortcuts are suppressed. Behavior is unchanged when no IME is in use.',
+	},
+	'pg-s13-39': {
+		title: '13.39 Vocabulary library JSON export',
+		description:
+			'Vocabulary libraries in the English-learning resource library now have a JSON export button (file icon) on each row. Clicking it paginates through all entries in the library (including IPA, part of speech, segmentation, Chinese translation, and example) and saves them as a single .json file. The library API supports up to 1000 items per page, the history API up to 200; at most 40 pages are fetched. Empty libraries show a toast and no partial file is written; the button is disabled with a spinner during export. The filename defaults to the library title (falling back to vocabulary.json). The export format is { title, items }, matching the classic-quotes JSON export.',
+	},
+	'pg-s13-40': {
+		title: '13.40 Whole vocabulary / classic-quotes library export to Word (DOCX)',
+		description:
+			'The export button on vocabulary-library and classic-quotes-library rows in the English-learning resource library is now a dropdown menu: hover to expand and choose Export JSON or Export Word (.docx); the menu closes shortly after the mouse leaves. Word export is only available on resource-library rows (history / pack rows show only Export JSON). Word documents are generated server-side for the whole library: vocabulary libraries include word, IPA, part of speech, segmentation, Chinese translation, and example; classic-quotes libraries include the English sentence, Chinese translation, source, and notes—matching the favorites / mistakes DOCX format. Larger libraries take longer, so the download timeout is raised to 3 minutes. Empty libraries show an "empty" toast; the button is disabled with a spinner during export. Desktop shows a system download notification, while the browser shows an "export succeeded" toast.',
+	},
+	'pg-s13-41': {
+		title: '13.41 Large-collection Word export now runs in the background',
+		description:
+			'Word export for favorites, mistakes, and review collections now supports background generation to avoid freezing the page on large collections. When the export count is 10,000 items or fewer, the original synchronous download is used (generated and downloaded immediately, no confirmation needed). When it exceeds 10,000, a confirmation dialog first explains that generation will happen in the background; after confirming, the server generates the Word document in the background while you keep browsing, with an "in progress" toast. When generation finishes, the file downloads automatically; if it fails, an error toast appears. This applies to vocabulary favorites, classic-quote favorites, vocabulary mistakes, classic-quote mistakes, and today\'s review. Whole vocabulary / classic-quotes library export still uses synchronous generation (with the 3-minute timeout for large libraries).',
+	},
+	'pg-s13-42': {
+		title: '13.42 Resource library visibility is now owner-only',
+		description:
+			'Whether a resource library (vocabulary / classic-quotes) is public is now decided only by its owner. The edit entry and the "Make public" switch appear only on libraries you created; turning it on makes the library visible to and usable by all signed-in users, and turning it off makes it private again. Libraries created by others have no edit entry—even a super admin cannot modify or publish them. Newly imported or created libraries are private by default and need the owner to enable public access in the edit dialog; published libraries still show a "Public" badge for everyone.',
+	},
 	'pg-s13-13': {
 		title: '13.13 Classic mistake row fields',
 		description:

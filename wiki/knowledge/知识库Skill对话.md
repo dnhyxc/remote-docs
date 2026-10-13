@@ -1350,7 +1350,7 @@ const SkillSlashPicker = observer(function SkillSlashPicker({
 			// 标题栏
 			<div className="flex items-center gap-3 px-2 py-3 mb-1 border-b border-theme/10">
 				// 「Skills」标题文案
-				<div className="text-sm text-textcolor">{t('route.skills.title')}</div>
+				<div className="text-sm text-textcolor">{t('nav.skills')}</div>
 				// 有过滤词时显示 filtering 提示
 				{filterQ ? (
 					// 过滤提示容器

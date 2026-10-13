@@ -1041,8 +1041,8 @@ const playSentencesFromCursor = useCallback(
 					Toast({
 // 执行：type: 'warning',
 						type: 'warning',
-// 执行：title: tRef.current('englishLearning.tts.unsupported'),
-						title: tRef.current('englishLearning.tts.unsupported'),
+// 执行：title: tRef.current('assistant.tts.unsupported'),
+						title: tRef.current('assistant.tts.unsupported'),
 // 块或调用闭合
 					});
 // 块或调用闭合
@@ -1183,8 +1183,8 @@ const playSentencesFromCursor = useCallback(
 				Toast({
 // 执行：type: 'warning',
 					type: 'warning',
-// 执行：title: tRef.current('englishLearning.tts.unsupported'),
-					title: tRef.current('englishLearning.tts.unsupported'),
+// 执行：title: tRef.current('assistant.tts.unsupported'),
+					title: tRef.current('assistant.tts.unsupported'),
 // 块或调用闭合
 				});
 // 块或调用闭合
@@ -1307,8 +1307,8 @@ const playFromCursor = useCallback(
 					Toast({
 // 执行：type: 'warning',
 						type: 'warning',
-// 执行：title: tRef.current('englishLearning.tts.unsupported'),
-						title: tRef.current('englishLearning.tts.unsupported'),
+// 执行：title: tRef.current('assistant.tts.unsupported'),
+						title: tRef.current('assistant.tts.unsupported'),
 // 块或调用闭合
 					});
 // 块或调用闭合
@@ -1435,8 +1435,8 @@ const playFromCursor = useCallback(
 				Toast({
 // 执行：type: 'warning',
 					type: 'warning',
-// 执行：title: tRef.current('englishLearning.tts.unsupported'),
-					title: tRef.current('englishLearning.tts.unsupported'),
+// 执行：title: tRef.current('assistant.tts.unsupported'),
+					title: tRef.current('assistant.tts.unsupported'),
 // 块或调用闭合
 				});
 // 块或调用闭合

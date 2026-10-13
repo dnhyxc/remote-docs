@@ -44,7 +44,7 @@
 | [英语词包流式存储.md](./英语词包流式存储.md) | 流式状态跨路由 |
 | [英语词包会话存储.md](./英语词包会话存储.md) | Session/Item 存储模型 |
 | [英语词包会话项.md](./英语词包会话项.md) | 结果页分页 |
-| [英语词包历史UX.md](./英语词包历史UX.md) | 历史 UX |
+| [英语词包历史UX.md](./英语词包历史UX.md) | 历史 UX（含菜单打开时操作区保持可见） |
 
 ## 收藏 / 资源库 / 导入
 
@@ -53,7 +53,7 @@
 | [英语学习文库导入.md](./英语学习文库导入.md) | 资源库导入 |
 | [英语学习JSON导入.md](./英语学习JSON导入.md) | JSON 导入 |
 | [经典语句库导入.md](./经典语句库导入.md) | 经典句库 |
-| [文库公开编辑.md](./文库公开编辑.md) | **资源库编辑**：重命名、Enter 保存、超管设公共库、列表权限 |
+| [文库公开编辑.md](./文库公开编辑.md) | **资源库编辑**：重命名、Enter 保存、**仅所有者可改标题与是否公开**（超管不再能改他人库）、列表编辑入口与权限 |
 | [资源库词条续读.md](./资源库词条续读.md) | **资源库词条续读**：跨会话进度持久化（`english_library_items_resume` 表 + keepalive flush）、双向分页、prepend 钉视口、收藏增量识别 prepend、卡片 `h-full` |
 | [固定列表统一虚拟滚动.md](./固定列表统一虚拟滚动.md) | **固定列表统一虚拟滚动与续读**：删除 `useVocabularyFavoritesList` 等 5 个重复 Hook，统一复用 `useEnglishLearningList`（新增 `resolveInitialResume` / `refetchOnEnter` / `reloadFromStart`），复用 `english_library_items_resume` 表（占位 libraryId）做 5 个固定列表的续读 |
 | [英语学习列表模块收口.md](./英语学习列表模块收口.md) | **列表模块路径与命名收口**：`useLibraryWordsList` → `useEnglishLearningList`（类型 `ElListPageResult` / `UseEnglishLearningListOptions`）、`library/utils/*` → `utils/*`、`englishLibraryItemsResume.ts` + scope helper → `englishLearningResume.ts`、服务层 `patchElListResume` 统一路由、后端占位 id 常量独立 |
@@ -68,6 +68,9 @@
 | [收藏按钮统一组件.md](./收藏按钮统一组件.md) | **统一收藏按钮组件**：新建 `FavoriteToggleButton`（单词 / 经典句二选一）+ 合并 `DailyCorrectFeedback` / `DailyWrongFeedback` 为 `DailyFeedback`（`variant` 切换）+ `DailyPlayIconButton` 改 Button+Tooltip + 练习答题页顶栏嵌入收藏钮 + `practiceFavoriteToggleProps` 分发 helper + `button.tsx` hover teal-500→teal-400 |
 | [英语收藏抽屉.md](./英语收藏抽屉.md) | 收藏抽屉 |
 | [英语收藏DOCX导出.md](./英语收藏DOCX导出.md) | 导出 DOCX |
+| [单词库导出.md](./单词库导出.md) | **单词库 JSON 导出**：`Export.tsx` 导出按钮 + `exportVocabulary.ts` 分页拉取（库 1000/页、历史 200/页、最多 40 页）+ `saveFileWithPicker` JSON |
+| [词库整库DOCX导出.md](./词库整库DOCX导出.md) | **词库 / 语句库整库 DOCX 导出**：后端分页装载 + 复用收藏 Builder（单词硬顶 12000 / 语句 6000）；前端 Export 按钮升级为下拉菜单（JSON / Word），大库超时 3 分钟 |
+| [DOCX异步导出Job.md](./DOCX异步导出Job.md) | **大集合 DOCX 异步导出 Job**：收藏 / 错题 / 复习 >1 万条时改为后台生成 + 临时文件 + 轮询下载（`EnglishDocxExportJobService`，进程内 Map + OS tmpdir + 30min TTL sweep）；前端 `exportEnglishDocxSmart` 分流（≤1 万同步 / >1 万 Confirm 异步） |
 
 ## 练习
 
@@ -87,7 +90,9 @@
 | [practice-wrong-panel-快捷键.md](./练习错题面板快捷键.md) | **答错/揭示面板 UI**、播放单次/三连播策略、顶栏快捷键 ? 菜单 |
 | [练习揭示播放连续性.md](./练习揭示播放连续性.md) | 软揭示 → 完整揭示**播放不中断**（共用 Session `playing` / `playWord`） |
 | [练习键盘上一个.md](./练习键盘上一个.md) | **Shift+空格** 播放、**上一题** 与方向键 **↑←→↓** 重映射 |
+| [练习IME键盘防护.md](./练习IME键盘防护.md) | **练习 IME 键盘防护**：`compositionend` 后延一拍守卫标志吞掉 IME 确认补发的 Enter，词槽 `onCompositionEnd` 延清 `composingRef` + `keyCode 229` 兜底，防止组字上屏误触「下一题」 |
 | [练习入口导航.md](./练习入口导航.md) | 多入口（资源库列表/历史抽屉）、设置页词数、返回导航 |
+| [会话草稿续练.md](./会话草稿续练.md) | **练习与今日记词会话草稿续练**：sessionStorage 整队快照 + URL sid 续档；phase 由 pathname 决定（`/session`/`/summary`/`/done`）；刷新不丢进度、随机题序可续；设置/介绍页「继续上次/放弃续练」横幅；登出按用户清空草稿（含改动前/后对比与逐行注释） |
 | [单词错题与共享UI.md](./单词错题与共享UI.md) | **单词**错题集、练习入口组件 `EnglishPracticeEntry`、单词卡片统一 |
 | [经典练习与错题.md](./经典练习与错题.md) | **经典句**练习、`contentKind=classic`、语句错题集、判分与 batch 更新错拼 |
 
@@ -116,6 +121,7 @@
 |------|------|
 | [侧边栏UI统一.md](./侧边栏UI统一.md) | **首页侧栏 UI 统一**：卡片/按钮 token、`Header`/`Actions`、导入示例折叠、chip 网格 |
 | [英语模块文件夹布局.md](./英语模块文件夹布局.md) | **模块目录**：`components/`、`reference/`、`favorites`/`pack`/`library`/`sections` 分域；顶栏单行截断 |
+| [下拉菜单项对齐.md](./下拉菜单项对齐.md) | **下拉菜单项居中与宽度统一**：导出菜单与标注来源菜单的菜单项统一为「撑满 + 居中」，标注来源菜单 `min-w-34` → `min-w-28`（纯样式） |
 
 ## TTS / UI / 其它专题
 

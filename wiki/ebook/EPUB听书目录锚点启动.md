@@ -269,7 +269,7 @@ const resolveStartCfiModeRef = useRef<'before' | 'after'>('before');
 		if (!isPlaybackAvailable()) {
 			Toast({
 				type: 'warning',
-				title: tRef.current('englishLearning.tts.unsupported'),
+				title: tRef.current('assistant.tts.unsupported'),
 			});
 			return;
 		}
@@ -343,7 +343,7 @@ const resolveStartCfiModeRef = useRef<'before' | 'after'>('before');
 		if (!isPlaybackAvailable()) {
 			Toast({
 				type: 'warning',
-				title: tRef.current('englishLearning.tts.unsupported'),
+				title: tRef.current('assistant.tts.unsupported'),
 			});
 			return;
 		}

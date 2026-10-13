@@ -1393,6 +1393,46 @@ export const UPDATE_INFO_BULLETS_EN: Record<
                 description:
                         'On app startup, the Router is now created only after plugin loading finishes. During plugin loading a full-screen loading spinner is shown, eliminating the route flicker (blank page then real page). Once plugins are ready the Router is created exactly once, making navigation more stable; the desktop About / Logout menu no longer briefly fails while the Router is being rebuilt.',
         },
+        's24-94': {
+                title: 'Practice & daily word session draft resume',
+                description:
+                        'Dictation / spelling practice and daily memorization sessions now save their progress automatically. Refreshing the page or reopening a session link restores the original question order and position — you are no longer kicked back to the setup screen. On the setup / daily intro page, an unfinished session shows a "Continue / Discard" banner so you can resume in one click; changing the question count or order while a session exists asks for confirmation before discarding the old progress. Signing out clears the current account\'s drafts so they never leak to the next account.',
+        },
+        's24-95': {
+                title: 'Practice IME keyboard guard',
+                description:
+                        'In dictation / spelling practice and classic-sentence word-slot practice, using a Chinese IME to compose and pressing Enter to commit no longer mistakenly triggers "Next question" or the play shortcut. After composition end, a one-tick guard flag swallows the extra Enter that the IME fires; the slot composing flag is also cleared one tick later, with a keyCode 229 fallback for broader browser / IME coverage. During composition, all shortcuts are suppressed. Behavior is unchanged when no IME is in use.',
+        },
+        's24-96': {
+                title: 'Vocabulary library JSON export',
+                description:
+                        'Vocabulary libraries in the English-learning resource library now have an export button on each row. Clicking it paginates through all entries in the library (including IPA, part of speech, segmentation, Chinese translation, and example) and saves them as a single .json file. The format matches the existing classic-quotes JSON export for easy re-import or offline analysis. Empty libraries show a toast; the button is disabled with a spinner during export.',
+        },
+        's24-97': {
+                title: 'Whole vocabulary / classic-quotes library export to Word',
+                description:
+                        'The export button on vocabulary-library and classic-quotes-library rows in the English-learning resource library is now a dropdown menu offering both JSON and Word (.docx) export. Word export is generated server-side for the whole library: vocabulary libraries include word, IPA, part of speech, segmentation, Chinese translation, and example; classic-quotes libraries include the English sentence, Chinese translation, source, and notes—matching the favorites / mistakes DOCX format. Larger libraries take longer to build, so the download timeout is raised to 3 minutes. Empty libraries show a toast and the button is disabled with a spinner during export. History (pack) rows only support JSON export.',
+        },
+        's24-98': {
+                title: 'Large-collection Word export now runs in the background',
+                description:
+                        'When exporting favorites, mistakes, or review collections larger than 10,000 items to Word, the page no longer freezes. Instead, a confirmation dialog appears; after confirming, the Word document is generated on the server in the background while you keep browsing. Once generation finishes, the file downloads automatically. Collections of 10,000 items or fewer still use the original immediate synchronous download without a confirmation.',
+        },
+        's24-99': {
+                title: 'Resource library visibility is now owner-only',
+                description:
+                        'Whether a resource library (vocabulary / classic-quotes) is public is now decided only by its owner. The edit entry and the "Make public" switch appear only on libraries you created; turning it on makes the library usable by all signed-in users, and turning it off makes it private again. Super admins can no longer edit or publish other users\' libraries. Newly imported libraries are still private by default and must be made public by the owner.',
+        },
+        's24-100': {
+                title: 'Export / import dropdown menu items centered',
+                description:
+                        'In the export dropdown menu on vocabulary / classic-quotes library rows and the annotation-source dropdown menu for classic sentences, menu item text and icons are now centered both horizontally and vertically and fill the menu width; the annotation-source menu is slightly narrower to fit its content, making the menus align more consistently.',
+        },
+        's24-101': {
+                title: 'History row actions stay visible while a menu is open',
+                description:
+                        'In the generation-history lists of vocabulary / classic-quotes libraries, the row\'s right-side actions (export / delete) no longer disappear when a dropdown menu or tooltip is open. Previously, after the menu popped out, moving the pointer off the row hid the actions and the menu closed abruptly; now the actions remain visible as long as the menu is open, so it can be clicked normally.',
+        },
 	's25-1': {
 		title: 'E-book bookshelf',
 		description:

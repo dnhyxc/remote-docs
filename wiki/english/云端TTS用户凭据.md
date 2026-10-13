@@ -151,7 +151,7 @@ function notifyCloudTtsFallback(canFallbackLocal: boolean): void {
 	Toast({
 		type: 'error',
 		title: translateSync(titleKey),
-		message: translateSync('englishLearning.tts.unsupported'),
+		message: translateSync('assistant.tts.unsupported'),
 	});
 }
 ```
@@ -415,7 +415,7 @@ export function buildMinimaxTtsCacheKeySuffix(): string {
 					if (isGenActive(gen)) {
 						Toast({
 							type: 'warning',
-							title: tRef.current('englishLearning.tts.unsupported'),
+							title: tRef.current('assistant.tts.unsupported'),
 ```
 
 **改动后** · `apps/frontend/src/views/ebook/hooks/useEpubChapterListen.ts`（当前）
@@ -428,7 +428,7 @@ export function buildMinimaxTtsCacheKeySuffix(): string {
 					) {
 						Toast({
 							type: 'warning',
-							title: tRef.current('englishLearning.tts.unsupported'),
+							title: tRef.current('assistant.tts.unsupported'),
 ```
 
 **变更摘要**：`speech` 已 Toast 时跳过 hook 层 `unsupported`，避免双重提示。`useEbookQuoteListen.ts` 同改。

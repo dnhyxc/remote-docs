@@ -329,7 +329,7 @@ const onTogglePlayQuote = useCallback(
 			// 朗读失败提示不支持
 			Toast({
 				type: 'warning',
-				title: t('englishLearning.tts.unsupported'),
+				title: t('assistant.tts.unsupported'),
 			});
 		} finally {
 			// 朗读结束（无论成功失败）清除高亮
@@ -367,7 +367,7 @@ const onTogglePlayQuote = useCallback(
 			// 朗读失败提示不支持
 			Toast({
 				type: 'warning',
-				title: t('englishLearning.tts.unsupported'),
+				title: t('assistant.tts.unsupported'),
 			});
 		} finally {
 			// 朗读结束（无论成功失败）清除高亮

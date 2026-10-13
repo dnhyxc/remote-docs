@@ -229,7 +229,7 @@ const startFromCurrentPosition = useCallback(() => {
 	if (!isPlaybackAvailable()) {
 		Toast({
 			type: "warning",
-			title: tRef.current("englishLearning.tts.unsupported"),
+			title: tRef.current("assistant.tts.unsupported"),
 		});
 		return;
 	}
@@ -1230,7 +1230,7 @@ const startPlayback = useCallback(
 		if (!isPlaybackAvailable()) {
 			Toast({
 				type: "warning",
-				title: tRef.current("englishLearning.tts.unsupported"),
+				title: tRef.current("assistant.tts.unsupported"),
 			});
 			return;
 		}

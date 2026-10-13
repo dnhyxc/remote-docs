@@ -92,7 +92,7 @@ export function useEbookQuoteListen(t: (key: string) => string) {
 			if (!isPlaybackAvailable()) {
 				Toast({
 					type: 'warning',
-					title: t('englishLearning.tts.unsupported'),
+					title: t('assistant.tts.unsupported'),
 				});
 				return;
 			}
@@ -103,7 +103,7 @@ export function useEbookQuoteListen(t: (key: string) => string) {
 			} catch {
 				Toast({
 					type: 'warning',
-					title: t('englishLearning.tts.unsupported'),
+					title: t('assistant.tts.unsupported'),
 				});
 			} finally {
 				// 仅当仍是本会话 key 时清状态（快速切换引用时不误清新会话）

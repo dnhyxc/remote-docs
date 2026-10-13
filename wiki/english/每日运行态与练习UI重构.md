@@ -419,7 +419,7 @@ import { SessionHeader } from '../components/SessionHeader';
 >
 	{/* 中槽：来源标题 + 题序 */}
 	<span className="truncate">
-		{sourceTitle?.trim() || t('englishLearning.practice.sourceResolving')}
+		{sourceTitle?.trim() || t('common.loadingEllipsis')}
 	</span>
 	{progressLabel ? (
 		<span className="shrink-0 tabular-nums">{progressLabel}</span>

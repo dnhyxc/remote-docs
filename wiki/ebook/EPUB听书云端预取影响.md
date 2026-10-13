@@ -370,7 +370,7 @@ const playSentencesFromCursor = useCallback(
 				if (isGenActive(gen)) {
 					Toast({
 						type: 'warning',
-						title: tRef.current('englishLearning.tts.unsupported'),
+						title: tRef.current('assistant.tts.unsupported'),
 					});
 				}
 				return false;
@@ -479,7 +479,7 @@ const playSentencesFromCursor = useCallback(
 				if (isGenActive(gen)) {
 					Toast({
 						type: 'warning',
-						title: tRef.current('englishLearning.tts.unsupported'),
+						title: tRef.current('assistant.tts.unsupported'),
 					});
 				}
 				return false;
@@ -554,7 +554,7 @@ const playFromCursor = useCallback(
 				if (isGenActive(gen)) {
 					Toast({
 						type: 'warning',
-						title: tRef.current('englishLearning.tts.unsupported'),
+						title: tRef.current('assistant.tts.unsupported'),
 					});
 				}
 				return false;
@@ -638,7 +638,7 @@ const playFromCursor = useCallback(
 				if (isGenActive(gen)) {
 					Toast({
 						type: 'warning',
-						title: tRef.current('englishLearning.tts.unsupported'),
+						title: tRef.current('assistant.tts.unsupported'),
 					});
 				}
 				return false;

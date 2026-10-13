@@ -106,7 +106,7 @@ export function useEbookQuoteListen(
 			if (!isPlaybackAvailable()) {
 				Toast({
 					type: 'warning',
-					title: t('englishLearning.tts.unsupported'),
+					title: t('assistant.tts.unsupported'),
 				});
 				return;
 			}
@@ -137,7 +137,7 @@ export function useEbookQuoteListen(
 			} catch {
 				Toast({
 					type: 'warning',
-					title: t('englishLearning.tts.unsupported'),
+					title: t('assistant.tts.unsupported'),
 				});
 			} finally {
 				clearEpubListenSegmentOverlay();
@@ -217,7 +217,7 @@ export function useEbookQuoteListen(
 			if (!isPlaybackAvailable()) {
 				Toast({
 					type: 'warning',
-					title: t('englishLearning.tts.unsupported'),
+					title: t('assistant.tts.unsupported'),
 				});
 				return;
 			}
@@ -259,7 +259,7 @@ export function useEbookQuoteListen(
 			} catch {
 				Toast({
 					type: 'warning',
-					title: t('englishLearning.tts.unsupported'),
+					title: t('assistant.tts.unsupported'),
 				});
 			} finally {
 				clearEpubListenSegmentOverlay();

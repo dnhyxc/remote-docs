@@ -1220,7 +1220,7 @@ function listQueryFromKey(key: KnowledgeCategoryKey): {
 																	},
 				// 标签：未分类文案
 																	label: t(
-																		'knowledge.list.category.uncategorized',
+																		'ebook.shelf.category.uncategorized',
 																	),
 				// 计数：未分类
 																	count: knowledgeStore.uncategorizedCount,
@@ -1309,7 +1309,7 @@ function listQueryFromKey(key: KnowledgeCategoryKey): {
 																	},
 				// 标签：未分类
 																	label: t(
-																		'knowledge.list.category.uncategorized',
+																		'ebook.shelf.category.uncategorized',
 																	),
 				// 计数：未分类
 																	count: knowledgeStore.uncategorizedCount,
@@ -1349,48 +1349,48 @@ function listQueryFromKey(key: KnowledgeCategoryKey): {
 
 ```typescript
 	// 知识库分类：移动到分类
-	'knowledge.list.category.move': '移动到分类',
+	'ebook.shelf.category.move': '移动到分类',
 	// 知识库分类：全部
 	'knowledge.list.category.all': '全部',
 	// 知识库分类：未分类
-	'knowledge.list.category.uncategorized': '未分类',
+	'ebook.shelf.category.uncategorized': '未分类',
 ```
 
 **改动后** · `apps/frontend/src/i18n/locales/zh-CN.ts`（当前，约 L865–L870）
 
 ```typescript
 	// 移动到分类
-	'knowledge.list.category.move': '移动到分类',
+	'ebook.shelf.category.move': '移动到分类',
 	// 全部
 	'knowledge.list.category.all': '全部',
 	// 新增：公开 Tab 中文文案
 	'knowledge.list.category.public': '公开',
 	// 未分类
-	'knowledge.list.category.uncategorized': '未分类',
+	'ebook.shelf.category.uncategorized': '未分类',
 ```
 
 **改动前** · `apps/frontend/src/i18n/locales/en-US.ts`（基线，约 L939–L944）
 
 ```typescript
 	// 移动到分类（英文）
-	'knowledge.list.category.move': 'Move to category',
+	'ebook.shelf.category.move': 'Move to category',
 	// 全部（英文）
 	'knowledge.list.category.all': 'All',
 	// 未分类（英文）
-	'knowledge.list.category.uncategorized': 'Uncategorized',
+	'ebook.shelf.category.uncategorized': 'Uncategorized',
 ```
 
 **改动后** · `apps/frontend/src/i18n/locales/en-US.ts`（当前，约 L939–L944）
 
 ```typescript
 	// Move to category
-	'knowledge.list.category.move': 'Move to category',
+	'ebook.shelf.category.move': 'Move to category',
 	// All
 	'knowledge.list.category.all': 'All',
 	// 新增：Public Tab 英文文案
 	'knowledge.list.category.public': 'Public',
 	// Uncategorized
-	'knowledge.list.category.uncategorized': 'Uncategorized',
+	'ebook.shelf.category.uncategorized': 'Uncategorized',
 ```
 
 ---

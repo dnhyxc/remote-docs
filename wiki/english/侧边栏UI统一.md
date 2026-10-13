@@ -23,7 +23,7 @@
 | `apps/frontend/src/views/englishLearning/sidebar/components/EnglishSidebarHeader.tsx` | **新建**：图标 + 标题 + 描述行 |
 | `apps/frontend/src/views/englishLearning/sidebar/components/EnglishSidebarActions.tsx` | **新建**：主/次按钮行，`gradientKey` 叠 `ENGLISH_SIDEBAR_BTN_GRADIENT` |
 | `apps/frontend/src/views/englishLearning/sidebar/components/SidebarPanel.tsx` | 统一使用 `SIDEBAR_CARD` |
-| `apps/frontend/src/views/englishLearning/sidebar/EnglishLearningSidebar.tsx` | 根容器改用 `SIDEBAR_SECTION_STACK` |
+| `apps/frontend/src/views/englishLearning/sidebar/EnglishSidebar.tsx` | 根容器改用 `SIDEBAR_SECTION_STACK` |
 | `apps/frontend/src/views/englishLearning/sidebar/components/DailySession.tsx` | 接入 Header + Actions；双主按钮均为 `daily` 渐变 |
 | `apps/frontend/src/views/englishLearning/sidebar/components/LearningToolbar.tsx` | Header + chip 网格 `TOOLBAR_CHIP_GRID` |
 | `apps/frontend/src/views/englishLearning/sidebar/components/EnglishSource.tsx` | Header + Actions；JSON 示例可折叠 |
@@ -174,7 +174,7 @@ const exampleLabel = exampleExpanded
 |------|------|
 | Token | `apps/frontend/src/views/englishLearning/sidebar/tokens.ts` |
 | 色相表 | `apps/frontend/src/views/englishLearning/sidebar/sidebarAccents.ts` |
-| 侧栏组装 | `apps/frontend/src/views/englishLearning/sidebar/EnglishLearningSidebar.tsx` |
+| 侧栏组装 | `apps/frontend/src/views/englishLearning/sidebar/EnglishSidebar.tsx` |
 | 布局入口 | `apps/frontend/src/views/englishLearning/index.tsx` |
 
 若与仓库最新源码不一致，以源码为准。

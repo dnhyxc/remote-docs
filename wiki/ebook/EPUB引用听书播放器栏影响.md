@@ -93,7 +93,7 @@ const toggleListen = useCallback(
 				// 警告类型 Toast
 				type: 'warning',
 				// 国际化「不支持朗读」文案
-				title: t('englishLearning.tts.unsupported'),
+				title: t('assistant.tts.unsupported'),
 			});
 			// 不可用时不改 playingKey
 			return;
@@ -154,7 +154,7 @@ const toggleListen = useCallback(
 			// TTS 失败 Toast
 			Toast({
 				type: 'warning',
-				title: t('englishLearning.tts.unsupported'),
+				title: t('assistant.tts.unsupported'),
 			});
 		} finally {
 			// 播完或异常后清 overlay
@@ -223,7 +223,7 @@ const playFromCursor = useCallback(
 				if (isGenActive(gen)) {
 					Toast({
 						type: 'warning',
-						title: tRef.current('englishLearning.tts.unsupported'),
+						title: tRef.current('assistant.tts.unsupported'),
 					});
 				}
 				return false;

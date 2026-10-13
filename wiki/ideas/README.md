@@ -48,7 +48,10 @@
 | [整集标注省Token.md](./english/整集标注省Token.md) | **整集标注省 Token**（规划）：不改 SSE/验收/落库/练习契约；窗口清 priorThread + 入参/出参去冗余；M1–M3 主路径、M4 封闭词可选 |
 | [标注任务持久化续跑.md](./english/标注任务持久化续跑.md) | **标注任务持久化与暂停继续**（核心已落地）：任务表+再开 SSE/句缓存 hit；暂停 force 快照、Token seed 累计；failed>0→部分失败可 resume；不含离线 Job |
 | [语句库导出JSON.md](./english/语句库导出JSON.md) | **语句库 / 拉取历史导出 JSON**（规划）：行内按钮、复用 items 分页拉全、`saveFileWithPicker` 存原句四字段；不含单词库与词性标注 |
-| [英语学习DOCX导出.md](./english/英语学习DOCX导出.md) | **收藏 / 错题 / 今日复习导出 Word**（核心已落地）：共用 builder、`POST …/export-docx`、勾选则仅导出所选否则全量≤3000；含架构/流程/时序/状态四图与验收 |
+| [词库设为公共.md](./english/词库设为公共.md) | **单词库 / 语句库设为公共**（规划）：读侧/`is_public` 已有；放宽为所有者自助 + 列表公共按钮；对齐知识库 Owned‖SuperAdmin |
+| [词库导出Word.md](./english/词库导出Word.md) | **单词库 / 语句库导出 Word**（规划/已部分落地）：复用收藏 DOCX builder；整库分页装载；JSON 入口保留 |
+| [收藏错题全量导出Word.md](./english/收藏错题全量导出Word.md) | **收藏 / 错题 / 今日复习全量 Word**（规划）：去掉 3000 静默截断；分页装载全量；安全硬顶 + 大集合可选异步 Job |
+| [英语学习DOCX导出.md](./english/英语学习DOCX导出.md) | **收藏 / 错题 / 今日复习导出 Word**（核心已落地）：共用 builder、`POST …/export-docx`；现网全量仍≤3000，全量改造见上篇 |
 | [语句库标注手动导入.md](./english/语句库标注手动导入.md) | **标注按钮 hover 二选菜单**（核心已落地）：在线走 SSE；手动导入对齐 `batch2`（可**部分句**、忽略 `id`）→ `cache_key` upsert；不要求覆盖库/Pack 全集 |
 | [练习题量上限对齐.md](./english/练习题量上限对齐.md) | **单场练习硬顶统一 100**（核心已落地）：`ENGLISH_PRACTICE_SESSION_MAX` ↔ `PRACTICE_MAX_WORDS`；覆盖复习/记词队列、结算 attempts、错题 batch、开局标注 batch |
 | [短语词槽标注.md](./english/短语词槽标注.md) | **多词短语词槽挂载**（核心已落地）：`phr.n.` → 名词短语；音标段数等于词数才拆到各槽；词性与释义整组居中，不改分词、不调标注模型 |
@@ -57,6 +60,8 @@
 | [今日记词与今日复习.md](./english/今日记词与今日复习.md) | **今日记词 → 今日复习入队**（核心已落地）：整场词入复习调度、不自动写错题；内容 `mistake ∪ daily_record`（优先错题）；`markReviewDueNow` 与加错题重置分离 |
 | [听写TTS分批预取.md](./english/听写TTS分批预取.md) | **听写/拼写云端 TTS 预取**（核心已落地）：首题 stream + 出声后 `speech/batch`；每批 5 条**未启动**题；会话 LRU=100；修「已预取占窗口→一句一批」 |
 | [练习听写请求防阻塞.md](./english/练习听写请求防阻塞.md) | **听写防阻塞定稿**：Abort + 应用层超时 + TTS 复用 CACHE_MANAGER/配额/mtime GC + 标注两步预热；含 §14 TTS·Redis·配额、§15 标注详解；**不改**验证码/Bull 连接 |
+| [练习与记词独立路由续档.md](./english/练习与记词独立路由续档.md) | **练习 + 今日记词**独立路由续档（**M1–M6 已落地**）：分槽续档；practice Setup + **daily Intro** 续练联动（模式写回/回显；题量·词数 Confirm 清档） |
+| [拼写IME回车防跳题.md](./english/拼写IME回车防跳题.md) | **拼写中文输入法回车防跳题**（核心已落地）：compositionend 一拍 `imeConfirmGuard` + 全局 capture 过滤；上屏停全对结果态，再按 Enter 才下一题 |
 
 **生成 Skill**：主仓 `dnhyxc-ai/.cursor/skills/feature-implementation-idea/SKILL.md`（默认落盘根目录：**本目录**）
 

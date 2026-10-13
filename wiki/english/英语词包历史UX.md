@@ -1,6 +1,8 @@
 # 英语学习：拉取历史交互与删除实现说明
 
 > **路径更新**：主区与历史抽屉已迁至 `sections/vocabulary`、`sections/classic`；结果页结构见 [英语模块文件夹布局.md](./英语模块文件夹布局.md)。下文若仍写 `vocab/`、`VocabularyPackList`，以主文档为准。
+>
+> **文档角色**：本文记录「历史列表 / 进行中拉取」的交互与删除实现；本轮新增：**历史行内下拉菜单 / Tooltip 打开时，右侧操作区保持可见**（详见 §4.13）。
 
 ## 1. 背景与目标
 
@@ -510,6 +512,73 @@ vocabClearSessionIfDeleted(streamId: string) {
 	});
 }
 ```
+
+### 4.13 历史行：菜单 / Tooltip 打开时保持操作区可见
+
+历史行右侧的操作区（导出下拉、删除按钮等）默认 `opacity-0 pointer-events-none`，仅在 `group-hover` 时显形；同时标题右侧按档位预留 `pr-*`，避免 hover 显出的操作区压住标题。
+
+问题：Radix 的 DropdownMenu / Tooltip 菜单会渲染到 **Portal**（脱离行 DOM），指针移入菜单后行的 `:hover` 立即失效，`group-hover` 不再命中，操作区瞬间回到 `opacity-0` + `pointer-events-none`，表现为「菜单刚弹出就闪退 / 操作区消失」。
+
+修复：操作区补上 `has-[[data-state=open]]`（行内任一下拉触发器处于 Radix `open` 状态即显形），标题预留补 `group-has-[[data-state=open]]:pr-*`，使菜单打开期间标题同样让位。
+
+**为何用 `has-[[data-state=open]]` / `group-has-[[data-state=open]]` 而非只认 hover：**
+
+- Tailwind 的 `has-[…]` 变体基于 CSS `:has()`，只要行内下拉触发器处于 `data-state="open"`（不依赖指针是否仍在行上）就命中，正好覆盖 Portal 弹出后 hover 丢失的场景。
+- 原有 `delayed-open` / `instant-open` 是 Tooltip 的 hover 延迟 / 即时打开状态，新增的 `open` 是 Dropdown 的打开状态，三者并存互不冲突。
+- 备选方案是给行加受控 `data-open` / `useState`（由 `onOpenChange` 驱动）后写对应变体，但需在每行维护额外状态且与 Portal 生命周期耦合；用 CSS `:has()` 无需 JS 状态、零重渲染，代价是依赖浏览器支持 `:has()`（现代浏览器均已支持，可接受）。
+
+**改动前** · `apps/frontend/src/views/englishLearning/sections/vocabulary/VocabularyHistoryDrawer.tsx`（基线，约 L18–L28）
+
+```tsx
+// 声明常量数组：按操作区宽度选择标题右侧内边距档位，档位固定避免运行时计算
+/** 与知识库列表一致：hover 时标题右侧预留 */
+const ROW_HOVER_PR = [
+	// 第 0 档：空串兜底，未匹配到档位时不额外预留
+	'',
+	// 第 1 档：hover 时右侧预留 8，容纳单个图标按钮
+	'group-hover:pr-8',
+	// 第 2 档：hover 时右侧预留 14，容纳稍宽的操作区
+	'group-hover:pr-14',
+	// 第 3 档：hover 时右侧预留 22，容纳多个操作按钮
+	'group-hover:pr-22',
+	// 第 4 档：hover 时右侧预留 30，容纳最宽的操作区
+	'group-hover:pr-30',
+// 收尾并断言为只读元组，防止调用方改写档位
+] as const;
+
+// 声明行右侧操作区 class：绝对定位到行右上，默认透明且不接收指针事件
+const ROW_ACTIONS_CLASS =
+	// 默认 opacity-0 且 pointer-events-none，仅在 group-hover 或 Tooltip 打开时显形并接管指针事件
+	'absolute top-2 right-2 flex items-center gap-0.5 opacity-0 pointer-events-none transition-opacity duration-150 group-hover:opacity-100 group-hover:pointer-events-auto has-[[data-state=delayed-open]]:opacity-100 has-[[data-state=delayed-open]]:pointer-events-auto has-[[data-state=instant-open]]:opacity-100 has-[[data-state=instant-open]]:pointer-events-auto';
+```
+
+**改动后** · `apps/frontend/src/views/englishLearning/sections/vocabulary/VocabularyHistoryDrawer.tsx`（当前源码，约 L18–L29）
+
+```tsx
+// 声明常量数组：每档在 hover 预留外再追加「行内菜单打开」预留
+/** 与知识库列表一致：hover 时标题右侧预留 */
+const ROW_HOVER_PR = [
+	// 第 0 档：空串兜底，未匹配到档位时不额外预留
+	'',
+	// 第 1 档：hover 或行内菜单打开时右侧预留 8
+	'group-hover:pr-8 group-has-[[data-state=open]]:pr-8',
+	// 第 2 档：hover 或行内菜单打开时右侧预留 14
+	'group-hover:pr-14 group-has-[[data-state=open]]:pr-14',
+	// 第 3 档：hover 或行内菜单打开时右侧预留 22
+	'group-hover:pr-22 group-has-[[data-state=open]]:pr-22',
+	// 第 4 档：hover 或行内菜单打开时右侧预留 30
+	'group-hover:pr-30 group-has-[[data-state=open]]:pr-30',
+// 收尾并断言为只读元组，防止调用方改写档位
+] as const;
+
+// 声明行右侧操作区 class：新增「行内菜单打开」显形条件，避免 Portal 弹出后 hover 丢失
+/** hover 或 Dropdown/Tooltip 打开时保持操作区可见（菜单在 Portal，勿丢 hover） */
+const ROW_ACTIONS_CLASS =
+	// 在原有 hover / delayed-open / instant-open 基础上新增 open，菜单弹出后仍显形并接管指针事件
+	'absolute top-2 right-2 flex items-center gap-0.5 opacity-0 pointer-events-none transition-opacity duration-150 group-hover:opacity-100 group-hover:pointer-events-auto has-[[data-state=open]]:opacity-100 has-[[data-state=open]]:pointer-events-auto has-[[data-state=delayed-open]]:opacity-100 has-[[data-state=delayed-open]]:pointer-events-auto has-[[data-state=instant-open]]:opacity-100 has-[[data-state=instant-open]]:pointer-events-auto';
+```
+
+**变更摘要**：`ROW_HOVER_PR` 每档在 `group-hover:pr-*` 后追加 `group-has-[[data-state=open]]:pr-*`；`ROW_ACTIONS_CLASS` 新增 `has-[[data-state=open]]:opacity-100` 与 `has-[[data-state=open]]:pointer-events-auto` 两项并补注释。经典句抽屉 `apps/frontend/src/views/englishLearning/sections/classic/ClassicQuotesHistoryDrawer.tsx` 的两个常量与上述**逐字同构**（仅文件内位置不同），一并修改，此处不再逐行重复注释。
 
 ---
 

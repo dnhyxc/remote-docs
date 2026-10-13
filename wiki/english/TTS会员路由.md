@@ -176,7 +176,7 @@ const playWord = useCallback<PlayWordFn>(
 	async (options) => {
 		// 说明：会员无本机 TTS 时仍可云端朗读
 		if (!isPlaybackAvailable()) {
-			Toast({ type: 'warning', title: t('englishLearning.tts.unsupported') });
+			Toast({ type: 'warning', title: t('assistant.tts.unsupported') });
 			return;
 		}
 		// ...
@@ -188,7 +188,7 @@ const playWord = useCallback<PlayWordFn>(
 				await playPreferred(answerText);
 			}
 		} catch {
-			Toast({ type: 'warning', title: t('englishLearning.tts.unsupported') });
+			Toast({ type: 'warning', title: t('assistant.tts.unsupported') });
 		}
 	},
 	// ...
@@ -206,7 +206,7 @@ try {
 	// 说明：会员云端 / 非会员本机，由 speech 内部判定
 	await playPreferred(word);
 } catch {
-	Toast({ type: 'warning', title: t('englishLearning.tts.unsupported') });
+	Toast({ type: 'warning', title: t('assistant.tts.unsupported') });
 }
 ```
 

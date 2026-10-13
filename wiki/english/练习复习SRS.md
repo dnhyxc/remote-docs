@@ -16,7 +16,7 @@
 |------|------|
 | 错题集只有快照，没有「下次何时复习」 | 用 `next_review_at` 驱动「今日待复习」，答对后移出当日队列 |
 | 历史错题无调度行时不应全部算「今日」 | 仅 **新入库 / 错拼更新** 的错题写入或拉回 `english_practice_review_state` |
-| 侧栏入口分散在 `components/`、`favorites/`、`mistakes/` | 统一到 `sidebar/`，首页只挂载 `EnglishLearningSidebar` |
+| 侧栏入口分散在 `components/`、`favorites/`、`mistakes/` | 统一到 `sidebar/`，首页只挂载 `EnglishSidebar` |
 | 点击「今日复习」曾自动开 10 题听写 | 进入练习**设置页**，用户自选模式与题量 |
 | 随机练习命中最后一页不足题量 | 继续拉其它页直至凑满或词表用尽 |
 
@@ -67,7 +67,7 @@
 
 ### 3.3 侧栏与入口
 
-- `EnglishLearningSidebar`：工具栏 → 词库/语句库 → 词包区 → 收藏 → **今日复习** → 错题集。
+- `EnglishSidebar`：工具栏 → 词库/语句库 → 词包区 → 收藏 → **今日复习** → 错题集。
 - `ReviewSession`：`openPractice({ source: 'review', contentKind, returnTo: 'home' })`，**不传** `mode`，不再触发练习页自动开练。
 - 结算后 `dispatchEnglishReviewSummaryRefresh` 刷新侧栏待复习数。
 
@@ -271,7 +271,7 @@ const result = await collectSessionFromPaginatedPages(
 | SRS 纯函数 | `apps/backend/src/services/english-learning/english-practice-review.srs.ts` |
 | 业务编排 | `apps/backend/src/services/english-learning/english-learning.service.ts` |
 | HTTP | `apps/backend/src/services/english-learning/english-learning.controller.ts` |
-| 首页侧栏组合 | `apps/frontend/src/views/englishLearning/sidebar/EnglishLearningSidebar.tsx` |
+| 首页侧栏组合 | `apps/frontend/src/views/englishLearning/sidebar/EnglishSidebar.tsx` |
 | 练习拉词 | `apps/frontend/src/views/englishLearning/practice/utils/fetchWords.ts` |
 | 复习事件 | `apps/frontend/src/views/englishLearning/sidebar/reviewEvents.ts` |
 
