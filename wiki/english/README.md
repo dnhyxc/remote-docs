@@ -92,7 +92,8 @@
 | [练习键盘上一个.md](./练习键盘上一个.md) | **Shift+空格** 播放、**上一题** 与方向键 **↑←→↓** 重映射 |
 | [练习IME键盘防护.md](./练习IME键盘防护.md) | **练习 IME 键盘防护**：`compositionend` 后延一拍守卫标志吞掉 IME 确认补发的 Enter，词槽 `onCompositionEnd` 延清 `composingRef` + `keyCode 229` 兜底，防止组字上屏误触「下一题」 |
 | [练习入口导航.md](./练习入口导航.md) | 多入口（资源库列表/历史抽屉）、设置页词数、返回导航 |
-| [会话草稿续练.md](./会话草稿续练.md) | **练习与今日记词会话草稿续练**：sessionStorage 整队快照 + URL sid 续档；phase 由 pathname 决定（`/session`/`/summary`/`/done`）；刷新不丢进度、随机题序可续；设置/介绍页「继续上次/放弃续练」横幅；登出按用户清空草稿（含改动前/后对比与逐行注释） |
+| [资源库面包屑回跳.md](./资源库面包屑回跳.md) | **从资源库进入练习的面包屑回跳**：`source === 'library'` 时在「英语学习」与「听写与拼写」之间插入「资源库」层级，携带 `kind` / `library` 参数一键回原库（含改动前/后对比与逐行注释） |
+| [会话草稿续练.md](./会话草稿续练.md) | **练习与今日记词会话草稿续练**：sessionStorage 整队快照 + URL sid 续档；phase 由 pathname 决定（`/session`/`/summary`/`/done`）；刷新不丢进度、随机题序可续；**活跃槽键升级为 `kind:source[:id]`（多库 / 词包分槽，互不覆盖）+ 旧指针双迁移**；设置/介绍页「继续上次/放弃续练」横幅；登出按用户清空草稿（含改动前/后对比与逐行注释） |
 | [单词错题与共享UI.md](./单词错题与共享UI.md) | **单词**错题集、练习入口组件 `EnglishPracticeEntry`、单词卡片统一 |
 | [经典练习与错题.md](./经典练习与错题.md) | **经典句**练习、`contentKind=classic`、语句错题集、判分与 batch 更新错拼 |
 
@@ -143,6 +144,7 @@
 | [云端TTS边缘语音.md](./云端TTS边缘语音.md) | **Edge 云端朗读**、分模式 prosody、非会员本机+Edge 选路（前后端实现） |
 | [TTS桌面端云端播放影响.md](./TTS桌面端云端播放影响.md) | **Tauri 云端 MP3 播放修复**：Audio prime、`canplay` 后 play、Edge 非流式 endpoint（**endpoint 分流已被 [EdgeTTS统一流式.md](./EdgeTTS统一流式.md) 取代**） |
 | [EdgeTTS统一流式.md](./EdgeTTS统一流式.md) | **增量（本轮）**：Edge TTS 统一 `SPEECH_EDGE_TTS_STREAM`，取消 Tauri/Web endpoint 分流 |
+| [EdgeTTS依赖迁移.md](./EdgeTTS依赖迁移.md) | **增量（本轮）**：Edge TTS 依赖迁移 `edge-tts-universal`→`@andresaya/edge-tts`（上游 `api.msedgeservices.com`），`synthesize()` 改 `generate()` 并加 20s 超时、空音频防御 |
 | [讯飞云TTS.md](../ideas/tts/讯飞云TTS.md) | **讯飞在线云端朗读**：WS 合成、设置页音量/音高、Node 18 `ws` |
 | [云端TTS用户凭据.md](./云端TTS用户凭据.md) | **用户凭证与失败降级**：MiniMax/讯飞 Key 入库、Toast、xfyunVoiceId 独立 |
 | [英语TTS播放.md](./英语TTS播放.md) | 播放世代、异步丢弃 |
@@ -151,7 +153,7 @@
 | [英语TTS缓存一致性.md](./英语TTS缓存一致性.md) | 云端同句 MP3 LRU |
 | [TTS缓存复用全局Cache.md](./TTS缓存复用全局Cache.md) | **定稿**：L2 盘存 MP3；路径索引+配额走全局 `CACHE_MANAGER`（去专用 Redis/ZSET）；mtime 游标 GC；**默认 TTL 30 天**；`cacheOp` 1.5s；四厂商 L1→L2→厂商；batch `req.aborted`；前端 TTS `signal` |
 | [词库Cache超时旁路.md](./词库Cache超时旁路.md) | **定稿**：词库 `getSafe`/`setSafe` 1.5s race；导出 `CACHE_COMMAND_TIMEOUT_MS`；Bull 显式 `maxRetriesPerRequest: null`；**不改** Keyv/Bull 连接语义 |
-| [TTS文件缓存L2持久化.md](./TTS文件缓存L2持久化.md) | **历史**：首版 L2 落盘与四厂商接入；文中 ZSET/专用 Redis **已过时**，连接与 GC 见 [TTS缓存复用全局Cache.md](./TTS缓存复用全局Cache.md) |
+| [TTS文件缓存L2持久化.md](./TTS文件缓存L2持久化.md) | **主稿（tts-file-cache.service.ts）**：L2 落盘**目录化**（`uploads/tts/<folder>/` + `_meta.json`）+ 调用方 **opt-in 落盘**（`persistDisk:false` 完全跳过 L1/L2）+ **TTL 180 天**；首版 ZSET/专用 Redis 描述已过时，连接与 GC 见 [TTS缓存复用全局Cache.md](./TTS缓存复用全局Cache.md) |
 | [练习TTS批量预取管道.md](./练习TTS批量预取管道.md) | **增量（本轮）**：练习云端 TTS 滑动窗口批量预取——后端 3 厂商 `.../speech/batch` 端点（texts[] 一次 HTTP）、前端 `prefetchCloudTtsBatch` + 练习会话 LRU 扩容至 100、`practiceTtsPrefetchPipe.ts` 出声后 kick 预取后续 5 题、`usePracticePlayback` `onPlaybackStart` 接入 |
 | [练习请求作用域与预热.md](./练习请求作用域与预热.md) | **增量（本轮）**：练习请求作用域（`practiceRequestScope`：generation+AbortController，切题 / 换队列 abort 旧世代标注 / TTS / 收藏请求）+ 收藏预热（`warmPracticeFavoriteStatus`：整队一次写入会话缓存，`Toggle` 挂载零请求；内嵌 `favoriteId` 走零 HTTP 路径）+ `fetchWords` 分页算法重构（库内按 `row.id` 作 key 避免同 contentKey 多行合并丢题、随机页优先抽一未用页、末页不足仍返回、`poolSize` 从 API `library.wordCount` / `quoteCount` 回填）+ 续练 `excludeKeys` 汇合 `practicedKeys` + `sessionRounds`、空队收齐 `poolTotal` 消除 49/51 假剩余、resume 从 URL 补 `libraryId` / `streamId` / `poolTotal` |
 | [句内词标注断连取消.md](./句内词标注断连取消.md) | **增量（本轮）**：后端 `clientDisconnectSignal(req)` 监听 `close` / `aborted`，客户端断开即 abort；`signal` 透传到 `annotateSentenceWords` / `Batch` / `MultiViaLlmAndCache` / `ViaLlmAndCache`，chunk 间检查 abort `break`、catch 区分 `aborted mid-llm` 与 `failed`；前端 `useSentenceWordAnnotations` 从父级 `signal` 派生本地 `AbortController`、`isPracticeAbortError` 静默、`ensureSentenceWordAnnotation` 用 `Promise.race` + `abortReject` 让 inflight 共享也能 abort、abort 不写缓存 |

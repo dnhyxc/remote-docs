@@ -1,7 +1,8 @@
 # TTS 缓存复用全局 Cache（去专用 Redis）
 
 > **文档角色**：已落地实现归档（相对「专用 ioredis + ZSET」中间方案的演进定稿）。  
-> **修订（2026-09-29）**：默认 `TTS_FILE_CACHE_TTL_SEC` **7 天 → 30 天**（`2592000`）；配额 `bytes` key TTL 同步 30 天。  
+> **修订（2026-09-29）**：默认 `TTS_FILE_CACHE_TTL_SEC` **7 天 → 30 天**（`2592000`）；配额 `bytes` key TTL 同步 30 天。
+> **修订（本轮）**：L2 缓存**目录化**（`uploads/tts/<folder>/<file>.mp3` + `_meta.json` 旁路元数据）+ 各合成器 **opt-in 落盘**（`persistDisk` 默认 false，为 false 时完全跳过 L1/L2）；`TTL 30 天 → 180 天`（`15_552_000`），配额 `bytes` key TTL 同步 180 天。注：**目录化后的路径索引 / 递归 GC / 越界防护以 [TTS文件缓存L2持久化.md](./TTS文件缓存L2持久化.md) §8 为准**。  
 > **延伸阅读**：[TTS文件缓存L2持久化.md](./TTS文件缓存L2持久化.md)（首版 L2 落盘专题；**路径索引 / GC 以本文为准**）、[英语TTS缓存一致性.md](./英语TTS缓存一致性.md)（前端 LRU）、[练习TTS批量预取管道.md](./练习TTS批量预取管道.md)、[练习请求作用域与预热.md](./练习请求作用域与预热.md)（切题 Abort 取消预取）、[词库Cache超时旁路.md](./词库Cache超时旁路.md)（同 `CACHE_COMMAND_TIMEOUT_MS`）、规划态 [ideas/tts/TTS本地文件缓存.md](../ideas/tts/TTS本地文件缓存.md) §0.1、[ideas/english/练习听写请求防阻塞.md](../ideas/english/练习听写请求防阻塞.md) §14。
 
 ## 1. 背景与目标

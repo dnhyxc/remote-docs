@@ -519,6 +519,16 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 		description:
 			'Whether a resource library (vocabulary / classic-quotes) is public is now decided only by its owner. The edit entry and the "Make public" switch appear only on libraries you created; turning it on makes the library visible to and usable by all signed-in users, and turning it off makes it private again. Libraries created by others have no edit entry—even a super admin cannot modify or publish them. Newly imported or created libraries are private by default and need the owner to enable public access in the edit dialog; published libraries still show a "Public" badge for everyone.',
 	},
+	'pg-s13-43': {
+		title: '13.43 Unfinished practice is kept separately per library',
+		description:
+			'"Continue last time" no longer keeps a single progress shared by all dictation / spelling sessions; it is now kept per library / word pack. Different vocabulary / quotes libraries and different word packs no longer overwrite each other, so multiple progresses can coexist. Clicking "Continue last time" on a library\'s practice setup page returns only to that library\'s unfinished session, without switching to another library. Clicking "Discard" clears only the current library\'s progress and leaves other libraries untouched.',
+	},
+	'pg-s13-44': {
+		title: '13.44 Return to the library from practice via the breadcrumb',
+		description:
+			'After entering a library\'s dictation / spelling practice from the resource library (vocabulary / quotes library), the top breadcrumb adds a "Library" level between "English Learning" and "Dictation & Spelling". Clicking "Library" in the breadcrumb returns you to that library\'s list, staying on the same type (vocabulary / quotes) and the same library, so you do not need to press the browser back button repeatedly. When entering practice from the home page, generation history, word pack, favorites, or other entries, the breadcrumb does not show the "Library" level.',
+	},
 	'pg-s13-13': {
 		title: '13.13 Classic mistake row fields',
 		description:

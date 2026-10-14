@@ -1433,6 +1433,26 @@ export const UPDATE_INFO_BULLETS_EN: Record<
                 description:
                         'In the generation-history lists of vocabulary / classic-quotes libraries, the row\'s right-side actions (export / delete) no longer disappear when a dropdown menu or tooltip is open. Previously, after the menu popped out, moving the pointer off the row hid the actions and the menu closed abruptly; now the actions remain visible as long as the menu is open, so it can be clicked normally.',
         },
+        's24-102': {
+                title: 'Online read-aloud (Edge TTS) moves to a more stable channel with a timeout guard',
+                description:
+                        'Online read-aloud (Edge TTS) now uses a more stable speech-synthesis channel, and a timeout guard is added to each synthesis so that individual requests will not hang for a long time. The voice and usage of everyday read-aloud remain unchanged.',
+        },
+        's24-103': {
+                title: 'English read-aloud audio now cached by source',
+                description:
+                        'Read-aloud audio in English learning is now cached by source (vocabulary / quotes library, word pack, favorites, mistakes, review, daily memorization, morphology, etc.), so replaying is faster and the pronunciation stays consistent. This audio is kept long-term in per-library / per-source folders and cleaned up automatically after 180 days. Other scenarios (audiobook listening, text selection, previews) no longer write to the local cache by default, avoiding unnecessary disk usage.',
+        },
+        's24-104': {
+                title: 'Unfinished practice is now kept separately per library',
+                description:
+                        'Unfinished practice for different vocabulary / quotes libraries and different word packs is now kept independently without overwriting each other. "Continue last time" returns to the library matching your current entry, so multiple libraries can each keep their own progress.',
+        },
+        's24-105': {
+                title: 'One-click return to the library after entering practice from it',
+                description:
+                        'After entering a library\'s dictation / spelling practice from the resource library, the top breadcrumb now adds an "English Learning > Library > Dictation & Spelling" level; clicking "Library" returns you straight to that library\'s list.',
+        },
 	's25-1': {
 		title: 'E-book bookshelf',
 		description:

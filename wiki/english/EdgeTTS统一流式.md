@@ -2,9 +2,11 @@
 
 ## 延伸阅读
 
+- [EdgeTTS依赖迁移.md](./EdgeTTS依赖迁移.md) — **本轮**：依赖迁移至 `@andresaya/edge-tts`（上游 `api.msedgeservices.com`）并加 20s 合成超时
 - [云端TTS边缘语音.md](./云端TTS边缘语音.md) — Edge 选路、prosody、设置页
 - [TTS桌面端云端播放影响.md](./TTS桌面端云端播放影响.md) — **历史**：曾将 Tauri+Edge 分流至非流式 `/edge/speech`；**当前源码已统一 stream**（见本篇 §4）
 - [../impact/TTS边缘统一流式端点影响.md](../impact/TTS边缘统一流式端点影响.md) — 影响点与 Tauri 回归清单
+- [TTS文件缓存L2持久化.md](./TTS文件缓存L2持久化.md) — **更新**：L2 缓存目录化 + Edge 等合成器 opt-in 落盘（`persistDisk` / `cacheFolder` / `cacheTitle`），TTL 180 天（见该篇 §8.13）
 
 ## 1. 背景与目标
 
@@ -79,6 +81,8 @@ import {
 **变更摘要**：删除 `SPEECH_EDGE_TTS` import 与 Tauri 分流；Edge 恒为 stream URL。xfyun/minimax 分支不变。
 
 ---
+
+> **注记**：后端 `synthesize` 的依赖已迁移至 `@andresaya/edge-tts`，并新增 20s 合成超时与空音频防御，详见 [EdgeTTS依赖迁移.md](./EdgeTTS依赖迁移.md)。
 
 ### 4.2 后端对照（未改，供理解）
 

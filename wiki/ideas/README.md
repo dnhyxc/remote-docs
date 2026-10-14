@@ -9,6 +9,9 @@
 | [讯飞云TTS.md](./tts/讯飞云TTS.md)                                   | **讯飞在线云端 TTS**（已上线）：三选一选路、Nest `ws` 代理、前后端架构/时序/分阶段                                                                              |
 | [TTS合成结果缓存.md](./tts/TTS合成结果缓存.md) | **TTS 音频 Redis bytes 缓存**（前一版）：固定 TTL；云 Redis 大 value 延迟差 → **推荐改看** [TTS本地文件缓存.md](./tts/TTS本地文件缓存.md) |
 | [TTS本地文件缓存.md](./tts/TTS本地文件缓存.md) | **TTS 落盘 uploads/tts + Cache 路径索引**（M0–M2 已落地）：**默认 TTL 30 天**；mtime 到期才删盘；预算/磁盘不够则跳过落盘并记 `logs`；禁止磁盘满删最早 |
+| [EdgeTTS端点迁移.md](./tts/EdgeTTS端点迁移.md) | **Edge TTS 换包修挂死**（核心已落地）：旧 `edge-tts-universal`→bing 401；换 `@andresaya/edge-tts` + `generate()`；Controller/FE/L1·L2 缓存不动；M2 超时·429、M3 GPL/子进程备选 |
+| [TTS仅英语学习落盘.md](./tts/TTS仅英语学习落盘.md) | **TTS L2 仅英语学习**（核心已落地）：请求 `persistDisk` 默认 false；听书/朗读不写 Redis·uploads/tts；默认 TTL **30 天→6 个月（180d）**；英语 practice/词库等 opt-in |
+| [TTS按资源库分目录.md](./tts/TTS按资源库分目录.md) | **TTS 按库隔离落盘**（§13 M4 已落地）：`vocab_<libraryId>/` + `_meta.json`；`cacheFolder`=稳定 scope，`cacheTitle` 旁路；旧标题目录 TTL GC |
 | [EPUB滚动多iframe听书.md](./epub/EPUB滚动多iframe听书.md)   | **EPUB 连续滚动多 iframe 听书续播**（已上线）：问题根因、逐点改动清单、架构/时序/复现步骤、类似问题通用套路                                                     |
 | [电子书阅读进度保存.md](./ebook/电子书阅读进度保存.md)           | **阅读进度保存**（已上线）：EPUB CFI / PDF 页码、三层防抖、keepalive flush、端到端架构与时序                                                                   |
 | [知识预览助手性能.md](./knowledge/知识预览助手性能.md) | **知识库预览+助手同开卡顿**（已上线）：规划态思路；**归档见** [knowledge/知识预览助手性能.md](../knowledge/知识预览助手性能.md) |
@@ -60,6 +63,7 @@
 | [今日记词与今日复习.md](./english/今日记词与今日复习.md) | **今日记词 → 今日复习入队**（核心已落地）：整场词入复习调度、不自动写错题；内容 `mistake ∪ daily_record`（优先错题）；`markReviewDueNow` 与加错题重置分离 |
 | [听写TTS分批预取.md](./english/听写TTS分批预取.md) | **听写/拼写云端 TTS 预取**（核心已落地）：首题 stream + 出声后 `speech/batch`；每批 5 条**未启动**题；会话 LRU=100；修「已预取占窗口→一句一批」 |
 | [练习听写请求防阻塞.md](./english/练习听写请求防阻塞.md) | **听写防阻塞定稿**：Abort + 应用层超时 + TTS 复用 CACHE_MANAGER/配额/mtime GC + 标注两步预热；含 §14 TTS·Redis·配额、§15 标注详解；**不改**验证码/Bull 连接 |
+| [练习草稿按库分槽.md](./english/练习草稿按库分槽.md) | **练习续档按库/来源分槽**（已落地）：`active`=`kind:source:id`；多库草稿并存互不覆盖；今日记词保持 `el-daily-draft` 独立 |
 | [练习与记词独立路由续档.md](./english/练习与记词独立路由续档.md) | **练习 + 今日记词**独立路由续档（**M1–M6 已落地**）：分槽续档；practice Setup + **daily Intro** 续练联动（模式写回/回显；题量·词数 Confirm 清档） |
 | [拼写IME回车防跳题.md](./english/拼写IME回车防跳题.md) | **拼写中文输入法回车防跳题**（核心已落地）：compositionend 一拍 `imeConfirmGuard` + 全局 capture 过滤；上屏停全对结果态，再按 Enter 才下一题 |
 
