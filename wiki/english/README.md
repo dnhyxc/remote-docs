@@ -102,6 +102,20 @@
 | 听写 / 拼写 | `/english-learning/practice`；`contentKind=vocab`（默认）或 `classic`；设置页总量显示「词」/「句」 |
 | 错题集（单词/语句） | `/english-learning/mistakes?kind=vocab\|classic`；顶栏 Tab + 底栏练习；`/mistakes/classic` 会 replace |
 
+## 每日阅读
+
+| 文档 | 说明 |
+|------|------|
+| [每日阅读随机档位.md](./每日阅读随机档位.md) | **随机档位（当前生效）**：`StoredProfile` 四字段保留 `'random'`、`normalizeProfile` 不把随机收成默认、`resolveProfile` 生成时逐字段均匀抽档；实体与设置读写类型随改成 `StoredProfile`；前端 `Exclude<..., 'random'>` 收敛显示类型、`startRun` 遇随机置空、`ProfileFields`/`OptionRow` 随机选项、i18n `random` 键（含改动前/后对比与逐行注释） |
+| [每日阅读自定义入队时间.md](./每日阅读自定义入队时间.md) | **自定义入队整点（当前生效）**：`autoHour` 迁移与实体列、`hourInShanghai`/`duePublishDate` 计算应补日期、`registerScheduler` 同一 scheduler id 换 cron、保存后重注册并在已过整点时补队、`parseAutoHour` 校验、`HourPicker` 0–23 整点下拉、设置页 `autoHour/savedAutoHour` 脏检查与恢复默认（含改动前/后对比与逐行注释） |
+| [每日阅读篇目删除.md](./每日阅读篇目删除.md) | **手动篇删除（当前生效）**：后端 `remove` 只删本人且 `slot != day` 的行并同删生成历史、`DELETE daily-readings/:id`、前端 `removeEnglishDailyReading`、阅读列表悬浮删除按钮 + `Confirm` 二次确认 + 删当前篇自动切下一篇/空列表回列表页（含改动前/后对比与逐行注释） |
+| [每日阅读生成加固.md](./每日阅读生成加固.md) | **生成加固（当前生效，叠加于流式化之上）**：429 限流退避重试（`isRateLimit` 结构识别 + `withRateRetry` 2s/4s 退避 + `wait` 可中止）、词级缺词补释义协议（`missingWordSlots` 逐词清点 + `glossGapText` 只发缺词 + `placeGapGloss` 槽位对位 + leftover 顺补）、释义批级容错（GLOSS_BATCH=4、批级 429 continue、`closedGlossObjects` 打捞兜底）、`mergeSentenceWords` 首轮合格优先、生成档位随 pending 行落库（`extras.level/length/focus`）与历史回显（`listGens` IN 查询并回）、Token 分路计数（`trackUsage` lane 记账）（含改动前/后对比与逐行注释） |
+| [每日阅读界面重构.md](./每日阅读界面重构.md) | **界面重构（当前生效）**：设置页 1130→344 行拆出 `GenerateBar`/`ProfileFields`/`SettingActions`/`OptionRow`/`classes.ts`、详情页拆出 `Quiz`/`GlossSentence`/`ReadingList`、纯函数下沉 `utils/`（body/format/origin/profile/recordTitle）、store `onFrame` 拆 `takeText` 批量冲刷节流渲染、详情页双栏（正文 + 可切篇阅读列表）、生成档位与历史记录回显、i18n 新增 4 键（含改动前/后对比与逐行注释） |
+| [每日阅读流式生成.md](./每日阅读流式生成.md) | **手动生成流式化（当前生效）**：`@Sse()` + `ManualRun` 单进程生产者模型、seq 游标重放断线续订、停止双通道 + 半成品落库（stopped/paused/error 三分支）、Token 精确计数、附件与释义独立请求（`completeExtras`/`completeWordGloss` + 截断打捞）、`english_daily_reading_gens` 生成历史表、前端 fetch 版 SSE 读取器 + MobX store（gen 代数防竞态）+ 流式预览/历史 Popover、nginx 去掉 180s 长超时（含改动前/后对比与逐行注释） |
+| [每日阅读生成调度.md](./每日阅读生成调度.md) | **后端主稿**：`english_daily_readings` 三表与 7 个迁移、BullMQ 队列 + 23:00 定时调度、`claim` 抢占防重、废稿二次生成与防抄袭校验、flash 模型词释补全、双档位（用户手动档 / 超管定时档）、手动生成与停止（runId + AbortController）、8 个新端点（含改动前/后对比与逐行注释）；手动生成链路已于 2026-10-19 流式化，见上条 |
+| [每日阅读前端.md](./每日阅读前端.md) | **前端主稿**：列表（系统日推 / 手动双 origin + 生成轮询 + 触底加载）、详情（逐词释义 Popover + 整篇朗读 + 理解题）、生成资源页（双档位设置 + 手动生成 / 停止）、侧栏入口、面包屑、PracticePageShell footer 插槽（含改动前/后对比与逐行注释）；生成控制已于 2026-10-19 流式化，见首条 |
+| [整篇朗读分段重试.md](./整篇朗读分段重试.md) | **整篇朗读分段与容错**：首句领读 + 按空行段落合成（`leadThenParagraphs`）、单段 400ms 重试一次、`CloudTtsSegmentError` 断点本机续播、`daily_reading_<id>` 缓存域（含改动前/后对比与逐行注释） |
+
 ## 经典句看中写与标注
 
 | 文档 | 说明 |

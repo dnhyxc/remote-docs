@@ -169,6 +169,15 @@
 | 设置页预设 / Combobox                                             | [llm/LLM设置UI预设.md](./llm/LLM设置UI预设.md)                                                                                         |
 | 英语学习 Agent + LLM                                              | [llm/Agent创建LLM统一.md](./llm/Agent创建LLM统一.md)                                                                                         |
 | 今日记词无词可抽 / 时间不对                                       | [english/每日记词实现.md](./english/每日记词实现.md) §9                                                                |
+| 每日阅读没有当天篇目 / 手动生成如何停止 / 定时档位在哪配 | [english/每日阅读生成调度.md](./english/每日阅读生成调度.md)（队列调度与双档位）· [english/每日阅读前端.md](./english/每日阅读前端.md)（轮询与停止交互）· [english/每日阅读流式生成.md](./english/每日阅读流式生成.md)（SSE 流式生成、断线续订与生成历史，2026-10-19 起生效）· [english/每日阅读生成加固.md](./english/每日阅读生成加固.md)（429 重试与词级补释义）· [english/每日阅读界面重构.md](./english/每日阅读界面重构.md)（设置页/详情页组件化） |
+| 每日阅读手动生成转圈太久 / 断网后进度丢失 / 想查看生成历史 | [english/每日阅读流式生成.md](./english/每日阅读流式生成.md)（ManualRun 生产者 + seq 重放 + 半成品落库 + 历史表） |
+| 每日阅读生成撞 429 直接失败 / 补释义挂错句 / 历史看不到档位 | [english/每日阅读生成加固.md](./english/每日阅读生成加固.md)（isRateLimit 结构识别 + withRateRetry 退避 + 词级缺词槽位对位 + 档位随 pending 落库） |
+| 每日阅读设置页/详情页文件过大 / 流式渲染卡顿 / 详情页想换篇 | [english/每日阅读界面重构.md](./english/每日阅读界面重构.md)（GenerateBar 等组件化拆分 + store 批量冲刷节流 + 详情页双栏阅读列表 + ArticleHeader 头栏常驻） |
+| 每日阅读档位想每次都不同 / 保存随机后又变回固定档 | [english/每日阅读随机档位.md](./english/每日阅读随机档位.md)（StoredProfile 保留 random + 生成时 resolveProfile 抽档 + 抽到值写入 extras） |
+| 每日阅读自动生成时间想改 / 改了整点不生效 / 启动补错日期 | [english/每日阅读自定义入队时间.md](./english/每日阅读自定义入队时间.md)（autoHour 列 + hourInShanghai/duePublishDate + registerScheduler 换 cron + 改点补队） |
+| 想删掉自己生成的手动篇 / 删除后历史还在 | [english/每日阅读篇目删除.md](./english/每日阅读篇目删除.md)（只删本人非 day 行 + 同删生成历史 + 列表悬浮删除与自动切篇） |
+| 每日阅读一打开列表就触发生成 / 状态一直转圈 | [english/每日阅读生成调度.md](./english/每日阅读生成调度.md) §4.12.1（列表不再补明天，无当天行保持 failed） |
+| 整篇朗读中途失败重读 / 首声慢 | [english/整篇朗读分段重试.md](./english/整篇朗读分段重试.md)（首句领读 + 段重试 + 断点本机续播） |
 | 云端朗读卡顿 / Redis 连接打满 / TTS 落盘过期不删 | [english/TTS缓存复用全局Cache.md](./english/TTS缓存复用全局Cache.md)（定稿：全局 Cache + mtime GC）· 历史 [english/TTS文件缓存L2持久化.md](./english/TTS文件缓存L2持久化.md) |
 | 资源库列表 Redis 慢导致接口卡死 | [english/词库Cache超时旁路.md](./english/词库Cache超时旁路.md) |
 | 练习切题旧请求覆盖新题 / 收藏 status 刷屏 | [english/练习请求作用域与预热.md](./english/练习请求作用域与预热.md) |

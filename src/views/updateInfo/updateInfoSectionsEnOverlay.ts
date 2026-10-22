@@ -1453,7 +1453,32 @@ export const UPDATE_INFO_BULLETS_EN: Record<
                 description:
                         'After entering a library\'s dictation / spelling practice from the resource library, the top breadcrumb now adds an "English Learning > Library > Dictation & Spelling" level; clicking "Library" returns you straight to that library\'s list.',
         },
-	's25-1': {
+        's24-106': {
+                title: 'Daily reading is live',
+                description:
+                        'A new "Daily reading" card in the English learning sidebar opens a daily short English passage: the next day\'s passage is generated automatically at 23:00, tailored by level, length, and study focus. Tap any word in the passage for its in-context Chinese gloss and individual pronunciation, read the whole passage aloud, or expand the Chinese translation. Passages can include vocabulary cards, grammar notes, and comprehension quizzes. On the "Generate resources" page you can customize themes, level (A2–C1), length, focus, quiz count, and web sourcing, or manually generate another passage anytime; manual passages are visible only to you, and the list switches between "System daily" and "Manual".',
+        },
+        's24-107': {
+                title: 'Whole-passage read-aloud is faster and more resilient',
+                description:
+                        'Whole-passage English read-aloud (e.g. daily reading) now uses "lead sentence first + paragraph synthesis": the first sentence is synthesized on its own so playback starts sooner, and the rest follows paragraph by paragraph with far fewer requests. A failed segment is retried once automatically; if it still fails after earlier parts have played, playback falls back to the device voice and continues from the failed segment instead of restarting the whole passage.',
+        },
+        's24-108': {
+                title: 'Manual daily-reading generation is now streaming',
+                description:
+                        'Manually generating a passage on the "Generate resources" page now streams the text as it is written instead of showing a long spinner; elapsed time and token usage are displayed live. If the connection drops, streaming resumes automatically, and you can leave or refresh the page and come back to keep watching. You can stop at any time—stopping keeps the partially written passage, which you can save if you like it. A new generation history at the top of the page lists every manual run (with duration, token count, and status), and unwanted records can be deleted.',
+        },
+        's24-109': {
+                title: 'Daily reading: steadier generation, switch passages while reading',
+                description:
+                        'Manual generation now waits briefly and retries when the model is rate-limited instead of failing outright, and word gloss completion is more complete and accurately aligned. Generation history now shows the level and length used for each run, and finished records open the corresponding passage directly. The detail page gains a reading list column so you can switch to another passage without going back to the list.',
+        },
+        's24-110': {
+                title: 'Daily reading: random presets, configurable generation hour, delete manual passages',
+                description:
+                        'On the "Generate resources" page, level, length, study focus, and quiz count can all be set to "Random"; each generation picks one value automatically, and already published passages stay unchanged. A super admin can change the site-wide generation hour to any hour from 0 to 23 in the automatic settings, effective immediately after saving. In the detail page reading list, hovering over a passage in the "Manual" category reveals a delete button (with confirmation); after deleting, the next passage opens automatically, and deleting the last one returns to the list. The title, read-aloud, and list toggle now stay pinned at the top instead of scrolling away with the text, and the metadata also shows study focus and quiz count.',
+        },
+        's25-1': {
 		title: 'E-book bookshelf',
 		description:
 			'New Bookshelf entry in the sidebar (/ebook). Signed-in users can manage EPUB/PDF: cards show title, format, and progress; open to read or remove with confirmation.',
