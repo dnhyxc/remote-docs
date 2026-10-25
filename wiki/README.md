@@ -48,6 +48,7 @@
 | COS 能预览但下载失败                                              | [cos/COS对象存储.md](./cos/COS对象存储.md) §3.7                                                                                            |
 | 分享页无用户附件                                                  | [chat/分享.md](./chat/分享.md) §五 + [cos/COS对象存储.md](./cos/COS对象存储.md) §3.9                                                     |
 | 知识分享「更新时间」差 8h（如凌晨变 18 点）                       | [chat/分享知识时区.md](./chat/分享知识时区.md)                                                                                   |
+| 分享链接想改有效期 / 设了 30 天却提前失效 / 顶栏失效时刻不显示    | [chat/分享链接过期时间.md](./chat/分享链接过期时间.md)                                                                               |
 | Web HTTPS mixed content                                           | 同上 + [auth/路由认证.md](./auth/路由认证.md) §12 + [ops/Nginx配置.md](./ops/Nginx配置.md)                                                                     |
 | Tauri macOS ATS                                                   | [tauri/Tauri macOS ATS 通信.md](./tauri/Tauri macOS ATS 通信.md)                                                                                             |
 | 知识库助手 Mermaid 流式                                           | [knowledge/知识库助手Mermaid流式.md](./knowledge/知识库助手Mermaid流式.md)                                               |
@@ -176,7 +177,11 @@
 | 每日阅读档位想每次都不同 / 保存随机后又变回固定档 | [english/每日阅读随机档位.md](./english/每日阅读随机档位.md)（StoredProfile 保留 random + 生成时 resolveProfile 抽档 + 抽到值写入 extras） |
 | 每日阅读自动生成时间想改 / 改了整点不生效 / 启动补错日期 | [english/每日阅读自定义入队时间.md](./english/每日阅读自定义入队时间.md)（autoHour 列 + hourInShanghai/duePublishDate + registerScheduler 换 cron + 改点补队） |
 | 想删掉自己生成的手动篇 / 删除后历史还在 | [english/每日阅读篇目删除.md](./english/每日阅读篇目删除.md)（只删本人非 day 行 + 同删生成历史 + 列表悬浮删除与自动切篇） |
-| 每日阅读一打开列表就触发生成 / 状态一直转圈 | [english/每日阅读生成调度.md](./english/每日阅读生成调度.md) §4.12.1（列表不再补明天，无当天行保持 failed） |
+| 每日阅读一打开列表就触发生成 / 状态一直转圈 | [english/每日阅读生成调度.md](./english/每日阅读生成调度.md) §4.12.1（列表不再补明天；2026-10-25 起连惰性补队也已移除，见下行） |
+| 今天短文一直转圈 / 显示「今天的短文暂时没有」/ 想补历史某天 | [english/每日阅读日推失败上限.md](./english/每日阅读日推失败上限.md)（MAX_ATTEMPTS=5 上限 + 尝试账本 + 15 分钟 reconcile-due 巡检 + 内部 backfill 接口 + exhausted 终态） |
+| 语法说明讲到了别的文章 / 只有中文没有原文对照 | [english/每日阅读语法说明结构化.md](./english/每日阅读语法说明结构化.md)（GrammarNote 三字段 + excerptInBody 正文校验 + articleEnglish 混排） |
+| 设定 3 题只出 1 题 / 答案写成字符串被丢 | [english/每日阅读题目凑满.md](./english/每日阅读题目凑满.md)（fillQuestions 去重补齐 + emptyExtraKeys 按缺口再要 + questionAnswer 容错） |
+| 生成面板看不到侧重与题数 / 生成完想直接读 | [english/每日阅读生成元信息.md](./english/每日阅读生成元信息.md)（StreamMeta 扩展 + focusLabel/questionsLabel + done 历史「前往阅读」） |
 | 整篇朗读中途失败重读 / 首声慢 | [english/整篇朗读分段重试.md](./english/整篇朗读分段重试.md)（首句领读 + 段重试 + 断点本机续播） |
 | 云端朗读卡顿 / Redis 连接打满 / TTS 落盘过期不删 | [english/TTS缓存复用全局Cache.md](./english/TTS缓存复用全局Cache.md)（定稿：全局 Cache + mtime GC）· 历史 [english/TTS文件缓存L2持久化.md](./english/TTS文件缓存L2持久化.md) |
 | 资源库列表 Redis 慢导致接口卡死 | [english/词库Cache超时旁路.md](./english/词库Cache超时旁路.md) |

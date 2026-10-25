@@ -786,6 +786,11 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		description:
 			'Fixed shared knowledge articles showing “Updated” about 8 hours off from when you saved (e.g. early morning saved as evening). Matches the cloud knowledge library list.',
 	},
+	's14-5': {
+		title: 'Share links with selectable expiration',
+		description:
+			'When creating a share link, click the clock icon next to the create button to pick a validity period—1 hour, 1 day, 3 days, or 30 days—or choose Custom to enter a number in hours/days (up to 30 days); the default stays 7 days. After creation, the dialog shows when the link expires, and visitors see the expiry time at the top of the shared page. The period locks once the link is created—close the dialog and create a new link for a different duration.',
+	},
 	's14-2': {
 		title: 'Chatbot capability areas',
 		description:
@@ -1477,6 +1482,16 @@ export const UPDATE_INFO_BULLETS_EN: Record<
                 title: 'Daily reading: random presets, configurable generation hour, delete manual passages',
                 description:
                         'On the "Generate resources" page, level, length, study focus, and quiz count can all be set to "Random"; each generation picks one value automatically, and already published passages stay unchanged. A super admin can change the site-wide generation hour to any hour from 0 to 23 in the automatic settings, effective immediately after saving. In the detail page reading list, hovering over a passage in the "Manual" category reveals a delete button (with confirmation); after deleting, the next passage opens automatically, and deleting the last one returns to the list. The title, read-aloud, and list toggle now stay pinned at the top instead of scrolling away with the text, and the metadata also shows study focus and quiz count.',
+        },
+        's24-111': {
+                title: 'Daily reading: grammar cards with source excerpts, quizzes match your setting, richer generation info',
+                description:
+                        'Grammar notes are now three-part cards — pattern name, an excerpt copied verbatim from the passage, and a usage explanation — with mixed Chinese-English typography matching the body text for easy comparison. Quizzes now try to match the count you set: if the model returns too few, another round is requested automatically, and generation history records the quiz count. The generation info bar on the resources page now shows study focus and quiz count, finished history records offer a "Read" button that jumps straight to the passage, "Manual generation" is renamed to "Custom generation", and quiz/option font sizes plus the bottom action bar styling have been polished.',
+        },
+        's24-112': {
+                title: 'Daily reading: capped automatic retries, no endless spinner on failure',
+                description:
+                        'Automatic daily passages no longer retry forever: generation now stops after at most five attempts. Each attempt leaves a record (when it was queued, how long it ran, how many tokens it used, and whether it succeeded or failed and why) to make troubleshooting easier. If all five attempts fail, the list no longer shows “preparing” indefinitely — it clearly says “Today’s passage is not available yet”, and there is no longer a manual retry button. A new check runs every 15 minutes and only re-queues a passage when today or tomorrow is still missing; operators can also re-queue a specific past day when needed. The list refreshes automatically while generating, for up to 10 minutes.',
         },
         's25-1': {
 		title: 'E-book bookshelf',
