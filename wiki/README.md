@@ -19,7 +19,7 @@
 | [`app/`](./app/)             | 前端壳层（构建、网络、文件选择）        | [app/README.md](./app/README.md)                                                                                                         |
 | [`plugins/`](./plugins/)    | 插件/微前端系统（MF、插件开发）        | [plugins/模块联邦实现指南.md](./plugins/模块联邦实现指南.md)                                                               |
 | [`tauri/`](./tauri/)         | Tauri 桌面特性（窗口、菜单、全屏）      | [tauri/Tauri窗口缩放揭示.md](./tauri/Tauri窗口缩放揭示.md)                                                                 |
-| [`auth/`](./auth/)           | 认证登录（路由守卫、SecretInput）      | [auth/路由认证.md](./auth/路由认证.md)                                                                                               |
+| [`auth/`](./auth/)           | 认证登录（路由守卫、单端互踢、SecretInput）      | [auth/路由认证.md](./auth/路由认证.md)、[auth/登录单端互踢.md](./auth/登录单端互踢.md)、[auth/401清退链路与多Tab保护.md](./auth/401清退链路与多Tab保护.md)  |
 | [`style/`](./style/)         | 样式隔离（@scope、Portal、qiankun）    | [style/样式隔离实现.md](./style/样式隔离实现.md)                                                     |
 | [`video/`](./video/)         | 视频播放器（组件化、影院态、画中画）    | [video/视频播放器插件.md](./video/视频播放器插件.md)                                                                           |
 | [`i18n/`](./i18n/)           | 国际化（中英文界面）                    | [i18n/中英双语实现指南.md](./i18n/中英双语实现指南.md)                                                       |
@@ -49,6 +49,7 @@
 | 分享页无用户附件                                                  | [chat/分享.md](./chat/分享.md) §五 + [cos/COS对象存储.md](./cos/COS对象存储.md) §3.9                                                     |
 | 知识分享「更新时间」差 8h（如凌晨变 18 点）                       | [chat/分享知识时区.md](./chat/分享知识时区.md)                                                                                   |
 | 分享链接想改有效期 / 设了 30 天却提前失效 / 顶栏失效时刻不显示    | [chat/分享链接过期时间.md](./chat/分享链接过期时间.md)                                                                               |
+| 分享链接在 Redis 重启后全部失效 / 原对话删了分享页空白 / 分享被打开几次 | [chat/分享落库与快照回退.md](./chat/分享落库与快照回退.md)（`shares` 表权威 + 快照回退 + `view_count`）                          |
 | Web HTTPS mixed content                                           | 同上 + [auth/路由认证.md](./auth/路由认证.md) §12 + [ops/Nginx配置.md](./ops/Nginx配置.md)                                                                     |
 | Tauri macOS ATS                                                   | [tauri/Tauri macOS ATS 通信.md](./tauri/Tauri macOS ATS 通信.md)                                                                                             |
 | 知识库助手 Mermaid 流式                                           | [knowledge/知识库助手Mermaid流式.md](./knowledge/知识库助手Mermaid流式.md)                                               |
@@ -62,6 +63,7 @@
 | 流式对话中选区文字丢失 / 拖选后选区自动消失 | [chat/流式选区保持.md](./chat/流式选区保持.md) |
 | 选区朗读无法用系统媒体键（Touch Bar/控制中心）控制 | [chat/选区朗读媒体会话.md](./chat/选区朗读媒体会话.md) |
 | 听书/朗读 loading 时 Touch Bar 仍可点 / 连点导致条状态错乱 | [ebook/EPUB听书触控栏加载.md](./ebook/EPUB听书触控栏加载.md) |
+| 每日阅读朗读不从暂停处继续 / 正文不跟读高亮 / 当前句没有中文 | [english/每日阅读逐句播放.md](./english/每日阅读逐句播放.md) |
 | 电子书听书与选区朗读同时出声 / 互斥异常                           | [ebook/听书互斥控制.md](./ebook/听书互斥控制.md)                                                                             |
 | 生产 `/images/` 400                                               | [chat/对话上传生产访问.md](./chat/对话上传生产访问.md) + [ops/Nginx配置.md](./ops/Nginx配置.md)                                                    |
 | 本地上传落盘 / UPLOAD_ROOT                                        | [ops/上传存储路径.md](./ops/上传存储路径.md)                                                                                             |
@@ -130,6 +132,11 @@
 | 学习笔记列表看不到他人公开笔记 / 想切换公开状态 / 列表网格徽章与刷新按钮 | [english/学习笔记公开列表.md](./english/学习笔记公开列表.md)                                                                        |
 | `createLlm` / 400                                                 | [llm/创建LLM.md](./llm/创建LLM.md)                                                                                                                 |
 | 图片 OCR / 附件识图                                               | [llm/OCR创建LLM GLM.md](./llm/OCR创建LLM GLM.md)                                                                                                 |
+| Agent 一句里既要库清单又要「关于…」筛选 / 错题「有哪些资源」不出卡 | [english/Agent复合意图通用化.md](./english/Agent复合意图通用化.md)（复合意图补丁 + IntentFrame 路线）· [english/语境意图总路由.md](./english/语境意图总路由.md)（单 kind 总路由） |
+| Agent 续问「那本库再筛…」接不上 /「所有关于…的单词」被当整库 / 想回退意图帧 | [english/英语Agent意图帧.md](./english/英语Agent意图帧.md)（IntentFrame M3：slots+plan 一次解析、`EL_INTENT_FRAME=0` 回退 legacy） |
+|「收藏所有关于…的单词」确认条挂整库 107 条 | [english/关于类收藏筛选卡.md](./english/关于类收藏筛选卡.md)（先补筛选卡再选卡、`filtered` 一手标记） |
+| Agent 笔记清单卡点击不跳 / 行上显示正文碎片 / 保存知识库带 `[[el:]]` 记号 | [english/资源清单卡笔记源.md](./english/资源清单卡笔记源.md)（notes 源三短路 + 跳转接力）· [english/知识库保存剥离锚点.md](./english/知识库保存剥离锚点.md)（剥锚点压空行） |
+| 短决策 / 整类筛选走哪个模型与 Key（decide 档出口、关思考）            | [english/决策改用千问.md](./english/决策改用千问.md)（decide 档整档切硅基 `Qwen/Qwen3.6-35B-A3B`，OCR 仍固定智谱视觉）                                                          |
 | 知识库向量 404 / 400 入库失败                                     | [knowledge/硅基向量完整URL.md](./knowledge/硅基向量完整URL.md)                                                                   |
 | 知识库向量 Key/模型                                               | [knowledge/知识向量创建LLM.md](./knowledge/知识向量创建LLM.md)                                                                   |
 | 会员知识库向量双库                                                | [knowledge/知识会员向量分层.md](./knowledge/知识会员向量分层.md)                                                                 |
@@ -172,7 +179,7 @@
 | 今日记词无词可抽 / 时间不对                                       | [english/每日记词实现.md](./english/每日记词实现.md) §9                                                                |
 | 每日阅读没有当天篇目 / 手动生成如何停止 / 定时档位在哪配 | [english/每日阅读生成调度.md](./english/每日阅读生成调度.md)（队列调度与双档位）· [english/每日阅读前端.md](./english/每日阅读前端.md)（轮询与停止交互）· [english/每日阅读流式生成.md](./english/每日阅读流式生成.md)（SSE 流式生成、断线续订与生成历史，2026-10-19 起生效）· [english/每日阅读生成加固.md](./english/每日阅读生成加固.md)（429 重试与词级补释义）· [english/每日阅读界面重构.md](./english/每日阅读界面重构.md)（设置页/详情页组件化） |
 | 每日阅读手动生成转圈太久 / 断网后进度丢失 / 想查看生成历史 | [english/每日阅读流式生成.md](./english/每日阅读流式生成.md)（ManualRun 生产者 + seq 重放 + 半成品落库 + 历史表） |
-| 每日阅读生成撞 429 直接失败 / 补释义挂错句 / 历史看不到档位 | [english/每日阅读生成加固.md](./english/每日阅读生成加固.md)（isRateLimit 结构识别 + withRateRetry 退避 + 词级缺词槽位对位 + 档位随 pending 落库） |
+| 每日阅读生成撞 429 直接失败 / 补释义挂错句 / 历史看不到档位 | [english/每日阅读生成加固.md](./english/每日阅读生成加固.md)（词级缺词槽位对位 + 档位随 pending 落库）· [english/每日阅读限流降级.md](./english/每日阅读限流降级.md)（429 按智谱业务码分级 + Retry-After/full jitter 退避 + 1305 冷却降级备用模型，2026-11-03 起生效） |
 | 每日阅读设置页/详情页文件过大 / 流式渲染卡顿 / 详情页想换篇 | [english/每日阅读界面重构.md](./english/每日阅读界面重构.md)（GenerateBar 等组件化拆分 + store 批量冲刷节流 + 详情页双栏阅读列表 + ArticleHeader 头栏常驻） |
 | 每日阅读档位想每次都不同 / 保存随机后又变回固定档 | [english/每日阅读随机档位.md](./english/每日阅读随机档位.md)（StoredProfile 保留 random + 生成时 resolveProfile 抽档 + 抽到值写入 extras） |
 | 每日阅读自动生成时间想改 / 改了整点不生效 / 启动补错日期 | [english/每日阅读自定义入队时间.md](./english/每日阅读自定义入队时间.md)（autoHour 列 + hourInShanghai/duePublishDate + registerScheduler 换 cron + 改点补队） |
@@ -183,6 +190,7 @@
 | 设定 3 题只出 1 题 / 答案写成字符串被丢 | [english/每日阅读题目凑满.md](./english/每日阅读题目凑满.md)（fillQuestions 去重补齐 + emptyExtraKeys 按缺口再要 + questionAnswer 容错） |
 | 生成面板看不到侧重与题数 / 生成完想直接读 | [english/每日阅读生成元信息.md](./english/每日阅读生成元信息.md)（StreamMeta 扩展 + focusLabel/questionsLabel + done 历史「前往阅读」） |
 | 整篇朗读中途失败重读 / 首声慢 | [english/整篇朗读分段重试.md](./english/整篇朗读分段重试.md)（首句领读 + 段重试 + 断点本机续播） |
+| 每日阅读全文朗读想暂停 / 正文选中句子想右键朗读 / 拖选被点词抢焦 | [english/每日阅读选区朗读与全文播放统一.md](./english/每日阅读选区朗读与全文播放统一.md)（全文朗读走选区条只开/停 + `onSentenceIndex` 句高亮 + 选区右键菜单 + `PopoverAnchor` 跨词拖选） |
 | 云端朗读卡顿 / Redis 连接打满 / TTS 落盘过期不删 | [english/TTS缓存复用全局Cache.md](./english/TTS缓存复用全局Cache.md)（定稿：全局 Cache + mtime GC）· 历史 [english/TTS文件缓存L2持久化.md](./english/TTS文件缓存L2持久化.md) |
 | 资源库列表 Redis 慢导致接口卡死 | [english/词库Cache超时旁路.md](./english/词库Cache超时旁路.md) |
 | 练习切题旧请求覆盖新题 / 收藏 status 刷屏 | [english/练习请求作用域与预热.md](./english/练习请求作用域与预热.md) |
@@ -200,6 +208,8 @@
 | 换号后仍看到上一账号的草稿或助手对话                              | [auth/用户切换状态重置.md](./auth/用户切换状态重置.md)                                                                                       |
 | 演示账号预填 + 测试账号保护（禁止改资料 / 购会员 / 忘记密码）   | [auth/测试账号预填与保护.md](./auth/测试账号预填与保护.md)（掩码密码 + `superRefine` 条件校验 + `sessionStorage` 跨页保持 + 6 页拦截） |
 | 登录成功瞬间又回到登录页 / cloud-tts 401                          | [auth/登录云端TTS预取401.md](./auth/登录云端TTS预取401.md)                                                                             |
+| 提示「账号已在别处登录」/ 被踢下线 / 退出后旧 token 仍能用        | [auth/登录单端互踢.md](./auth/登录单端互踢.md)（sid/cli 会话槽 + `/auth/logout` 清槽）                                                    |
+| 401 后叠弹多条 Toast / 多标签页互踢误删新 token                    | [auth/401清退链路与多Tab保护.md](./auth/401清退链路与多Tab保护.md)（统一清退入口 + kicked 标记 + Toast 静默窗）                            |
 | Tauri 桌面频繁 Toast「网络异常，请检查网络后重试」                | [tauri/Tauri HTTP全方法重试.md](./tauri/Tauri HTTP全方法重试.md)                                                                              |
 | 小程序 EPUB 章节 409 / Processor 无日志 / **已解析换章仍 ~1s** | [ebook/小程序EPUB服务端解析.md](./ebook/小程序EPUB服务端解析.md) §3.1、§4.7、[ideas/小程序EPUB解析逻辑.md](./ideas/miniprogram/小程序EPUB解析逻辑.md) |
 | 强制刷新后 EPUB/PDF 续读位置丢失 / 听书时 progress 请求过频          | [ebook/电子书进度远程防抖影响.md](./ebook/电子书进度远程防抖影响.md)                                                                     |
@@ -290,7 +300,17 @@
 | 主包体积大 / 首屏慢 / React.lazy / mermaid 动态加载（含形态修复见 §4.6.1）/ Monaco·Prettier 懒加载 / barrel 瘦身 | [app/构建优化.md](./app/构建优化.md) |
 | 英语 Agent 选中文本右键朗读 / 复制 / 选区菜单复用 | [english/选中文本朗读菜单.md](./english/选中文本朗读菜单.md)（`useSelectionContextMenu` + `PositionedQuickMenu` + 按段云端 TTS + 悬浮条） |
 | 英语学习 Agent 流式输出输入框卡顿 / 视觉抖动 | [english/英语Agent流式性能隔离.md](./english/英语Agent流式性能隔离.md) |
+| 英语学习 Agent 打字时消息列/左侧栏跟着刷新（输入卡顿） | [english/英语Agent输入草稿隔离.md](./english/英语Agent输入草稿隔离.md)（isolateDraft 草稿本地持有 + Composer 内收）· [english/英语Agent消息列稳定渲染.md](./english/英语Agent消息列稳定渲染.md)（chatIds 订阅 + 稳定引用） |
+| 单词包 / 经典句数量留空默认生成多少 | [english/英语学习计数可选.md](./english/英语学习计数可选.md)（留空默认 100：ENGLISH_PACK_GENERATION_DEFAULT / PACK_COUNT_DEFAULT） |
 | 英语 Agent / 词包生成反复联网后「生成失败」/ GRAPH_RECURSION_LIMIT | [english/英语Agent联网次数封顶.md](./english/英语Agent联网次数封顶.md)（联网硬顶 3 + 中间件 + recursionLimit） |
+| Agent 回答侧栏数据靠猜 / 想让它直接列词库、收藏、日推 | [english/英语Agent侧栏融合.md](./english/英语Agent侧栏融合.md)（同一 Service 两扇门 + 信封剥 userId + 确认条直提交 + 整类一次提案 + domainMutation 刷新左侧）。工具摘录见 [english/英语Agent领域工具.md](./english/英语Agent领域工具.md) |
+| 英语学习 Agent 怎么测、怎样算通过 | [english/英语Agent测试验收.md](./english/英语Agent测试验收.md)（功能测试清单 + 必须通过 / 应当通过） |
+| Agent 说「已生成单词卡」但界面没卡 / 整库问法不出卡或重复出卡 | [english/整库问法稳定出卡.md](./english/整库问法稳定出卡.md)（listIntent + matchLibraries + inventoryCardDecision + inventoryFallback 兜底） |
+| Agent 大列表刷屏 / 清单卡片过期想重取 / 触顶被截断想继续 | [english/Agent大结果旁路展示.md](./english/Agent大结果旁路展示.md)（spill 旁路卡片 + elResourceList SSE + el_resources 快照 + finish 事件触顶继续） |
+| Agent 按类别列词/列句不生效 / 同类别再问重复判定 / 分类卡挂出后不再补充 | [english/词句分类列出.md](./english/词句分类列出.md)（el_vocab_classify / el_classic_classify + 分类缓存键 + 前端工具标签） |
+| 分类卡挂出后 Agent 停下不再续答 / 整类收藏一次只收了一张卡 / 语句收藏量词写「个」 | [english/筛选卡续答与整类收藏.md](./english/筛选卡续答与整类收藏.md)（FILTER_SHOWN_MARK + filtered 角标 + pickFavoriteCards 多卡 + proposalReceipt contentKind） |
+| 切走对话仍看到旧确认条 / 回执落到错的会话 / 提交中状态跨会话串台 | [english/确认条按会话隔离.md](./english/确认条按会话隔离.md)（EnglishSessionRuntime 下沉 pendingProposal + store getter 按 activeSessionId 代理） |
+| 对话里让 Agent 生成每日阅读没反应 / 用的档位不对 | [english/每日阅读Agent自选生成.md](./english/每日阅读Agent自选生成.md)（parseReadingOverride 原话解析 + resolveAgentManual 以已保存档为底 + generate_manual/gen_status） |
 | 听书切句落后听感 / 首句尾音到下句高亮滞后 / rAF 进度轮询 | [ebook/EPUB听书节奏引导影响.md](./ebook/EPUB听书节奏引导影响.md)（`CLOUD_CADENCE_LEAD_SEC=0.35` + `requestAnimationFrame` + `onPlaybackProgress` + kick ≥0.8 提前切句） |
 | 插件加载失败只能重试 / 想离开当前页或查接入文档 | [app/插件宿主错误处理.md](./plugins/插件宿主错误处理.md)（错误卡片新增「返回首页」「插件开发指南」按钮） |
 | 首页色块/按钮饱和度过高 / 滚动 FAB 圆形过大 / 下拉菜单内边距 | [ui/UI色调打磨.md](./ui/UI色调打磨.md)（`HUE_STYLES` 透明度 + `Button` variant + `ScrollFab` 尺寸 + `DropdownMenuContent` 内边距） |

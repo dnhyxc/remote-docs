@@ -1,5 +1,7 @@
 # 英语学习 Agent 流式渲染隔离
 
+> **延伸阅读**：[英语Agent输入草稿隔离.md](./英语Agent输入草稿隔离.md)（本文的续作：输入侧草稿隔离，打字不再重渲输入区/消息列）、[英语Agent消息列稳定渲染.md](./英语Agent消息列稳定渲染.md)（消息列只订 chatId + 分享态稳定引用）。本文聚焦「流式 token 只重渲消息列」；输入侧卡顿与 memo 击穿问题由上述两篇承接。
+
 ## 1. 背景与目标
 
 ### 1.1 用户可见问题
@@ -959,6 +961,8 @@ export function createStreamingMobxPatchScheduler(
 
 ### 交叉引用
 
+- [续作：输入草稿隔离](./英语Agent输入草稿隔离.md)（`ChatEntry isolateDraft` / `ChatTextArea ownedDraft` / `EnglishAgentComposer`）
+- [续作：消息列稳定渲染](./英语Agent消息列稳定渲染.md)（chatIds 订阅、`useShareSelection` useMemo、`useAssistantShare` 稳定回调）
 - [影响点分析：英语学习 Agent 流式输入性能](../impact/英语Agent流式输入性能影响.md)
 - [相关优化：流式代码块滚动](../chat/流式代码块滚动.md)
 - [同源实现：知识库 Signal Hooks](./hooks/useAssistantMessageCount.ts)

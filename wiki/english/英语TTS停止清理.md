@@ -4,6 +4,8 @@
 > **播放世代与异步丢弃**见 [`英语TTS播放.md`](./英语TTS播放.md)。
 > **cancel 后 settle（首句无声修复）**见 [`TTS本地取消结算影响.md`](./TTS本地取消结算影响.md)。
 > **云端整段一次合成（cloudSingleUtterance 语义）**见 [`云端TTS节奏预取.md`](./云端TTS节奏预取.md)。
+>
+> **后继更新（2026-11-02）**：`notifyAwaitingPlayback` 的系统媒体键锁改为「出声即解锁」，`pausePlaybackSoft` 去掉 `systemMediaControlsLocked` 早退；每日阅读等未接 MediaSession 的页面也能应用内暂停而不停介质。详见 [每日阅读逐句播放.md](./每日阅读逐句播放.md) §4.5。
 
 ## 1. 背景与目标
 

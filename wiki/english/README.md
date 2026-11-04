@@ -36,10 +36,32 @@
 | [英语Agent联网次数封顶.md](./英语Agent联网次数封顶.md) | **增量**：右侧 Agent / 词包主检索单轮联网 ≤3，`beforeSearch` 硬顶 + 中间件 + `recursionLimit`，修复无限 search 触发 GRAPH_RECURSION_LIMIT |
 | [英语学习主Agent联网搜索转LLM.md](./英语学习主Agent联网搜索转LLM.md) | 主 Agent 与联网 |
 
+## Agent / 领域工具
+
+| 文档 | 说明 |
+|------|------|
+| [英语Agent测试验收.md](./英语Agent测试验收.md) | **当前 Agent 的功能测试清单与验收清单**：会话、侧栏真数据、确认条直提交、整类收藏、词包与自选阅读、清单卡片、联网与隔离 |
+| [英语Agent侧栏融合.md](./英语Agent侧栏融合.md) | **当前路径主文档**：右侧 Agent 与左侧词库 / 收藏 / 复习等如何共用同一 Service；`assistMode` 才注册 `el_*`、信封剥 `userId`、确认条直提交（不另开模型轮）、整类一次提案、`domainMutation` 刷新左侧列表 |
+| [英语Agent领域工具.md](./英语Agent领域工具.md) | **工具内部摘录（迁前路径）**：`el_*` 信封、提案、限额与前端足迹。文件已迁到 `tools/english/`，融合总览与当前路径以侧栏融合篇为准 |
+| [Agent大结果旁路展示.md](./Agent大结果旁路展示.md) | **大列表外溢旁路卡片（当前生效）**：`el-artifact.store` 30min TTL 缓存 + `el-spill` 常量（30 条/4000 字起溢）与 `spillListResult` 三分支、`slimRow` 瘦索引、SSE 四新事件（`domainMutation`/`elResourceList`/`contentReplace`/`finish`）、消息快照 `el_resources` JSON 列、`ResourceListBlock` 虚拟滚动卡片（过滤/朗读/过期重取）、`cardEdges` 正文交错渲染、`readFinishReason` 触顶继续话术（含改动前/后对比与逐行注释） |
+| [资源清单卡笔记源.md](./资源清单卡笔记源.md) | **清单卡接入学习笔记源（当前生效）**：`speakOf`/`rowOf` 加 `source` 参对 notes 短路（不朗读、只亮标题）、`hrefOf` 加 notes 分支、`openItem` 写 `dnhyxc_ln_popout_note_id` 再跳转（插件 `consumeInitialNoteId` 接力打开编辑）、`ListRow` 透传 + `filteredRows` 同口径（含改动前/后对比与逐行注释） |
+| [知识库保存剥离锚点.md](./知识库保存剥离锚点.md) | **保存到知识库剥 `[[el:]]` 锚点（当前生效）**：`onSaveToKnowledge` 取正文改「剥锚点 → 压空行 → trim」三步，清单卡记号不再进知识库编辑器（含改动前/后对比与逐行注释） |
+| [整库问法稳定出卡.md](./整库问法稳定出卡.md) | **整库问法三板斧（当前生效）**：`listIntent` 识别 + `matchLibraries` 唯一库锁定 + `inventoryCardDecision` 挂卡判定、`shownLibraryIds` 去重防重复出卡、`inventoryFallback` 流末兜底补卡、`missingNoteCard` 笔记卡补挂、`loadCatalog` 目录装载（含改动前/后对比与逐行注释） |
+| [确认条按会话隔离.md](./确认条按会话隔离.md) | **确认条 per-session（当前生效）**：`pendingProposal` / `proposalCommitting` 从 store 全局字段下沉到 `EnglishSessionRuntime` + `blankSessionRuntime()` 工厂，store 改同名 getter 按 `activeSessionId` 代理，`commitProposal` 入口固定发起会话 `st`（回执与失败恢复不串台），SSE `onTool` 提案写会话 runtime，`useEnglishAgentPendingProposal` 返回类型复用导出的 `ElPendingProposal`（含改动前/后对比与逐行注释） |
+| [决策改用千问.md](./决策改用千问.md) | **短决策整档切硅基千问**：`decide` 档凭证从智谱 `GLM_*` 换为平台 `SILICONFLOW_*` + 固定 `Qwen/Qwen3.6-35B-A3B`；`DECIDE_MODEL_NAME` 上移 create-llm、`DECIDE_JSON_KWARGS` 关思考 + JSON 外壳、`decideLlmOptions` 支持传入 `maxTokens`；OCR 仍固定智谱视觉，两者都不读设置页、不跟会员对话模型（含改动前/后对比与逐行注释） |
+| [筛选卡续答与整类收藏.md](./筛选卡续答与整类收藏.md) | **筛选卡续答与整类收藏（当前生效）**：`brakeAfterModel` 识别 `filter_shown` 回执标记并按场景区分收尾话术（筛选「筛选卡片已经列出。」/ 提案话术不变）、图步上限 ×2→×5；`ElListSurface` 扩 5 字段 + 新增 `PriorLibraryCard` 与 `shouldFilterContinue`（模型停手后服务端续查、沿用上一本）；`ElResourceListPayload` 新增 `filtered`/`categoryLabels`/`fromPrior`、`inventoryFallback` 跳过带入卡；`pickFavoriteCards` 多卡正序收集 + 收尾三级取卡（本轮 → 外溢 → 历史快照 `artifactId` 补拉）；`proposalReceipt` 第 6 参 `contentKind` 中文语句收藏量词「条」；prompt 补两条 classify 工具说明与语句整类规则；前端 `ElResourceBlock.filtered` + SSE 透传 + `isLiveLibrary` 对筛选卡不走整库直连（角标修复）+ 行内音标词性拼接（含改动前/后对比与逐行注释） |
+| [语境意图总路由.md](./语境意图总路由.md) | **语境意图总路由（当前生效）**：`resolveEnglishIntent` 固定优先级合成分域谓词；`ElListSurface.intent` + `bindIntent`；筛选续查 / `pickLibraries` 只认 `category_filter`；生成/查询不再误继承旧库（含改动前/后对比与逐行注释） |
+| [Agent复合意图通用化.md](./Agent复合意图通用化.md) | **复合意图与通用化方案（当前生效补丁 + IntentFrame 路线）**：错题盘点短语、`wantsLibraryCatalog`/`catalogAsk` 双卡、库名 span 忽略盘点前缀、假 `[[el:]]` 剥离；槽位化 IntentFrame 已于 2026-11-01 落地（见 [英语Agent意图帧.md](./英语Agent意图帧.md)）（含改动前/后对比与逐行注释） |
+| [英语Agent意图帧.md](./英语Agent意图帧.md) | **IntentFrame M3（当前生效，`EL_INTENT_FRAME=0` 回退）**：新增 `intent-frame.ts` / `intent-frame.types.ts` / `intent-phrases.ts` 三件套——一轮一次 `resolveIntentFrame` 出 slots+plan、`isFilterFollowUp` 续问无「关于」也认、`buildPriorFrameSummary` 跨轮摘要、`fillLibraryCue` 目录就绪回填 cue、`planHas` 统一挂卡闸；`resolveEnglishIntent` 改名 legacy、`bindEnglishIntentSurface` 收口双写；`FILTER_RE` 补「关于」修「所有关于家庭的单词」误判、`shouldFilterContinue` 加第 6 参 frame、`resolveOneLibrary` 歧义即 `elFail`（含改动前/后对比与逐行注释、架构图与时序图） |
+| [关于类收藏筛选卡.md](./关于类收藏筛选卡.md) | **关于类收藏先补卡再选卡（当前生效）**：`needsFilter` 双闸（plan 步 + 类别名直验）、`ensureFavoriteFilterCards` 时序提到 `favoriteSet` 前；`ScopeCard.filtered` 一手标记、`onlyCategoryFilterCards` 只留筛选卡——「收藏所有关于家庭的单词」确认条不再挂整库 107（含改动前/后对比与逐行注释） |
+| [复合意图槽位化（规划）](../ideas/english/复合意图槽位化.md) | **IntentFrame 规划主文**：候选比对（旁路堆叠 / 槽位计划 / 多标签 LLM）、选定槽位+plan、架构/流程/时序与 M1–M3 |
+| [收藏意图总闸.md](./收藏意图总闸.md) | **收藏意图总闸（当前生效）**：`resolveFavoriteIntent`（取消→查询→软添加）；`favoriteNeedsFilterCards` + `ensureFavoriteFilterCards`；查询不挂确认、省略取消不断窗（含改动前/后对比与逐行注释） |
+
 ## 词包 / 流式 / 会话
 
 | 文档 | 说明 |
 |------|------|
+| [英语学习计数可选.md](./英语学习计数可选.md) | **留空默认 100（当前生效）**：`ENGLISH_PACK_GENERATION_DEFAULT` / `PACK_COUNT_DEFAULT`；前端留空显式传 `count: 100`；i18n 与后端 resolve 对齐（含改动前/后对比与逐行注释） |
 | [英语词包SSE.md](./英语词包SSE.md) | 词包 SSE |
 | [英语词包流式存储.md](./英语词包流式存储.md) | 流式状态跨路由 |
 | [英语词包会话存储.md](./英语词包会话存储.md) | Session/Item 存储模型 |
@@ -106,19 +128,25 @@
 
 | 文档 | 说明 |
 |------|------|
-| [每日阅读日推失败上限.md](./每日阅读日推失败上限.md) | **系统日推失败上限与尝试账本（当前生效）**：`MAX_ATTEMPTS=5` 与 BullMQ `attempts` 同值、`attempt_count`/`last_error` 主表列、`english_daily_reading_attempts` 逐次尝试账本（入队/开始/结束/耗时/Token/结果/原因 + `(publish_date, attempt_no)` 唯一）、耗尽即停并报 `exhausted`、每 15 分钟 `reconcile-due` 巡检只补今天/明天、内部补生成接口 `POST /internal/daily-reading/backfill`（`x-internal-token` + `timingSafeEqual` + `resetAttempts` + `BACKFILL_PRIORITY=10`）、`list` 只读且三态收敛、前端去重试按钮并改为最长 10 分钟自动轮询（含改动前/后对比与逐行注释） |
+| [每日阅读Agent自选生成.md](./每日阅读Agent自选生成.md) | **Agent 对话自选生成（当前生效）**：`parseReadingOverride` 原话解析（位置感知 + 否定排除 + 后说为准，点名的键才覆盖）、`resolveAgentManual` 以已保存档为底不写回设置、`peekManualRun` 只读防重、`el_daily_reading` 新增 `generate_manual`/`gen_status`、`manualReceipt` 回执告知本次实际档位（含改动前/后对比与逐行注释） |
+| [点词弹层复制按钮.md](./点词弹层复制按钮.md) | **点词弹层复制按钮（当前生效）**：`WordLine` 新增可选 `copy` 属性（默认关闭，文末单词列表不受影响）、复制后对勾反馈 1 秒自动复原、卸载清理定时器、复用既有 `copyToClipboard` 与 `common.copy/copied` 词条（含改动前/后对比与逐行注释） |
+| [点词悬浮指针化.md](./点词悬浮指针化.md) | **点词悬浮指针化（当前生效）**：`GlossSentence` 新增 `hoverKey` 状态，词按钮 `onPointerEnter/Leave`（函数式更新只清自己）+ 整句 `onPointerLeave` 兜底，高亮由 `hoverKey === key` 计算并保留 `open` 优先级，替代 ScrollArea / 两端对齐正文里易粘住的 CSS `:hover`（含改动前/后对比与逐行注释） |
+| [每日阅读日推失败上限.md](./每日阅读日推失败上限.md) | **系统日推失败上限与尝试账本（当前生效）** |：`MAX_ATTEMPTS=5` 与 BullMQ `attempts` 同值、`attempt_count`/`last_error` 主表列、`english_daily_reading_attempts` 逐次尝试账本（入队/开始/结束/耗时/Token/结果/原因 + `(publish_date, attempt_no)` 唯一）、耗尽即停并报 `exhausted`、每 15 分钟 `reconcile-due` 巡检只补今天/明天、内部补生成接口 `POST /internal/daily-reading/backfill`（`x-internal-token` + `timingSafeEqual` + `resetAttempts` + `BACKFILL_PRIORITY=10`）、`list` 只读且三态收敛、前端去重试按钮并改为最长 10 分钟自动轮询（含改动前/后对比与逐行注释） |
 | [每日阅读随机档位.md](./每日阅读随机档位.md) | **随机档位（当前生效）**：`StoredProfile` 四字段保留 `'random'`、`normalizeProfile` 不把随机收成默认、`resolveProfile` 生成时逐字段均匀抽档；实体与设置读写类型随改成 `StoredProfile`；前端 `Exclude<..., 'random'>` 收敛显示类型、`startRun` 遇随机置空、`ProfileFields`/`OptionRow` 随机选项、i18n `random` 键（含改动前/后对比与逐行注释） |
 | [每日阅读自定义入队时间.md](./每日阅读自定义入队时间.md) | **自定义入队整点（当前生效）**：`autoHour` 迁移与实体列、`hourInShanghai`/`duePublishDate` 计算应补日期、`registerScheduler` 同一 scheduler id 换 cron、保存后重注册并在已过整点时补队、`parseAutoHour` 校验、`HourPicker` 0–23 整点下拉、设置页 `autoHour/savedAutoHour` 脏检查与恢复默认（含改动前/后对比与逐行注释） |
 | [每日阅读篇目删除.md](./每日阅读篇目删除.md) | **手动篇删除（当前生效）**：后端 `remove` 只删本人且 `slot != day` 的行并同删生成历史、`DELETE daily-readings/:id`、前端 `removeEnglishDailyReading`、阅读列表悬浮删除按钮 + `Confirm` 二次确认 + 删当前篇自动切下一篇/空列表回列表页（含改动前/后对比与逐行注释） |
 | [每日阅读语法说明结构化.md](./每日阅读语法说明结构化.md) | **语法说明结构化（当前生效）**：`GrammarNote` 对象（point/excerpt/explain）取代纯中文句子、`GRAMMAR_CUE` 与 `excerptInBody` 校验摘录必出自正文、提示词同步改造、前端 `articleEnglish` 混排渲染与历史 string 数据兼容回显（含改动前/后对比与逐行注释） |
 | [每日阅读题目凑满.md](./每日阅读题目凑满.md) | **理解题按设定凑满（当前生效）**：`questionAnswer` 字符串容错、`fillQuestions` 按题干去重补齐、`mergeExtras` 带 profile 凑满 cap、`emptyExtraKeys` 题数不足再要一次、`extras.questionCount` 落库与历史回传 focus/questionCount（含改动前/后对比与逐行注释） |
 | [每日阅读生成元信息.md](./每日阅读生成元信息.md) | **生成元信息扩展（当前生效）**：store 记录 focus/questions（random 置空）、`focusLabel`/`questionsLabel` 标签函数、`StreamMeta` 元信息行扩展 + 已完成历史「前往阅读」直达按钮、`StreamPane` live/历史双数据源（含改动前/后对比与逐行注释） |
-| [每日阅读生成加固.md](./每日阅读生成加固.md) | **生成加固（当前生效，叠加于流式化之上）**：429 限流退避重试（`isRateLimit` 结构识别 + `withRateRetry` 2s/4s 退避 + `wait` 可中止）、词级缺词补释义协议（`missingWordSlots` 逐词清点 + `glossGapText` 只发缺词 + `placeGapGloss` 槽位对位 + leftover 顺补）、释义批级容错（GLOSS_BATCH=4、批级 429 continue、`closedGlossObjects` 打捞兜底）、`mergeSentenceWords` 首轮合格优先、生成档位随 pending 行落库（`extras.level/length/focus`）与历史回显（`listGens` IN 查询并回）、Token 分路计数（`trackUsage` lane 记账）（含改动前/后对比与逐行注释） |
+| [每日阅读生成加固.md](./每日阅读生成加固.md) | **生成加固（限流段已被下条取代，其余生效）**：词级缺词补释义协议（`missingWordSlots` 逐词清点 + `glossGapText` 只发缺词 + `placeGapGloss` 槽位对位 + leftover 顺补）、释义批级容错（GLOSS_BATCH=4、批级 429 continue、`closedGlossObjects` 打捞兜底）、`mergeSentenceWords` 首轮合格优先、生成档位随 pending 行落库（`extras.level/length/focus`）与历史回显（`listGens` IN 查询并回）、Token 分路计数（`trackUsage` lane 记账）（含改动前/后对比与逐行注释） |
+| [每日阅读限流降级.md](./每日阅读限流降级.md) | **429 分级退避与模型降级（当前生效）**：新模块 `reading-llm-limit.ts`——`classifyProviderLimit` 按智谱业务码分 1302 账户 / 1305 过载 / 1113·1308·1310 额度四类、`withRateRetry` Retry-After 优先 + full jitter（过载 4 次否则 3 次）、`resolveReadingFallback` 仅智谱 GLM 链降 `glm-4-flash`（`GLM_FALLBACK_MODEL_NAME` 可覆盖、硅基不降）、`withModelFallback` 进程内冷却 Map 15s 后降级备用模型；service 删内置 `isRateLimit`/`wait`/私有 `withRateRetry`，新增 `modelCoolUntil` 与 `callReadingStream` 统一收口三处出站（`maxRetries:0` 关 LangChain 内重试），`askModel` 模型名改从编排层返回值落库（含改动前/后对比与逐行注释） |
 | [每日阅读界面重构.md](./每日阅读界面重构.md) | **界面重构（当前生效）**：设置页 1130→344 行拆出 `GenerateBar`/`ProfileFields`/`SettingActions`/`OptionRow`/`classes.ts`、详情页拆出 `Quiz`/`GlossSentence`/`ReadingList`、纯函数下沉 `utils/`（body/format/origin/profile/recordTitle）、store `onFrame` 拆 `takeText` 批量冲刷节流渲染、详情页双栏（正文 + 可切篇阅读列表）、生成档位与历史记录回显、i18n 新增 4 键（含改动前/后对比与逐行注释） |
 | [每日阅读流式生成.md](./每日阅读流式生成.md) | **手动生成流式化（当前生效）**：`@Sse()` + `ManualRun` 单进程生产者模型、seq 游标重放断线续订、停止双通道 + 半成品落库（stopped/paused/error 三分支）、Token 精确计数、附件与释义独立请求（`completeExtras`/`completeWordGloss` + 截断打捞）、`english_daily_reading_gens` 生成历史表、前端 fetch 版 SSE 读取器 + MobX store（gen 代数防竞态）+ 流式预览/历史 Popover、nginx 去掉 180s 长超时（含改动前/后对比与逐行注释） |
 | [每日阅读生成调度.md](./每日阅读生成调度.md) | **后端主稿**：`english_daily_readings` 三表与 7 个迁移、BullMQ 队列 + 23:00 定时调度、`claim` 抢占防重、废稿二次生成与防抄袭校验、flash 模型词释补全、双档位（用户手动档 / 超管定时档）、手动生成与停止（runId + AbortController）、8 个新端点（含改动前/后对比与逐行注释）；手动生成链路已于 2026-10-19 流式化，见上条 |
 | [每日阅读前端.md](./每日阅读前端.md) | **前端主稿**：列表（系统日推 / 手动双 origin + 生成轮询 + 触底加载）、详情（逐词释义 Popover + 整篇朗读 + 理解题）、生成资源页（双档位设置 + 手动生成 / 停止）、侧栏入口、面包屑、PracticePageShell footer 插槽（含改动前/后对比与逐行注释）；生成控制已于 2026-10-19 流式化，见首条 |
 | [整篇朗读分段重试.md](./整篇朗读分段重试.md) | **整篇朗读分段与容错**：首句领读 + 按空行段落合成（`leadThenParagraphs`）、单段 400ms 重试一次、`CloudTtsSegmentError` 断点本机续播、`daily_reading_<id>` 缓存域（含改动前/后对比与逐行注释） |
+| [每日阅读逐句播放.md](./每日阅读逐句播放.md) | **逐句播放（当前生效，取代上一条的朗读策略）**：后端 `pickSentenceZh` 中英句数全等才产出 `extras.sentenceZh`、`withSentenceZh` 两处落库挂句译；前端 `playSentences.ts` 句模型与 TTS cadence 同源切句、`playSentenceCount`/`alignBodyZhHeuristic` 条数校验兜底；详情页 `PlayStatus` 三态 + 播放世代、`startArticlePlay`/`togglePlay`、`data-si` 跟随滚动、`PlaySentenceRun` 当前句译文；`cloudSingleUtterance` 换取句级进度；`pausePlaybackSoft`/`resumePlaybackSoft` 软暂停续播与 MediaSession 锁修复；顶栏「逐句中文」开关与 `DailyPlayIconButton` 四态图标（含改动前/后对比与逐行注释） |
+| [每日阅读选区朗读与全文播放统一.md](./每日阅读选区朗读与全文播放统一.md) | **选区朗读与全文播放统一（当前生效）**：详情页全文朗读从 `playPreferred` 暂停/继续迁移到共用选区朗读条（`useAssistantSelectionSpeak` + `speakSource`，只开/停），句高亮由 `onSentenceIndex` 回调驱动；正文挂 `useSelectionContextMenu` 选区右键菜单（朗读/复制），`PositionedQuickMenu` 改 `modal={false}` + Range 写回保住选区高亮；`GlossSentence` 改 `PopoverAnchor` 支持跨词拖选；`ArticleHeader` 去 `paused`、`DailyPlayIconButton` 停止图标改 `SquareStop`（含改动前/后对比与逐行注释） |
 
 ## 经典句看中写与标注
 
@@ -178,6 +206,8 @@
 | [选中文本朗读菜单.md](./选中文本朗读菜单.md) | **增量（本轮）**：英语 Agent 消息正文「选中文本 → 右键 → 朗读/复制」；抽取通用 `useSelectionContextMenu` hook + `PositionedQuickMenu` 组件（供 `ChatAssistantMessage` / `Markdown` 预览 / EPUB 右键复用）；朗读复用听书同款按段云端 TTS，悬浮条支持拖动/倍速/软暂停（含改动前/后对比与逐行注释） |
 | [TTS回调优化.md](./TTS回调优化.md) | **增量**：`onAwaitingPlayback` 语义修正——仅「尚未出声且在等当前段就绪」点亮，本机分段停顿/预取不点亮；`clearAwaitingAndNotifyStart` 重构消除时序错位；修复本机 Web Speech 多段朗读 loading 卡死（含改动前/后对比与逐行注释） |
 | [英语Agent流式性能隔离.md](./英语Agent流式性能隔离.md) | **增量**：英语学习 Agent 流式渲染隔离——`useEnglishAgentSignals` 精细化订阅、`EnglishAgentMessageList` 独立 observer、`EnglishAgentScrollShell` 组件拆分 + Store 层 rAF Patch 调度 |
+| [英语Agent输入草稿隔离.md](./英语Agent输入草稿隔离.md) | **增量（本轮）**：输入打字不卡——`ChatEntry isolateDraft` / `ChatTextArea ownedDraft` 草稿本地持有（仅空↔非空上浮）、`ChatEntryDraftHandle` 命令式读写、固定高度 `field-sizing-fixed` 替代 ScrollArea、`EnglishAgentComposer` 内收发送与快捷意图、页面壳瘦身（含改动前/后对比与逐行注释） |
+| [英语Agent消息列稳定渲染.md](./英语Agent消息列稳定渲染.md) | **增量（本轮）**：消息列只订 `chatId` 序列（正文就地 patch 不再整列重挂）+ `useShareSelection` 返回值 useMemo 稳定引用 + `useAssistantShare` `listMessages`/`pairResolver` useCallback 化，memo 不再被分享态击穿（含改动前/后对比与逐行注释） |
 - 列表/UI：[英语学习列表网络重试.md](./英语学习列表网络重试.md)、[英语学习单词UI重构.md](./英语学习单词UI重构.md)
 - 完整列表：`ls docs/english/*.md`
 

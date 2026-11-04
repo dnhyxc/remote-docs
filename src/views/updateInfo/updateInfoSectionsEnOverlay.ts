@@ -135,6 +135,16 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		description:
 			'The "Update notes", "Product guide", and "Plugin dev guide" pages are no longer in-app pages—they now open in the system browser or a new tab as an independent docs site. The current language, theme, and accent color are passed along automatically, so the visuals stay consistent with the app. Doc content can now be updated independently without app releases.',
 	},
+	's2-18': {
+		title: 'Single-session login per platform',
+		description:
+			'When the same account signs in again on the same platform (Web/desktop, or WeChat Mini Program), the previous session on that platform is signed out automatically—the old device sees a clear "signed in elsewhere" notice and is guided to sign in again. Web/desktop and Mini Program sessions are independent and never kick each other. Signing out now also invalidates the server-side session, so old credentials stop working immediately.',
+	},
+	's2-19': {
+		title: 'No more stacked auth-expired toasts',
+		description:
+			'When your session expires or you are signed out elsewhere, you now see a single clear notice instead of a burst of "please sign in" / "failed to load" toasts. Multiple browser tabs no longer interfere with each other—a tab signed out elsewhere will not wipe the fresh session another tab just signed in; each tab notifies and redirects on its own.',
+	},
 	's3-1': {
 		title: 'One frontend for desktop and browser',
 		description:
@@ -344,6 +354,11 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		title: 'Manually rename session titles',
 		description:
 			'In the Skill try-run page history drawer, hovering a session reveals an edit icon; click it to edit the title inline in the list. Chinese IME is supported — pressing Enter during composition does not submit prematurely. Save by pressing Enter, clicking the confirm button, or blurring the input; an empty title shows a hint and cancels the rename. The title-rename APIs for the knowledge-base assistant and English Agent are ready and will be wired in a later release.',
+	},
+	's4-19': {
+		title: 'History and Share buttons in the input box',
+		description:
+			'The small floating History and Share icons at the top-left of the chat page have moved into the toolbar below the input box — History sits next to New Chat, and Share follows Web Search, each with an icon and a text label. While the history drawer is open, its button stays highlighted and disabled; Share appears only inside a session that has finished loading.',
 	},
 	's5-1': {
 		title: 'Markdown rendering',
@@ -790,6 +805,16 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		title: 'Share links with selectable expiration',
 		description:
 			'When creating a share link, click the clock icon next to the create button to pick a validity period—1 hour, 1 day, 3 days, or 30 days—or choose Custom to enter a number in hours/days (up to 30 days); the default stays 7 days. After creation, the dialog shows when the link expires, and visitors see the expiry time at the top of the shared page. The period locks once the link is created—close the dialog and create a new link for a different duration.',
+	},
+	's14-6': {
+		title: 'Share links that no longer break unexpectedly',
+		description:
+			'Shared content is now saved as a snapshot taken at creation time in permanent storage, instead of relying only on a temporary cache. Even if the service restarts, the cache is cleared, or the original conversation is deleted or the knowledge article emptied, the link still opens and shows the content as it was when shared—no more "share not found or expired" errors or blank pages.',
+	},
+	's14-7': {
+		title: 'Share links keep creation records and view counts',
+		description:
+			'Each share now records who created it, when, and how many times it has been opened. Deleting a share marks it invalid: the link stops working immediately, but the record stays for auditing. The share link itself, the validity settings, and what visitors see are unchanged.',
 	},
 	's14-2': {
 		title: 'Chatbot capability areas',
@@ -1493,6 +1518,118 @@ export const UPDATE_INFO_BULLETS_EN: Record<
                 description:
                         'Automatic daily passages no longer retry forever: generation now stops after at most five attempts. Each attempt leaves a record (when it was queued, how long it ran, how many tokens it used, and whether it succeeded or failed and why) to make troubleshooting easier. If all five attempts fail, the list no longer shows “preparing” indefinitely — it clearly says “Today’s passage is not available yet”, and there is no longer a manual retry button. A new check runs every 15 minutes and only re-queues a passage when today or tomorrow is still missing; operators can also re-queue a specific past day when needed. The list refreshes automatically while generating, for up to 10 minutes.',
         },
+        's24-113': {
+                title: 'The English-learning Agent now reads and writes your study data',
+                description:
+                        'The Agent on the right no longer guesses — it can query your word/quote libraries, daily reading, favorites, review queue, memorization records, mistake collections, word packs, and learning notes through dedicated capabilities, and answers based on real data. Small markers near each reply show which tools were used, keeping the process transparent; write operations (such as adding to favorites) first present a proposal card and only take effect after you confirm; whenever the Agent changes data, the corresponding lists on the left refresh automatically.',
+        },
+        's24-114': {
+                title: 'Large Agent lists become browsable cards, with continue-on-cutoff',
+                description:
+                        'When you ask the Agent for a large list such as an entire library, the reply no longer floods the chat — the list is collected into a browsable card with scrolling, keyword filtering, per-item read-aloud, and automatic loading as you scroll. Cards remain available for a while and can be re-fetched with one tap after they expire. Whole-library questions now produce cards reliably, without missing or duplicate cards. If a reply is cut off by the length limit, a “Continue” button appears and tapping it lets the Agent finish the answer.',
+        },
+        's24-115': {
+                title: 'Generate daily reading straight from the Agent chat',
+                description:
+                        'Tell the English-learning Agent something like “give me a B2 medium passage on technology” to start a custom generation — the level, length, themes, and other options you mention take effect as said, anything you do not mention follows the preferences saved on the “Generate resources” page, and your saved settings are not modified. If a generation is already running, the Agent reports its progress instead of starting a duplicate, and the receipt states which presets were actually used this time.',
+        },
+        's24-116': {
+                title: 'Copy words from the daily-reading tap-to-gloss popover',
+                description:
+                        'The word popover in daily reading passages gains a copy button: one tap copies the word to the clipboard, the icon turns into a checkmark to confirm, and it reverts after about a second. The end-of-article vocabulary list is unchanged.',
+        },
+        's24-117': {
+                title: 'A confirmation card writes immediately',
+                description:
+                        'Confirming a card for favorites, mistakes, word packs, or custom reading writes at once and adds only an assistant receipt. It does not start another chat turn. Several words, or “save every word about food”, become one card, and a second card will not appear in the same turn. Word packs and custom reading do not start until you confirm.',
+        },
+        's24-118': {
+                title: 'List words and sentences by category in the Agent',
+                description:
+                        'Say "list all the verbs" or "group the sentences by topic" and the Agent recognizes the category, checks the matching library batch by batch, and hangs the hits as a card; asking the same category in the same library reuses the previous result instead of re-waiting. After the category card appears, the Agent continues its explanation instead of stopping at the card.',
+        },
+        's24-119': {
+                title: 'One proposal for whole-category favorites',
+                description:
+                        'For whole-category requests like "favorite every food word" or "save all the travel sentences", the Agent first lists the category card, then asks for confirmation in a single proposal; once confirmed, all hits are written at once and the favorites list on the left refreshes itself. The receipt for sentence favorites now counts in "tiao" (rows) instead of "ge" (items).',
+        },
+        's24-120': {
+                title: 'Confirmation bars stay per conversation',
+                description:
+                        'After switching to another conversation, you no longer see the unconfirmed bar from the previous one; when you return, that bar is still in place. Word rows in list cards now show IPA and part of speech inline, no need to open each one.',
+        },
+        's24-121': {
+                title: 'More reliable English Agent intent recognition',
+                description:
+                        'In long chats, phrases like "generate sentences about…", "what have I favorited", "I need to favorite… about…", and "cancel that for me" now take the right path more reliably—generate confirmations are no longer overwritten by leftover filter cards, browsing favorites no longer pops an add-confirm bar, composite favorite asks show filter cards first, and elliptical cancel no longer breaks the next "those above" card selection.',
+        },
+        's24-122': {
+                title: 'Smooth typing in long English Agent chats',
+                description:
+                        'When typing in the English learning Agent, the message list and left sidebar no longer re-render on every keystroke, so even very long conversations stay responsive; once the input box fills up it scrolls internally instead of growing taller and squeezing the message area; quick-intent autofill and clearing after send behave as before.',
+        },
+        's24-123': {
+                title: 'Empty count now defaults to 100 for word packs and classic quotes',
+                description:
+                        'When generating a word pack or classic quotes by topic, leaving the count empty now generates 100 items by default (previously an empty count pulled the per-request maximum of thousands, which took a long time); you can still enter a number or tap a preset for more, and the maximum allowed value is unchanged.',
+        },
+        's24-124': {
+                title: 'English Agent: composite asks show cards',
+                description:
+                        'Asking “what resources are in my mistake list?” now hangs mistake cards. Asking both “which sentence libraries do I have?” and “greetings in …” in one message shows a library list card plus a category filter card—not just a markdown table or empty card placeholders.',
+        },
+        's24-125': {
+                title: 'English Agent: filter follow-ups keep the library',
+                description:
+                        'After asking “greetings in the CET-4 vocabulary library”, you can say “filter that library for family words” or “same, but travel”—the Agent keeps working in the same library without you repeating its name. “All words about family” now correctly shows a filter card instead of dumping the whole library, and when multiple libraries match, the Agent asks you to pick one instead of guessing.',
+        },
+        's24-126': {
+                title: 'Batch favorite confirmation counts only matches',
+                description:
+                        'For asks like “favorite all words about family” or “favorite every sentence about travel”, the confirmation bar now counts only the filtered matches—not the entire library of a hundred-plus entries—and confirming writes just those matched rows.',
+        },
+        's24-127': {
+                title: 'Agent note list cards open the note',
+                description:
+                        'When the Agent lists your learning notes, each card row shows just the note title. Clicking a row jumps to the notes page and opens that note directly—no more hunting through the list yourself.',
+        },
+        's24-128': {
+                title: 'Saving to knowledge base strips card markers',
+                description:
+                        'When you save an Agent reply to the knowledge base, the internal markers used to mount list cards are stripped automatically and paragraph spacing stays clean—you get readable text only.',
+        },
+        's24-129': {
+                title: 'Daily reading highlights each sentence and shows sentence translation',
+                description:
+                        'While a daily reading passage is read aloud, the sentence being spoken is highlighted in pale green and scrolled into view automatically. A new “Show sentence translation” toggle in the header puts the Chinese translation directly under each English sentence; during playback the current sentence’s translation also appears beneath it. Translations are aligned sentence by sentence—if they cannot be aligned, none are shown, so text never mismatches.',
+        },
+        's24-130': {
+                title: 'Daily reading playback can pause and resume',
+                description:
+                        'During playback the speaker button becomes a pause icon; tap it to stop where you are, then tap resume to continue from that sentence instead of starting over. When playback stops or finishes, the button returns to the speaker icon. Switching to another passage resets playback state and the sentence-translation toggle.',
+        },
+        's24-131': {
+                title: 'Steadier daily reading: auto backoff on rate limits, fallback model on overload',
+                description:
+                        'When manual generation or the daily auto push hits a model rate limit, it no longer fails outright — it backs off and retries using the wait time suggested by the provider; if the primary model stays overloaded, it automatically switches to a fallback model under the same account to finish the passage, and the passage records the model that actually wrote it. Quota problems such as an overdue balance no longer retry in vain and surface faster.',
+        },
+        's24-132': {
+                title: 'Word hover highlight no longer sticks; reference link and sidebar tweaks',
+                description:
+                        'Hovering a word in the reading text now lights it up when the pointer enters and clears when it leaves — no word stays stuck highlighted after scrolling. The Reference link on the detail page responds only within its own text instead of the whole row. In the English sidebar, Daily Reading now sits after Favorites and Mistake Book, matching the learning flow.',
+        },
+        's24-133': {
+                title: 'English learning assistant intro updated',
+                description:
+                        'The intro atop the assistant panel on the English learning page now reads: “Ask your question directly, or let me help organize your learning content on the left” — ask directly, or let it work from your vocabulary, mistake book, and reading history.',
+        },
+
+        's24-134': {
+                title: 'Daily reading full-article playback unified with selection speak; right-click selection menu added',
+                description:
+                        'Full-article playback on the daily reading detail page now reuses the selection speak bar instead of a separate pause/resume flow — the header speaker button only starts or stops. Select a sentence in the article and right-click to speak or copy it. Word glosses now use PopoverAnchor so cross-word drag selection is no longer cleared by focus stealing.',
+        },
+
         's25-1': {
 		title: 'E-book bookshelf',
 		description:

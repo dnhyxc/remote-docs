@@ -9,6 +9,7 @@
 - TTS 落盘缓存（L2，本方案**复用不动**）：[TTS本地文件缓存.md](./TTS本地文件缓存.md)
 - 讯飞云 TTS（并列 provider，可作降级对照）：[讯飞云TTS.md](./讯飞云TTS.md)
 - Python 上游端点变更参考：`rany2/edge-tts` ≥7.2.2（`api.msedgeservices.com`）
+- 机房出口对该新主机回 HTTP 200 的后续：[Edge机房握手.md](./Edge机房握手.md)
 
 ---
 
