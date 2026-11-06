@@ -26,7 +26,7 @@
 | [`ui/`](./ui/)               | 通用 UI/UX（组件、交互、编辑器）        | [ui/UI色调打磨.md](./ui/UI色调打磨.md)                                                                                           |
 | [`monaco/`](./monaco/)       | Monaco / Markdown 编辑器                | [monaco/README.md](./monaco/README.md)                                                                                                    |
 | [`mermaid/`](./mermaid/)     | Mermaid 围栏与预览                      | [mermaid/Markdown缩放与预览.md](./mermaid/Markdown缩放与预览.md)                                                           |
-| [`tools/`](./tools/)         | `@dnhyxc-ai/markdown-kit`               | [tools/索引.md](./tools/索引.md)                                                                                                       |
+| [`tools/`](./tools/)         | `@dnhyxc-ai/markdown-kit` / `richtext-kit` | [tools/索引.md](./tools/索引.md)                                                                                                    |
 | [`react/`](./react/)         | React Hooks 专题                        | 按文件名检索                                                                                                                             |
 | [`setting/`](./setting/)     | 设置页（系统快捷键、主题色等）          | [setting/README.md](./setting/README.md)                                                                                                 |
 | [`meta/`](./meta/)           | 发布与更新同步                          | [meta/项目功能更新.md](./meta/项目功能更新.md)                                                                     |

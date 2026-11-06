@@ -1630,6 +1630,12 @@ export const UPDATE_INFO_BULLETS_EN: Record<
                         'Full-article playback on the daily reading detail page now reuses the selection speak bar instead of a separate pause/resume flow — the header speaker button only starts or stops. Select a sentence in the article and right-click to speak or copy it. Word glosses now use PopoverAnchor so cross-word drag selection is no longer cleared by focus stealing.',
         },
 
+        's24-135': {
+                title: 'English learning assistant intro condensed',
+                description:
+                        'The intro atop the assistant panel is now a sentence and a half. It keeps four points — what you can ask (vocab, translation, grammar, speaking, reading), that the assistant can use your left-panel content, that favorites and mistake-book adds ask for confirmation first, and that quick intents attach to the next send and clear on a second click — and drops the item-by-item list of left-panel sections. The English copy was condensed in step, with the same four points.',
+        },
+
         's25-1': {
 		title: 'E-book bookshelf',
 		description:

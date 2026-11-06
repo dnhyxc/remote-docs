@@ -83,6 +83,7 @@
 | [EPUB听书段落朗读.md](./epub/EPUB听书段落朗读.md) | **Web/桌面听书·听当前按段 TTS + 逐句高亮**（核心已落地）：规划脉络 → **归档** [ebook/EPUB听书段落朗读.md](../ebook/EPUB听书段落朗读.md) |
 | [EPUB听书核心逻辑.md](./epub/EPUB听书核心逻辑.md) | **EPUB 听书核心实现逻辑梳理**（已上线）：架构/流程/时序/状态机 + **§14 相关实现完整源码**（PlayUnits/Paragraphs/Chapter/Hook/底栏/Overlay 等全文 + `speech.ts` 听书节选） |
 | [EPUB听书播放优化.md](./epub/EPUB听书播放优化.md) | **听书播放优化**（主项已落地）：loading / 分句选中色 / 进度取整见 ebook 专题；总索引 [ebook/EPUB听书播放修复2026-07.md](../ebook/EPUB听书播放修复2026-07.md) |
+| [富文本Kit抽包.md](./notes/富文本Kit抽包.md) | **富文本编辑+预览 npm 抽包**（规划）：新建 `@dnhyxc-ai/richtext-kit`（对齐 markdown-kit 子路径/Changesets）；迁 RichEditor/NotePreview/长文窗口；默认薄 UI + slots 解耦 shadcn/i18n；学习笔记改 import，Store/API 不进包 |
 | [学习笔记富文本编辑.md](./notes/学习笔记富文本编辑.md) | **学习笔记富文本编辑器**（核心已上线）：Tiptap 3.x 封装、自定义 Title 节点、工具栏+气泡菜单、左右分栏布局、M1–M5 分阶段落地 → **归档** [english/学习笔记富文本编辑.md](../english/学习笔记富文本编辑.md) |
 | [学习笔记编辑器预览卡顿.md](./notes/学习笔记编辑器预览卡顿.md) | **学习笔记编辑/预览卡顿**（已上线）：根因拆解、S1–S8（卸 TipTap、列表隔离、长文窗口化编辑/预览、延迟挂载等）、否决虚拟列表/iframe、带注释代码与原理 |
 | [学习笔记独立弹窗.md](./notes/学习笔记独立弹窗.md) | **学习笔记独立弹窗与多窗口同步**（核心已上线）：Tauri 托管关窗（Rust `prevent_close` → `eval`/`emit` → 前端 await 保存 → `destroy`）、BroadcastChannel 跨窗同步总线（七类消息 + `windowId` 回声抑制 + `revision` LWW）、三层保存兜底（store autoSave → DOM await → keepalive）、HTTP 包装自动广播、DOM ponyfill 同步、外观跟随双通道、插件 monkey-patch；含架构/主流程/时序三图 + 全部源码逐行注释 + 分阶段 M1–M3 + 验收清单 → **归档** [english/学习笔记独立弹窗.md](../english/学习笔记独立弹窗.md) |
