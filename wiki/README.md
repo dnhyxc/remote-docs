@@ -17,6 +17,7 @@
 | [`llm/`](./llm/)             | 大模型接入（硅基、`createLlm`、设置页） | [llm/README.md](./llm/README.md)                                                                                                         |
 | [`ops/`](./ops/)             | 部署、Nginx、本地上传目录               | [ops/README.md](./ops/README.md)                                                                                                         |
 | [`app/`](./app/)             | 前端壳层（构建、网络、文件选择）        | [app/README.md](./app/README.md)                                                                                                         |
+| [`admin/`](./admin/)         | 运营后台（`dnhyxc-ai-admin`：分享管理、笔记预览、后台布局） | [admin/README.md](./admin/README.md)                                                                                  |
 | [`plugins/`](./plugins/)    | 插件/微前端系统（MF、插件开发）        | [plugins/模块联邦实现指南.md](./plugins/模块联邦实现指南.md)                                                               |
 | [`tauri/`](./tauri/)         | Tauri 桌面特性（窗口、菜单、全屏）      | [tauri/Tauri窗口缩放揭示.md](./tauri/Tauri窗口缩放揭示.md)                                                                 |
 | [`auth/`](./auth/)           | 认证登录（路由守卫、单端互踢、SecretInput）      | [auth/路由认证.md](./auth/路由认证.md)、[auth/登录单端互踢.md](./auth/登录单端互踢.md)、[auth/401清退链路与多Tab保护.md](./auth/401清退链路与多Tab保护.md)  |
@@ -322,6 +323,9 @@
 | Portal（Dialog/Drawer/Popover）内字体不是应用字体 / Markdown 预览用系统字体 | [app/Portal与Markdown字体继承.md](./app/Portal与Markdown字体继承.md)（`font-family` 从 `#root` 移至 `body` + `.markdown-body` 显式覆盖第三方 CSS） |
 | 书架与知识库图标按钮无悬停动画 / 导入按钮加载中可误触 / 分类标签样式不一致 | [app/书架知识库视觉微调.md](./app/书架知识库视觉微调.md)（`lucide-stroke-draw-hover` + Tooltip `side="top"` + `disabled={uploading \|\| showInitialLoading}` + Tab `variant="link"` + 图标 `size-4`） |
 | Monaco 编辑器加载时无加载指示 / Suspense 占位无背景 | [app/Monaco加载恢复.md](./ui/Monaco加载恢复.md)（`loading` prop 恢复 + `bg-theme/5` fallback 背景） |
+| 运营后台分享列表删不掉 / 提示「分享不存在」 | [admin/分享记录删除.md](./admin/分享记录删除.md)（`resolveScope` + `createdBy` 作用域 + 先查后删） |
+| 运营后台笔记详情排版与前台不一致 / 超长笔记打开卡顿 | [admin/笔记详情富文本预览.md](./admin/笔记详情富文本预览.md)（`NotePreview` + `WindowedNotePreview` + 80 块阈值） |
+| 运营后台长表格/长代码把页面撑出横向滚动条 | [admin/长内容横向溢出修复.md](./admin/长内容横向溢出修复.md)（`min-w-0` + ScrollArea 内容层 `display:block` + 表格就地横滚） |
 
 ---
 

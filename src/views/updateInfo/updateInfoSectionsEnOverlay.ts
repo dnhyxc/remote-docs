@@ -816,6 +816,11 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		description:
 			'Each share now records who created it, when, and how many times it has been opened. Deleting a share marks it invalid: the link stops working immediately, but the record stays for auditing. The share link itself, the validity settings, and what visitors see are unchanged.',
 	},
+	's14-8': {
+		title: 'Share records can be deleted in the admin console',
+		description:
+			'The share list in the admin console now offers Delete. Administrators can remove any expired or problematic share, while regular operators can delete only shares created by their own account, with a confirmation step first. Deleting removes the share permanently: the link stops working immediately and cannot be restored. This differs from Deleting a share in the product (which only marks it invalid and keeps the record).',
+	},
 	's14-2': {
 		title: 'Chatbot capability areas',
 		description:
