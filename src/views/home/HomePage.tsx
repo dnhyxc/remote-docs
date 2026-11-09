@@ -6,6 +6,8 @@ const LINKS = [
 	{ path: '/update-info', key: 'nav.updateInfo' as const },
 	{ path: '/project-guide', key: 'nav.projectGuide' as const },
 	{ path: '/plugin-dev-guide', key: 'nav.pluginDevGuide' as const },
+	{ path: '/service-policy', key: 'nav.servicePolicy' as const },
+	{ path: '/user-agreement', key: 'nav.userAgreement' as const },
 ];
 
 export default function HomePage() {

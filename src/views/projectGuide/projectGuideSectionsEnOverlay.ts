@@ -607,7 +607,7 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 	'pg-s15-1': {
 		title: '15.1 Service policy and user agreement',
 		description:
-			'From About: Service Policy and User Agreement open in the system browser (desktop) or a new tab (web), not inside the small About window—same full-page scroll feel as share pages, without main chrome. Routes /service-policy and /user-agreement; available logged out.\nBesides changing UI language in Settings, those pages have a header toggle like the product guide: ?lang= switches zh/en and refreshes body copy immediately.\nLegal copy is product-level; maintainer-edited in code.',
+			'From About, User service policy and User service agreement open in the system browser (desktop) or a new tab (web), not inside the small About window. The app builds the docs-site URL with the current language, theme, and accent. Paths are /service-policy and /user-agreement on the docs site; available logged out.\nLayout matches the product guide: header, table of contents, section titles, and item text. The header language toggle updates ?lang=.\nLegal copy is product-level; specific rights follow published notices and applicable law.',
 	},
 	'pg-s15-2': {
 		title: '15.2 Release notes (independent docs site)',

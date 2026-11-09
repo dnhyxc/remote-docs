@@ -116,7 +116,7 @@ export function DocToc({
 					<nav
 						ref={navRef}
 						aria-label={label}
-						className="my-auto flex w-full flex-col items-stretch p-4 text-left"
+						className="flex w-full flex-col items-stretch p-4 text-left"
 					>
 						{toc.map((item) => {
 							const active = item.id === activeId;

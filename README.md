@@ -1,6 +1,6 @@
 # remote-docs
 
-Host **产品文档三页** MF Remote：更新信息 / 产品指南 / 插件开发手册。
+Host **产品文档** MF Remote：更新信息 / 产品指南 / 插件开发手册 / 用户服务政策 / 用户服务协议。
 
 | 项 | 值 |
 |---|---|
@@ -13,10 +13,12 @@ Host **产品文档三页** MF Remote：更新信息 / 产品指南 / 插件开�
 
 | path | 页面 |
 |---|---|
-| `/home` | 独立预览首页（三文档入口） |
+| `/home` | 独立预览首页 |
 | `/update-info` | 更新信息 |
 | `/project-guide` | 产品指南 |
 | `/plugin-dev-guide` | 插件开发手册 |
+| `/service-policy` | 用户服务政策 |
+| `/user-agreement` | 用户服务协议 |
 
 Host 嵌入时默认进 `/update-info`；独立预览进 `/home`。浏览器地址栏仍停在 Host `routePath`。
 
@@ -35,18 +37,22 @@ Host 外链（`get*AbsoluteUrl` → `openExternalUrl`）默认打开本独立站
 - `http://127.0.0.1:9013/update-info?lang=zh-CN&theme=…`
 - `http://127.0.0.1:9013/project-guide?…`
 - `http://127.0.0.1:9013/plugin-dev-guide?…`
+- `http://127.0.0.1:9013/service-policy?…`
+- `http://127.0.0.1:9013/user-agreement?…`
 
 可用 Host 环境变量 `VITE_REMOTE_DOCS_ORIGIN` 覆盖 origin。
 
 ## Host registry
 
-`apps/backend/uploads/remotes/plugins-registry.json` 已挂三条（共用 `remoteDocs` / `./App` / `:9013`）：
+`apps/backend/uploads/remotes/plugins-registry.json` 已挂五条（共用 `remoteDocs` / `./App` / `:9013`）：
 
 | id | routePath |
 |---|---|
 | `remoteDocsUpdateInfo` | `/update-info` |
 | `remoteDocsProjectGuide` | `/project-guide` |
 | `remoteDocsPluginDevGuide` | `/plugin-dev-guide` |
+| `remoteDocsServicePolicy` | `/service-policy` |
+| `remoteDocsUserAgreement` | `/user-agreement` |
 
 - `injectRoute: true`，省略 `menu`（不进侧栏）
 - 壳按 `plugin.routePath` 打开对应内部页
@@ -60,4 +66,4 @@ pnpm dev   # http://127.0.0.1:9013/
 
 ## 文案同源
 
-sections 数据自 Host `apps/frontend/src/views/{updateInfo,projectGuide,pluginDevGuide}` 拷贝；修订说明时请两边同步（或日后改为单一来源）。
+更新信息、产品指南、插件手册的 sections 自 Host 迁入后以本仓为准。用户服务政策与用户服务协议只在本仓维护。

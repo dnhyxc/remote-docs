@@ -18,6 +18,8 @@ const DOC_PATHS = new Set([
 	'/update-info',
 	'/project-guide',
 	'/plugin-dev-guide',
+	'/service-policy',
+	'/user-agreement',
 ]);
 
 function BridgeSync({
@@ -47,7 +49,7 @@ function resolveInitialPath(props: AppProps, standalone: boolean): string {
 }
 
 /**
- * 文档 Remote 壳：三页内存路由。
+ * 文档 Remote 壳：内存路由。
  * 嵌入 Host → routePath；独立预览 / 外链 → 地址栏 path。
  */
 function App(props: AppProps = {}) {
