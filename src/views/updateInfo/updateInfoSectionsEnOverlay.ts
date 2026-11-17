@@ -1641,6 +1641,53 @@ export const UPDATE_INFO_BULLETS_EN: Record<
                         'The intro atop the assistant panel is now a sentence and a half. It keeps four points — what you can ask (vocab, translation, grammar, speaking, reading), that the assistant can use your left-panel content, that favorites and mistake-book adds ask for confirmation first, and that quick intents attach to the next send and clear on a second click — and drops the item-by-item list of left-panel sections. The English copy was condensed in step, with the same four points.',
         },
 
+        's24-136': {
+                title: 'Word detail from the word card',
+                description:
+                        'After you enable Word Detail in the plugin center, a detail icon appears on each word card. Open the right-hand panel to see word-formation parts, a memory hook, senses split by part of speech and context, example pairs, derived words, collocations and synonyms. Click the same icon again to close it; switch to another word and the panel stays open with new content. While a detail is being generated the icon spins, and closing then reopening the same word will not start a second call. Details are cached per word, so later openings from any entry appear almost instantly; each paragraph can be read aloud.',
+        },
+
+        's24-137': {
+                title: 'Word detail list in the header',
+                description:
+                        'The vocabulary list header now has a Word Detail entry next to Favorites for reviewing words that already have details. It loads 50 rows per page and keeps loading as you scroll, with “N total / M loaded” shown beside the title. Click any row to open that word detail, and closing it returns you to the list. Rows carry only the word, so the phonetic spelling and part of speech are filled in when opened.',
+        },
+
+        's24-138': {
+                title: 'Regenerate and stop word detail',
+                description:
+                        'Inside the detail drawer you can tap Regenerate for the same word. The regenerated result only overrides what you see, without affecting the shared cache or other users. While it is being generated, tap Stop to interrupt immediately and leave no half-written result. When opening a word, details are returned in the order Regenerate → Manual Import → Shared Cache; only when none exist does the model run.',
+        },
+
+        's24-139': {
+                title: 'Import word details from the library card',
+                description:
+                        'After you enable “Import Word Details” in the plugin center, an import icon appears next to the edit button on each vocabulary library card. Open the drawer to paste or upload JSON and bulk-import details into your own library. Only words already in this library are accepted; invalid entries are skipped and reported. Re-importing the same word overwrites it. Imported details are visible only to you and never enter the shared cache.',
+        },
+
+        's24-140': {
+                title: 'Word detail shipped as three separate plugins',
+                description:
+                        'The plugin center now lets you enable Word Detail, Word Detail List, and Import Word Details separately. Each installs and updates on its own, and no empty slot is left behind when one is disabled. The source-switch menu, regenerate and stop, per-paragraph read-aloud in the detail panel, plus infinite scrolling and header stats in the list, all ship inside their own plugin.',
+        },
+
+        's24-141': {
+                title: 'More reliable first opens and drawer transitions for word detail',
+                description:
+                        'The first click on a plugin entry on a word card or library card now keeps the selected word or library while the plugin loads, then continues opening it. Moving from the detail list to a word and back, or switching between import and detail drawers, also preserves the current context instead of ignoring the first click or losing the target. After switching words or libraries, the detail, list, and import panels now follow the latest context. Cancelling the import file picker simply ends that selection and no longer opens an additional local upload control.',
+        },
+
+        's24-142': {
+                title: 'Opening word detail from the list or import no longer stacks or flashes',
+                description:
+                        'Choosing a word in the word-detail list or the import drawer now moves that list aside immediately, and the detail appears in place. The cards underneath no longer show through, and the page no longer flashes. Closing the detail leaves the list or import where it was. Opening detail from the icon on a word card still slides in from the right.',
+        },
+        's24-143': {
+                title: 'Daily-reading saved words can open word detail and export the current filter',
+                description:
+                        'After enabling Word Detail, Word Detail List, and Import Word Details in the plugin center, a saved-word card can open that word’s detail, and the search bar can open the detail list and import. The list and import only include words you have saved. JSON and Word export follow the selected passage and the search you already submitted, instead of always exporting everything. When a passage is selected, the file name uses its Chinese title. Opening a word from the list or import hides that drawer; closing the detail brings it back. If nothing matches, you only see a notice and no empty file is downloaded.',
+        },
+
         's25-1': {
 		title: 'E-book bookshelf',
 		description:

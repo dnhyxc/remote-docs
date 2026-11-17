@@ -89,6 +89,14 @@
 | [收藏状态会话级缓存.md](./收藏状态会话级缓存.md) | **收藏状态会话级缓存与跨页同步**：两个增量收藏 Hook 新增会话级 `sessionFavoriteIdByWordKey` / `sessionQueriedWordKeys` + revision 事件（`bumpXxxFavoriteSession`）；后端在词包历史 / 错题 / 每日记词 / 复习队列 / 随机抽词返回体回填 `favoriteId`；列表快照 `patchVocabFavoriteInListCaches` / `patchClassicFavoriteInListCaches` 同步；消费方迁移到 `isXxxFavorited` / `resolveXxxFavoriteId` 新 API |
 | [收藏按钮统一组件.md](./收藏按钮统一组件.md) | **统一收藏按钮组件**：新建 `FavoriteToggleButton`（单词 / 经典句二选一）+ 合并 `DailyCorrectFeedback` / `DailyWrongFeedback` 为 `DailyFeedback`（`variant` 切换）+ `DailyPlayIconButton` 改 Button+Tooltip + 练习答题页顶栏嵌入收藏钮 + `practiceFavoriteToggleProps` 分发 helper + `button.tsx` hover teal-500→teal-400 |
 | [英语收藏抽屉.md](./英语收藏抽屉.md) | 收藏抽屉 |
+| [学习页扩展点.md](./学习页扩展点.md) | **学习页插件挂载当前主文档**：词卡 / 语句卡操作、资源库顶栏与库卡操作、收藏 / 错题 / 复习工具栏、每日阅读篇目操作统一接入 `HostPoint`；页面上下文白名单、抽屉覆盖与让位、冷启动载荷保留及每日阅读交互元素拆分 |
+| [单词详解缓存与抽屉.md](./单词详解缓存与抽屉.md) | **单词详解（当前生效）**：三级优先级（重新生成 > 手动导入 > 全站缓存）+ `peek=1` 只读 + 重新生成写 regen 表 + 停止生成（`createVocabRuns` + `AbortController` 断开上游 HTTP + Redis 停止标记）+ inflight / Redis NX 锁只生成一次；当前前端由通用 `HostPoint`、`points/session.ts` 与 `modules:point` 承接卡片入口、抽屉会话和插件桥，历史专属会话实现见文内迁移说明 |
+| [详解抽屉瞬时让位.md](./详解抽屉瞬时让位.md) | **列表 / 导入点开详解不闪**：下层面板同一帧透明并停掉动画，详解不滑入、遮罩不从 0 淡入；关掉详解后列表和导入停在原位 |
+| [单词详解列表.md](./单词详解列表.md) | **详解词列表（当前生效）**：词库绑定（`libraryId` 必填）+ 三源合并 + Redis 有序集合 + 哈希缓存（epoch 失效）+ 游标分页（`updatedAt\|lemma`，每页 50）+ lemma 列与回填迁移；资源库顶栏入口、列表与详解抽屉覆盖 / 揭开、`publishSignal('stats')` 顶栏统计 |
+| [手动导入单词详解.md](./手动导入单词详解.md) | **手动导入详解（当前生效）**：词库卡片 `library-card-action` 入口 + 词库 `import-drawer` 扩展点 + `GET/POST/DELETE vocab-detail/import` + 手动详解表（`UNIQUE(user_id, lemma)`）+ 白名单校验 + `parseVocabDetail` 严格校验 + 幂等 upsert |
+| [单词详解插件面板.md](./单词详解插件面板.md) | **单词详解远程插件（面板侧，当前生效）**：`VocabDetail` expose、`api.modules.point` 裁剪桥、扩展点快照订阅、版本优先级切换（导入 / 原生成 / 新生成）、peek 后生成、同词在途复用、停止生成与重新生成、逐段朗读竞态、列表来源整页 Loading（含全量源码与逐行注释） |
+| [单词详解列表插件.md](./单词详解列表插件.md) | **单词详解列表远程插件（当前生效）**：`VocabDetailList` expose、词库绑定与切库重置、游标分页 + 代际防串页、IntersectionObserver 触底、`publishSignal('stats')` 统计回报、点词经 `openCard` 命令打开详解与 Toast 兜底（含全量源码与逐行注释） |
+| [单词详解导入插件.md](./单词详解导入插件.md) | **手动导入详解远程插件（当前生效）**：`VocabDetailImport` expose、提示词复制、宿主 `pickJsonFile` 命令优先（返回 `null` 即取消，不再回退隐藏 input；仅缺少 point 命令时才兜底）、2000 条上限、导入结果分组统计、已导入词分页列表、清空导入（含全量源码与逐行注释） |
 | [英语收藏DOCX导出.md](./英语收藏DOCX导出.md) | 导出 DOCX |
 | [单词库导出.md](./单词库导出.md) | **单词库 JSON 导出**：`Export.tsx` 导出按钮 + `exportVocabulary.ts` 分页拉取（库 1000/页、历史 200/页、最多 40 页）+ `saveFileWithPicker` JSON |
 | [词库整库DOCX导出.md](./词库整库DOCX导出.md) | **词库 / 语句库整库 DOCX 导出**：后端分页装载 + 复用收藏 Builder（单词硬顶 12000 / 语句 6000）；前端 Export 按钮升级为下拉菜单（JSON / Word），大库超时 3 分钟 |
@@ -128,6 +136,9 @@
 
 | 文档 | 说明 |
 |------|------|
+| [生词接入解析.md](./生词接入解析.md) | **生词页打开单词解析（当前生效）**：篇目点增加详情 / 列表 / 导入命令；列表与导入用 `scope=dailyReading`，允许集是当前用户生词 `word_key`，Redis 与词库列表分开 |
+| [生词按条件导出.md](./生词按条件导出.md) | **按当前篇目和搜索导出（当前生效）**：JSON 与 Word 共用列表筛选并一次取出全部命中；空结果只提示；文件名用选中篇目的中文标题 |
+| [生词解析叠层.md](./生词解析叠层.md) | **从列表或导入进详情时下层只隐藏（当前生效）**：事件当刻读词卡槽，拒绝关闭；离开英语学习时忽略已解绑的停止朗读 |
 | [每日阅读Agent自选生成.md](./每日阅读Agent自选生成.md) | **Agent 对话自选生成（当前生效）**：`parseReadingOverride` 原话解析（位置感知 + 否定排除 + 后说为准，点名的键才覆盖）、`resolveAgentManual` 以已保存档为底不写回设置、`peekManualRun` 只读防重、`el_daily_reading` 新增 `generate_manual`/`gen_status`、`manualReceipt` 回执告知本次实际档位（含改动前/后对比与逐行注释） |
 | [点词弹层复制按钮.md](./点词弹层复制按钮.md) | **点词弹层复制按钮（当前生效）**：`WordLine` 新增可选 `copy` 属性（默认关闭，文末单词列表不受影响）、复制后对勾反馈 1 秒自动复原、卸载清理定时器、复用既有 `copyToClipboard` 与 `common.copy/copied` 词条（含改动前/后对比与逐行注释） |
 | [点词悬浮指针化.md](./点词悬浮指针化.md) | **点词悬浮指针化（当前生效）**：`GlossSentence` 新增 `hoverKey` 状态，词按钮 `onPointerEnter/Leave`（函数式更新只清自己）+ 整句 `onPointerLeave` 兜底，高亮由 `hoverKey === key` 计算并保留 `open` 优先级，替代 ScrollArea / 两端对齐正文里易粘住的 CSS `:hover`（含改动前/后对比与逐行注释） |

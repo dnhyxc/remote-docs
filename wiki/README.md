@@ -18,13 +18,13 @@
 | [`ops/`](./ops/)             | 部署、Nginx、本地上传目录               | [ops/README.md](./ops/README.md)                                                                                                         |
 | [`app/`](./app/)             | 前端壳层（构建、网络、文件选择）        | [app/README.md](./app/README.md)                                                                                                         |
 | [`admin/`](./admin/)         | 运营后台（`dnhyxc-ai-admin`：分享管理、笔记预览、后台布局） | [admin/README.md](./admin/README.md)                                                                                  |
-| [`plugins/`](./plugins/)    | 插件/微前端系统（MF、插件开发）        | [plugins/模块联邦实现指南.md](./plugins/模块联邦实现指南.md)                                                               |
+| [`plugins/`](./plugins/)    | 插件/微前端系统（MF、声明式扩展点、插件开发） | [plugins/README.md](./plugins/README.md)                                                                                     |
 | [`tauri/`](./tauri/)         | Tauri 桌面特性（窗口、菜单、全屏）      | [tauri/Tauri窗口缩放揭示.md](./tauri/Tauri窗口缩放揭示.md)                                                                 |
 | [`auth/`](./auth/)           | 认证登录（路由守卫、单端互踢、SecretInput）      | [auth/路由认证.md](./auth/路由认证.md)、[auth/登录单端互踢.md](./auth/登录单端互踢.md)、[auth/401清退链路与多Tab保护.md](./auth/401清退链路与多Tab保护.md)  |
 | [`style/`](./style/)         | 样式隔离（@scope、Portal、qiankun）    | [style/样式隔离实现.md](./style/样式隔离实现.md)                                                     |
 | [`video/`](./video/)         | 视频播放器（组件化、影院态、画中画）    | [video/视频播放器插件.md](./video/视频播放器插件.md)                                                                           |
 | [`i18n/`](./i18n/)           | 国际化（中英文界面）                    | [i18n/中英双语实现指南.md](./i18n/中英双语实现指南.md)                                                       |
-| [`ui/`](./ui/)               | 通用 UI/UX（组件、交互、编辑器）        | [ui/UI色调打磨.md](./ui/UI色调打磨.md)                                                                                           |
+| [`ui/`](./ui/)               | 通用 UI/UX（组件、交互、编辑器）        | [ui/README.md](./ui/README.md)                                                                                           |
 | [`monaco/`](./monaco/)       | Monaco / Markdown 编辑器                | [monaco/README.md](./monaco/README.md)                                                                                                    |
 | [`mermaid/`](./mermaid/)     | Mermaid 围栏与预览                      | [mermaid/Markdown缩放与预览.md](./mermaid/Markdown缩放与预览.md)                                                           |
 | [`tools/`](./tools/)         | `@dnhyxc-ai/markdown-kit` / `richtext-kit` | [tools/索引.md](./tools/索引.md)                                                                                                    |
@@ -88,6 +88,12 @@
 | MF 插件主题热推送（Host → Remote theme light/dark 推送，与 locale 对称） | [plugins/插件主题热推送.md](./plugins/插件主题热推送.md)（withLiveTheme + eventBus.emit("theme")） |
 | MF 动态插件系统完整实现（Vite / PluginManager / 路由注入）          | [plugins/动态插件系统.md](./plugins/动态插件系统.md)（含改动前/后对比与逐行注释）                                                              |
 | 插件开发手册（环境 / 组件 / 样式 / HostBridge / 发布）              | [plugins/插件开发指南.md](./plugins/插件开发指南.md)                                                                                      |
+| 扩展点不占位 / `modules:point` 权限 / 抽屉覆盖与让位 / 首次点击载荷丢失 | [plugins/声明式扩展点.md](./plugins/声明式扩展点.md)（目录 + `HostPoint` + 会话 + 信号 + 命令桥） |
+| 旧 `vocabDetail` / `vocabDetailImport` / `ebook` 模块失效 / Remote 如何读取上下文、载荷并调用命令 | [plugins/统一point模块桥.md](./plugins/统一point模块桥.md)（`PointModule` 五方法 + 单词与电子书 Remote + 预览桥；Host 与 Remote 须同步发布） |
+| EPUB 阅读页插件上下文或命令失效 / 不可信 iframe `ebook.*` RPC 兼容 | [plugins/阅读页扩展点.md](./plugins/阅读页扩展点.md)（`ebook.read` 当前实现）· [ebook/电子书插件想法列表.md](./ebook/电子书插件想法列表.md)（历史业务实现） |
+| 英语学习页插件入口 / 收藏错题复习工具栏 / 每日阅读篇目操作槽 | [english/学习页扩展点.md](./english/学习页扩展点.md)（词卡、语句卡、资源库与固定学习页统一挂载） |
+| 单词详解 / 详解列表 / 手动导入三个远程插件怎么注册与预览            | [plugins/单词详解插件接入.md](./plugins/单词详解插件接入.md)（exposes / routes / 导航 / 首页卡 / i18n / plugin-info） |
+| 下拉菜单内容不能滚动 / 滚轮滚动穿透到页面                           | [ui/下拉菜单滚动区.md](./ui/下拉菜单滚动区.md)（DropdownMenuContent 默认 ScrollArea + onWheel 阻断） |
 | 主项目接入插件方式（自动路由 / 手动挂载 / iframe 隔离）             | [plugins/宿主插件集成指南.md](./plugins/宿主插件集成指南.md)                                                                            |
 | 插件图标 SVG URL 动态加载与内联（侧栏 / Host Surface）              | [plugins/插件宿主图标.md](./plugins/插件宿主图标.md)                                                                                                    |
 | 插件上架/下架（setEnabled / 持久化 / Switch / Registry 编辑页）     | [plugins/插件书架切换.md](./plugins/插件书架切换.md)                                                                                                |
@@ -100,7 +106,7 @@
 | 视频播放器想在其它业务复用 / 上传 / 播放 / tooltip 全部解耦      | [video/视频播放器组件重构.md](./video/视频播放器组件重构.md)（组件化拆分 + `TooltipProvider` + 主题色 token）                                                                 |
 | 视频播放器进度条 hover 无缩略图 / 画中画 Safari 不可用 / 长视频刻度卡 | [video/视频播放器功能增强.md](./video/视频播放器功能增强.md)（缩略图预览 + 多平台画中画 + 刻度上限）                                                                 |
 | 视频播放器拖拽松手右抖 / 循环单条不重播 / 控制条毛玻璃慢一拍 / xgplayer 背景不跟随主题 | [video/视频播放器拖拽进度.md](./video/视频播放器拖拽进度.md)（拖拽重写 + scrubHoldUntil 抑制 + 画布固定 160×90 + visible 显隐） |
-| 微前端插件目录 `plugins/` 被整包抽走、业务 import 全失效           | [plugins/联邦工具迁移.md](./plugins/联邦工具迁移.md)（`@dnhyxc-ai/federation-kit` + `src/federation` 薄适配 + `PluginHostSurface` 通用模版 + `mf.start()` 迁移） |
+| 微前端插件目录 `plugins/` 被整包抽走、业务 import 全失效           | [plugins/联邦工具迁移.md](./plugins/联邦工具迁移.md)（`@dnhyxc-ai/federation-kit` + `src/federation` 薄适配 + `HostPoint` 挂扩展点 + `mf.start()` 迁移） |
 | sonner Toast 点击失效 / 关闭按钮按不动                             | [style/Sonner指针事件修复.md](./style/Sonner指针事件修复.md)（Toast 根 + `<Sonner>` className + style 三处 `pointer-events: auto` 加固） |
 | 富文本编辑器标题与正文分离 / Tab 缩进失效 / Cmd+↑↓ 无响应 / 空段落删不掉 | [ui/富文本编辑器特性.md](./ui/富文本编辑器特性.md)（TitleNode + TabIndent + DocEdgeNav + EmptyParagraphDelete 自定义扩展） |
 | 学习笔记列表不分页 / 无法导出 DOCX / 公开状态切换失败 / 保存无 Toast | [app/学习笔记实现.md](./app/学习笔记实现.md)（MobX Store + HostHttp 注入 + 累积分页 + 双端 downloadBlob） |
@@ -115,7 +121,7 @@
 | 系统菜单加速键改键后不更新 / 全局热键抢占系统 / 页面快捷键冲突     | [tauri/Tauri系统菜单快捷键.md](./tauri/Tauri系统菜单快捷键.md)（实现：store 单一真相源 + IconMenuItem set_accelerator + 失焦反注册 + 写法归一化冲突检测）· [ideas/Tauri系统菜单快捷键.md](./ideas/tauri/Tauri系统菜单快捷键.md)（规划思路） |
 | 关于子窗加载慢 / 关于窗口主题与主窗不一致                          | [tauri/关于窗口轻量化.md](./tauri/关于窗口轻量化.md)（main.tsx 按 pathname 分流 + about.tsx 极简入口 + readWindowChromeThemeSync 同步读主题） |
 | 菜单/侧边栏登出不一致 / 多窗口主题不同步 / 401 后状态残留          | [auth/登出统一主题同步.md](./auth/登出统一主题同步.md)（performLogout 集中清态 + 动态 import 规避循环依赖 + setThemeToAllWindows 广播） |
-| 电子书阅读页插件化接入（PluginHostPage / ebookHostApi）             | [ebook/电子书插件想法列表.md](./ebook/电子书插件想法列表.md)                                                                                    |
+| 电子书阅读页插件化接入（`ebook.read` / 兼容 `ebook.*` RPC）         | [plugins/阅读页扩展点.md](./plugins/阅读页扩展点.md)（当前宿主桥）· [ebook/电子书插件想法列表.md](./ebook/电子书插件想法列表.md)（想法与划线业务实现） |
 | 后端 Remote 静态资源服务（serveRemote / uploads/remotes）           | [ops/远程静态资源.md](./ops/远程静态资源.md)                                                                                        |
 | remotes registry 仍被缓存 / 桌面吃旧清单                            | [ops/远程无存储缓存.md](./ops/远程无存储缓存.md)                                                                                           |
 | 资源库词条刷新 / 重开应用后回到首屏（续读丢失）                      | [english/资源库词条续读.md](./english/资源库词条续读.md)（跨会话持久化 + 双向分页 + keepalive flush）· [english/文库单词列表缓存.md](./english/文库单词列表缓存.md)（会话内缓存，姊妹稿） |
@@ -123,6 +129,10 @@
 | 英语学习「学习笔记」空白或 CORS                                     | [english/学习笔记远程.md](./english/学习笔记远程.md)                                                                                    |
 | 学习笔记富文本编辑器（Tiptap 升级 / HTML 存储）                     | [english/学习笔记富文本编辑.md](./english/学习笔记富文本编辑.md)                                                                          |
 | 学习笔记未保存橙点 / 保存图标脏标记                                 | [english/学习笔记脏保存.md](./english/学习笔记脏保存.md)                                                                            |
+| 单词卡没有详解图标 / 点了不出内容 / 同一个词重复生成                 | [english/单词详解缓存与抽屉.md](./english/单词详解缓存与抽屉.md)（缓存与生成主文档）+ [english/学习页扩展点.md](./english/学习页扩展点.md)（当前卡片槽位与通用抽屉会话） |
+| 单词详解列表为空 / 翻页重复或漏行 / 两个抽屉叠在一起                 | [english/单词详解列表.md](./english/单词详解列表.md)（词库绑定 + 三源合并 + Redis 缓存 + 游标分页 + 抽屉覆盖 / 揭开）· [english/详解抽屉瞬时让位.md](./english/详解抽屉瞬时让位.md)（点词时下层同一帧隐藏，详解不滑入） |
+| 生词页打不开解析 / 导出总是整表 / 从列表进详情后列表没了             | [english/生词接入解析.md](./english/生词接入解析.md) · [english/生词按条件导出.md](./english/生词按条件导出.md) · [english/生词解析叠层.md](./english/生词解析叠层.md) |
+| 手动导入详解失败 / 不在本库的词被跳过 / 导入后不显示                 | [english/手动导入单词详解.md](./english/手动导入单词详解.md)（白名单校验 + parseVocabDetail 严格校验 + 幂等 upsert + 词库 `library-card-action` 入口） |
 | 学习笔记导出 Word / 长文性能优化（TitleNode / opt-in 扩展 / 乐观预览） | [english/学习笔记导出性能.md](./english/学习笔记导出性能.md)                                                                          |
 | 学习笔记编辑/预览卡顿（长文窗口化 / 列表隔离）                       | [ideas/学习笔记编辑器预览卡顿.md](./ideas/notes/学习笔记编辑器预览卡顿.md)                                                              |
 | 学习笔记 DOCX 插图导出 + 长文编辑打磨（sharp / 落点 / 空段）         | [ideas/学习笔记导出与编辑打磨.md](./ideas/notes/学习笔记导出与编辑打磨.md)                                                    |

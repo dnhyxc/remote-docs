@@ -1,7 +1,7 @@
 # 后端 `createLlm` 统一工厂
 
 > **文档角色**：硅基流动 + LangChain `ChatOpenAI` 的**唯一创建入口**说明。  
-> **延伸阅读**：[硅基对话统一.md](./硅基对话统一.md)（业务为何统一硅基、Assistant SSE 等）、[英语学习生成鲁棒性.md](../english/英语学习生成鲁棒性.md)（单词包凑条与 JSON 重试）、[LLM运行时设置.md](./LLM运行时设置.md)（设置页实例级覆盖 env）、[OCR创建LLM GLM.md](./OCR创建LLM GLM.md)（图片 OCR preset `ocr`）。
+> **延伸阅读**：[硅基对话统一.md](./硅基对话统一.md)（业务为何统一硅基、Assistant SSE 等）、[默认模型升级GLM-5.3.md](./默认模型升级GLM-5.3.md)（本轮默认值变更）、[英语学习生成鲁棒性.md](../english/英语学习生成鲁棒性.md)（单词包凑条与 JSON 重试）、[LLM运行时设置.md](./LLM运行时设置.md)（设置页实例级覆盖 env）、[OCR创建LLM GLM.md](./OCR创建LLM GLM.md)（图片 OCR preset `ocr`）。
 
 ## 1. 背景与目标
 
@@ -59,14 +59,14 @@ const llm = createLlm(this.configService, {
 
 | preset | 典型调用方 | API Key 回退（顺序） | Base URL 回退 | 模型名回退（顺序） | 缺 Key 时 |
 |--------|------------|----------------------|---------------|-------------------|-----------|
-| `chat` | `ChatService` | `SILICONFLOW_API_KEY` → `DEEPSEEK_API_KEY` | `SILICONFLOW_BASE_URL` → `DEEPSEEK_BASE_URL` | `SILICONFLOW_MODEL_NAME` → `DEEPSEEK_MODEL_NAME` → 默认 GLM-5.1 | `HttpException` 503 |
+| `chat` | `ChatService` | `SILICONFLOW_API_KEY` → `DEEPSEEK_API_KEY` | `SILICONFLOW_BASE_URL` → `DEEPSEEK_BASE_URL` | `SILICONFLOW_MODEL_NAME` → `DEEPSEEK_MODEL_NAME` → 默认 GLM-5.3 | `HttpException` 503 |
 | `assistant` | `AssistantService` | 硅基 → DeepSeek → DashScope → Qwen | 硅基 → DeepSeek | `getAssistantSiliconFlowModelName`（硅基模型名 → DeepSeek 模型名） | 503 |
 | `knowledgeQa` | `KnowledgeQaService` | 硅基 → DashScope → Qwen | 仅硅基 | `SILICONFLOW_MODEL_NAME` → `DEEPSEEK_MODEL_NAME` → `KNOWLEDGE_QA_MODEL` | 普通 `Error` |
-| `englishLearning` | 单词包 Agent / JSON 子模型 | 硅基 → DeepSeek → DashScope | 硅基 → DeepSeek | `SILICONFLOW_MODEL_NAME` → `DEEPSEEK_MODEL_NAME` → 默认 GLM-5.1 | 503 |
+| `englishLearning` | 单词包 Agent / JSON 子模型 | 硅基 → DeepSeek → DashScope | 硅基 → DeepSeek | `SILICONFLOW_MODEL_NAME` → `DEEPSEEK_MODEL_NAME` → 默认 GLM-5.3 | 503 |
 
 **说明**：`AgentService`（`/agent` 流式对话）与主站 Chat **共用** `preset: 'chat'` 的凭证与模型名解析，不单独占 preset；详见 [Agent创建LLM统一.md](./Agent创建LLM统一.md)。
 
-**重要**：当实际请求发往 **硅基流动** `baseURL` 时，`modelName` 必须是硅基支持的 ID（如 `Pro/zai-org/GLM-5.1`）。若仅配置了 `DEEPSEEK_MODEL_NAME=deepseek-chat` 而未配置 `SILICONFLOW_MODEL_NAME`，会触发 **400**（见 §5 排查）。
+**重要**：当实际请求发往 **硅基流动** `baseURL` 时，`modelName` 必须是硅基支持的 ID（如 `zai-org/GLM-5.3`）。若仅配置了 `DEEPSEEK_MODEL_NAME=deepseek-chat` 而未配置 `SILICONFLOW_MODEL_NAME`，会触发 **400**（见 §5 排查）。
 
 ### 3.3 `maxTokensPolicy`
 
@@ -196,7 +196,7 @@ const llm = createLlm(this.configService, {
 ```bash
 SILICONFLOW_API_KEY=sk-...
 SILICONFLOW_BASE_URL=https://api.siliconflow.cn/v1
-SILICONFLOW_MODEL_NAME=Pro/zai-org/GLM-5.1
+SILICONFLOW_MODEL_NAME=zai-org/GLM-5.3
 ```
 
 可选：`KNOWLEDGE_QA_MODEL` 覆盖 RAG 问答模型名。

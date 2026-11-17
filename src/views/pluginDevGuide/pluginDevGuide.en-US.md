@@ -1,6 +1,6 @@
 Audience: frontend developers building React / Vue Module Federation remotes (plugins) and untrusted iframe remotes for this host.
 
-Goal: scaffold the project, export exposes correctly, register in the Host registry, match standalone styling when embedded (Tooltip / Dialog / Teleport); multi-page remotes must expose a router shell with activate; third-party untrusted remotes use iframe + postMessage and must apply Host appearance snapshots (theme / accent).
+Goal: scaffold the project, export exposes correctly, register in the Host registry, match standalone styling when embedded (Tooltip / Dialog / Teleport); multi-page remotes must expose a router shell with activate; plugins that stay off the sidebar and embed in an existing English-learning page are chapter 14 (three mounts, files through enablement, `modules:point`); third-party untrusted remotes use iframe + postMessage and must apply Host appearance snapshots (theme / accent).
 
 References (micro-apps outside this monorepo):
 - React multi-page: remote-react-shadcn (port 9010, in-memory NavigationProvider)
@@ -9,7 +9,7 @@ References (micro-apps outside this monorepo):
 - Contracts: packages/federation-kit/docs/plugin-guide
 - Host adapter: apps/frontend/src/federation (re-exports @dnhyxc-ai/federation-kit; appearance via capabilities/iframeAppearance.ts)
 
-Updated: 2026-09-08
+Updated: 2026-11-17
 
 ## Contents
 
@@ -40,6 +40,7 @@ Updated: 2026-09-08
   - [5.8 AppRouter](#58-approuter)
   - [5.9 Leaf navigation](#59-leaf-navigation)
   - [5.10 Calling Host APIs safely](#510-calling-host-apis-safely)
+  - [5.10.1 Draw an icon configured in the plugin center](#5101-draw-an-icon-configured-in-the-plugin-center)
   - [5.11 Lifecycle patterns](#511-lifecycle-patterns)
 - [6. Implementing a Vue plugin](#6-implementing-a-vue-plugin)
   - [6.1 How Host mounts Vue](#61-how-host-mounts-vue)
@@ -96,6 +97,18 @@ Updated: 2026-09-08
   - [13.8 activate missing / console warn?](#138-activate-missing-console-warn)
   - [13.9 iframe accent / dark borders not following Host?](#139-iframe-accent-dark-borders-not-following-host)
   - [13.10 iframe stuck connecting / handshake timeout?](#1310-iframe-stuck-connecting-handshake-timeout)
+- [14. Build a plugin inside an existing page](#14-build-a-plugin-inside-an-existing-page)
+  - [14.1 Pick how it mounts](#141-pick-how-it-mounts)
+  - [14.2 Where it can mount](#142-where-it-can-mount)
+  - [14.3 Files you add](#143-files-you-add)
+  - [14.4 Write a toolbar plugin](#144-write-a-toolbar-plugin)
+  - [14.5 Write a button-and-drawer plugin](#145-write-a-button-and-drawer-plugin)
+  - [14.6 Write a page-owned drawer plugin](#146-write-a-page-owned-drawer-plugin)
+  - [14.7 Commands](#147-commands)
+  - [14.8 Styles, HTTP, and preview](#148-styles-http-and-preview)
+  - [14.9 It does not show up](#149-it-does-not-show-up)
+  - [14.10 When the host project has to change](#1410-when-the-host-project-has-to-change)
+  - [14.11 Acceptance](#1411-acceptance)
 
 ## 1. Architecture & loading
 
@@ -114,7 +127,7 @@ Missing permissions ⇒ bridge fields undefined—always optional-chain.
 ### 1.3 MF load flow
 
 1. PluginManager.init() fetches registry.
-2. Routes/sidebar injected when injectRoute !== false.
+2. A top-level route is injected only when `injectRoute !== false`. The sidebar is separate: an item is added only when `menu` is set. An embedded plugin sets `injectRoute: false` and omits `menu`. See chapter 14.
 3. ensurePlugin → one GET mf-manifest.json → bust version@manifestHash → remoteEntry.js?v=.
 4. loadRemote → normalizePluginModule (pickPluginLifecycle: named export or default.activate).
    React default must be the shell for multi-page; Vue uses createVueHostBridge(mount).
@@ -435,6 +448,8 @@ export type HostBridgeProps = {
         accept?: string;
         multiple?: boolean;
       }) => Promise<{ path: string; name: string; src: string }[] | null>;
+      /** Plugin-center icon URL → colored svg markup. Requires ui:toast */
+      readIconSvg?: (url: string) => Promise<string | null>;
     };
     modules?: Readonly<Record<string, (...args: unknown[]) => unknown>>;
   };
@@ -650,7 +665,7 @@ export default InfoPage;
 
 ### 5.10 Calling Host APIs safely
 
-ui:toast (showToast / setAppFullscreen / downloadBlob / pickLocalFiles) / nav:subtree (must prefix routePath) / http:plugin-api / modules:* — check before use.
+ui:toast (showToast / setAppFullscreen / downloadBlob / pickLocalFiles / readIconSvg) / nav:subtree (must prefix routePath) / http:plugin-api / modules:* — check before use. Drawing a plugin-center icon: §5.10.1.
 
 ```tsx
 export default function App({ api, plugin }: HostBridgeProps) {
@@ -677,6 +692,90 @@ export default function App({ api, plugin }: HostBridgeProps) {
   return null;
 }
 ```
+
+### 5.10.1 Draw an icon configured in the plugin center
+
+The host already paints sidebar icons and HostPoint buttons. A plugin page that must show an icon uploaded in the plugin center reads the registry cache and asks the host to color the SVG.
+
+1. Add `ui:toast` to permissions. Without it, `api.ui` is missing.
+2. Read localStorage. The key is `dnhyxc.plugin.registry.${import.meta.env.PROD ? 'prod' : 'dev'}.v1`.
+3. Find the target plugin and take `(menu?.icon ?? host?.icon)?.trim()`.
+4. `const markup = await api.ui.readIconSvg(url)`. The value is a full `<svg>…</svg>` string, or `null`.
+5. Render it with `dangerouslySetInnerHTML` inside `inline-flex size-4 text-current`, so the icon follows the button text color.
+6. No URL, no `read`, `null`, or a thrown error: render `Puzzle`. While the request is in flight, keep an empty `size-4` box.
+
+Do not fetch the URL inside the plugin, and do not add `@tauri-apps/plugin-http`. On the desktop production build the address is a cross-origin COS URL. A CSS mask of that URL stays blank, and `currentColor` inside an `<img>` becomes black. The host `loadPluginIconMarkup` already rewrites the URL, uses Tauri HTTP, and recolors the SVG. The iframe RPC list does not include `ui.readIconSvg`.
+
+```tsx
+import { Puzzle } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+
+type RegistryPlugin = {
+  id: string;
+  menu?: { icon?: string };
+  host?: { icon?: string };
+};
+
+function registryIcon(id: string): string | undefined {
+  try {
+    const key = `dnhyxc.plugin.registry.${import.meta.env.PROD ? 'prod' : 'dev'}.v1`;
+    const raw = localStorage.getItem(key);
+    if (!raw) return;
+    const plugins = (JSON.parse(raw) as { plugins?: RegistryPlugin[] }).plugins;
+    const plugin = plugins?.find((item) => item.id === id);
+    return (plugin?.menu?.icon ?? plugin?.host?.icon)?.trim() || undefined;
+  } catch {
+    return;
+  }
+}
+
+function RegistryIcon({
+  id,
+  read,
+}: {
+  id: string;
+  read?: (url: string) => Promise<string | null>;
+}) {
+  const url = registryIcon(id);
+  const [svg, setSvg] = useState<string | null>(null);
+  const [miss, setMiss] = useState(false);
+  useEffect(() => {
+    if (!url || !read) {
+      setSvg(null);
+      setMiss(!url || !read);
+      return;
+    }
+    let cancel = false;
+    setMiss(false);
+    void read(url)
+      .then((markup) => {
+        if (cancel) return;
+        setSvg(markup);
+        setMiss(!markup);
+      })
+      .catch(() => {
+        if (!cancel) setMiss(true);
+      });
+    return () => {
+      cancel = true;
+    };
+  }, [url, read]);
+  const markup = useMemo(() => (svg ? { __html: svg } : null), [svg]);
+  if (!url || miss) return <Puzzle className="size-4" aria-hidden />;
+  if (!markup) return <span className="inline-block size-4" aria-hidden />;
+  return (
+    <span
+      aria-hidden
+      className="inline-flex size-4 text-current"
+      dangerouslySetInnerHTML={markup}
+    />
+  );
+}
+
+<RegistryIcon id="vocabDetailList" read={api.ui?.readIconSvg} />
+```
+
+Standalone preview has no `readIconSvg`, so the button shows Puzzle. After the plugin is embedded and the icon is saved, refresh to see the SVG.
 
 ### 5.11 Lifecycle patterns
 
@@ -752,6 +851,8 @@ export type HostBridgeProps = {
         accept?: string;
         multiple?: boolean;
       }) => Promise<{ path: string; name: string; src: string }[] | null>;
+      /** Plugin-center icon URL → colored svg markup. Requires ui:toast */
+      readIconSvg?: (url: string) => Promise<string | null>;
     };
     modules?: Readonly<Record<string, (...args: unknown[]) => unknown>>;
   };
@@ -1024,7 +1125,7 @@ export function useHostLocale(api?: {
 
 ### 9.1 Permissions
 
-ui:toast (showToast / setAppFullscreen / downloadBlob / pickLocalFiles), nav:subtree, http:plugin-api, modules:chat, modules:ebook — least privilege; null-check APIs.
+ui:toast (showToast / setAppFullscreen / downloadBlob / pickLocalFiles / readIconSvg — plugin-center icons, §5.10.1), nav:subtree, http:plugin-api, modules:point (a registered extension point, including `ebook.read`; chapter 14), modules:learningNotes, modules:chat (those two are not extension points). Least privilege; null-check APIs. A permission you did not list is undefined on the bridge.
 
 ### 9.2 React registry sample
 
@@ -1089,7 +1190,7 @@ Set framework: "vue". Align remoteName/expose with vite config.
 
 ### 9.4 Field cheat-sheet
 
-id, remoteName, expose, framework, entry, routePath, injectRoute, menu, permissions, preload, trust, iframeUrl, host (ebook surfaces). Deploy new dist for cache bust—Host fingerprints mf-manifest.json.
+id, remoteName, expose, framework, entry, routePath, injectRoute, menu, permissions, preload, trust, iframeUrl, host (`surface` and `slot` must already exist in the §14.2 table, SVG `icon`, `order`). Files through enablement: chapter 14. Deploy new dist for cache bust—Host fingerprints mf-manifest.json.
 
 ### 9.5 untrusted iframe sample
 
@@ -1197,7 +1298,7 @@ function UntrustedIframe({ pluginId, src, bridge, iframeBridge }) {
 | rpc | iframe→Host | `{ channel, type, id, method, args }` | restricted capability call |
 | rpc-result | Host→iframe | `{ channel, type, id, ok, value\|error }` | RPC done |
 
-Built-in RPC: http.get/post/put/delete; ui.showToast; ui.downloadBlob; ui.pickLocalFiles. Extra methods via Host iframeRpcHandlers (e.g. ebook.*).
+Built-in RPC: http.get/post/put/delete; ui.showToast; ui.downloadBlob; ui.pickLocalFiles. There is no ui.readIconSvg, so an iframe plugin cannot load a plugin-center icon yet. Extra methods via Host iframeRpcHandlers (e.g. ebook.*).
 
 ready is acked once (readyAcked); load may send init without consuming the ready slot.
 
@@ -1701,7 +1802,7 @@ remote-untrusted uses a single entry: main mounts App; Host registry.iframeUrl p
 
 ### 11.1 Local order
 
-[MF] Start remote → start Host → open plugin route. Expect one mf-manifest.json + remoteEntry.js?v=.
+[MF] Start remote → start Host → open the plugin route when `injectRoute` is not false. Embedded plugins have no sidebar entry: open the business page after enabling the plugin in the plugin center (chapter 14). Expect one mf-manifest.json + remoteEntry.js?v=.
 
 [iframe] Start remote-untrusted (http://127.0.0.1:9012/) → registry trust=untrusted + iframeUrl root + id=untrustedDemo → open Host route; pick iframe DevTools context for handshake & appearance.
 
@@ -1778,3 +1879,460 @@ Handle init.appearance and type:"appearance" with applyHostAppearance. Do not fo
 ### 13.10 iframe stuck connecting / handshake timeout?
 
 Check channel (dnhyxc-mf-iframe), pluginId===registry.id, iframeUrl reachable and origin matches; pick the iframe DevTools context and confirm ready is posting.
+
+## 14. Build a plugin inside an existing page
+
+This chapter is for one kind of plugin: it stays off the sidebar and mounts inside a page English learning already has. The host draws the chrome: the icon button, the drawer, and the drawer title. You draw what goes inside.
+
+A plugin that actually shows up on the page is these four things:
+
+1. A React component, default-exported, with props `{ api }`.
+2. One new key in `vite.config.ts` `exposes`, pointing at that component's entry.
+3. One registry row: `injectRoute: false`, no `menu`, `permissions` includes `modules:point`, and `host.surface` / `host.slot` copied from the table in §14.2.
+4. Enable that row in the plugin center, and refetch the registry.
+
+Scaffolding, style isolation, and shared federation dependencies stay in chapters 1–8. Word detail, the detail list, and import already live in `dnhyxc-ai-plugins`. A new plugin built into that same remote keeps pointing `entry` at the same `mf-manifest.json`.
+
+Learning notes and opening a chat thread stay on `modules:learningNotes` and `modules:chat`. They are not this chapter. The reader surface `ebook.read` is this chapter: context is `bookId` and `bookTitle`, commands are `navigateToCfi`, `openThought`, and `closeIdeasList`. The reader page still draws its own buttons and drawer.
+
+### 14.1 Pick how it mounts
+
+Pick the page in §14.2, then pick one of the three mounts. The component props are the same. What changes is the registry `slot`, and whether the component reads `getContext` or `getPayload`.
+
+**Toolbar.** Registry `slot` is `toolbar`. The host paints your component straight into the toolbar. It is visible as soon as the plugin is enabled. There is no click. Data is `point.getContext()`. The root node is the content, and its width follows the toolbar.
+
+**Icon button, then your content.** Registry `slot` is the action name: `card-action`, `item-action`, or `library-card-action`. The host paints a 28px icon button from the registry `icon` and `title`. Your component is painted inside the drawer named by that action's `opens`. After the click, the host writes this click's payload into the drawer and only then mounts your component. On the first render the click has already happened, so call `getPayload(drawer slot)` immediately. The drawer slot is the "Rendered in" column of §14.2. It is a different string from the registry `slot`.
+
+**A drawer the page already opens.** Today only the vocabulary-library analysis list works this way. Registry `slot` is `drawer`. The button lives on the vocabulary library page; its label and icon still come from your registry row. The component is the drawer body. The current library id is `point.getContext().libraryId`, not a click payload.
+
+One `surface` can host several plugins, one registry row each. Several plugins on the same action slot render as several buttons in a row. The drawer mounts only the plugin whose button was clicked. Smaller `host.order` comes first.
+
+The classic-library catalog also has a slot named `drawer`. No button on that page opens it. A classic-library plugin uses `toolbar`, `item-action`, or `library-card-action`.
+
+### 14.2 Where it can mount
+
+`host.surface` must equal a surface below, and `host.slot` must equal the "Registry slot" cell. Any other name: the page never shows the plugin, and `api.modules.point` is `undefined`.
+
+"Read" is the call the component actually makes. The field names are the keys the host writes today. Extra keys are not there. A missing key is `undefined`. New fields mean a host page change, §14.10.
+
+| surface | Page | Registry slot | Rendered in | Read | Fields |
+| --- | --- | --- | --- | --- | --- |
+| `english.vocab.card` | Tail of each word card | `card-action` | Drawer `drawer` | `getPayload('drawer')` | `word`, `pos`, `ipa`, `translationZh`, `example`. `openCard` also sets `source: 'list'` |
+| `english.vocab.library` | Vocabulary library toolbar | `toolbar` | Toolbar | `getContext()` | `libraryId` of the current library. `null` context when none is selected |
+| `english.vocab.library` | Tail of each vocabulary row | `item-action` | Drawer `item-drawer` | `getPayload('item-drawer')` | Same as the word card: `word`, `pos`, `ipa`, `translationZh`, `example` |
+| `english.vocab.library` | The list button on the library page | `drawer` | That drawer | `getContext()` | `libraryId`. This point also accepts `publishSignal('stats', …)`, which the heading counts read |
+| `english.vocab.library` | Import button on a library card | `library-card-action` | Drawer `import-drawer` | `getPayload('import-drawer')` | `libraryId`, `title` |
+| `english.classic.card` | Tail of each sentence card | `card-action` | Drawer `drawer` | `getPayload('drawer')` | `english`, `translationZh`, `source`, `noteZh` |
+| `english.classic.library` | Classic library toolbar | `toolbar` | Toolbar | `getContext()` | `libraryId` |
+| `english.classic.library` | Tail of each classic row | `item-action` | Drawer `item-drawer` | `getPayload('item-drawer')` | Same as the sentence card: `english`, `translationZh`, `source`, `noteZh` |
+| `english.classic.library` | Button on a classic library card | `library-card-action` | Drawer `import-drawer` | `getPayload('import-drawer')` | `libraryId`, `title` |
+| `english.mistakes` | Mistakes toolbar | `toolbar` | Toolbar | `getContext()` | `kind`: `'vocab'` or `'classic'`, matching the current tab |
+| `english.mistakes` | Tail of each mistakes row | `item-action` | Drawer `drawer` | `getPayload('drawer')` | A word row uses the word-card fields. A sentence row uses the sentence-card fields |
+| `english.review` | Today's review | Same as mistakes | Same as mistakes | Same as mistakes | `kind` is `'vocab'` or `'classic'` here too |
+| `english.favorites` | Favorites | Same as mistakes | Same as mistakes | Same as mistakes | `kind` |
+| `english.dailyReading` | Daily reading toolbar | `toolbar` | Toolbar | `getContext()` | `origin` |
+| `english.dailyReading` | Tail of each daily-reading row | `item-action` | Drawer `drawer` | `getPayload('drawer')` | `id`, `titleEn`, `publishDate`, `origin` |
+| `ebook.read` | Reader toolbar, or the reader's own drawer | `toolbar` or `drawer` | Toolbar, or the reader drawer | `getContext()` | `bookId`, `bookTitle`. Commands: `navigateToCfi`, `openThought`, `closeIdeasList` |
+
+On mistakes, review, favorites, and daily reading, the row button and `drawer` share one drawer slot. Do not put two plugins there that both need to stay open. The later open replaces the earlier body. Vocabulary and classic libraries open row actions in a separate `item-drawer`, so a row click does not replace the `drawer` list.
+
+Review and mistakes are two surfaces. To show on both pages, register two rows and change only `id`, `remoteName`, and `host.surface`. One plugin does not detect "this is the review page now".
+
+Signals and commands belong to the surface, not the slot. A toolbar plugin and the import plugin on the vocabulary library receive the same `api.modules.point`, so both can call `pickJsonFile` and `openCard`. Classic library, mistakes, review, favorites, and daily reading have no signals and no commands.
+
+| surface | `publishSignal` names | `command` names |
+| --- | --- | --- |
+| `english.vocab.card` | `pending` | `play`, `stop` |
+| `english.vocab.library` | `stats` | `pickJsonFile`, `openCard` |
+| `ebook.read` | None | `navigateToCfi` (CFI string), `openThought` (thought object), `closeIdeasList` (`undefined`). Bound only while an EPUB is open |
+| Every other surface | None. Other names are dropped | None. The call throws `UNKNOWN_POINT_COMMAND` |
+
+`pending` is `{ pluginId, key, on }`. `pluginId` is the registry `id`, `key` is the current `word`, `on` is a boolean. Only a button whose payload has `word` spins. A sentence card's `english` does not. Closing the drawer does not clear the spinner. The spin stops when the request sends `on: false`.
+
+`stats` is `{ total, loaded }`, or `null` to clear. Non-finite `total` or `loaded` leaves the last good numbers on the heading. The vocabulary library heading reads this. Other pages do not.
+
+### 14.3 Files you add
+
+The smallest plugin below shows, in the mistakes toolbar, whether the current tab is words or sentences. Rename it. The remote is `dnhyxc-ai-plugins`.
+
+**1. Types,** `src/views/mistake-note/point.ts`
+
+The host always sends these five methods. Keep the names. Do not declare `modules:vocabDetail`.
+
+```ts
+export type PointModule = {
+  getContext: () => Record<string, unknown> | null;
+  getPayload: (slot: string) => Record<string, unknown> | null;
+  subscribe: (listener: () => void) => () => void;
+  publishSignal: (name: string, value: unknown) => void;
+  command: (name: string, arg?: unknown) => unknown;
+};
+```
+
+`src/views/vocab-detail/point.ts` already exports this type. A new plugin can import it from there, or copy the lines into its own folder.
+
+**2. Entry,** `src/views/mistake-note/index.ts`
+
+The first line has to import styles. Without it the embedded plugin has no Tailwind.
+
+```ts
+import '@/styles.css';
+
+export { default } from './panel';
+```
+
+**3. Component,** `src/views/mistake-note/panel.tsx`, in §14.4. A button plugin uses the component in §14.5. The vocabulary-library list drawer uses §14.6.
+
+**4. Federation expose.** Add one line to `exposes` in `vite.config.ts`. The key matches the registry `expose` exactly:
+
+```ts
+exposes: {
+  './MistakeNote': './src/views/mistake-note/index.ts',
+}
+```
+
+**5. Registry.** For local development, append to the `plugins` array of `apps/backend/uploads/remotes/plugins-registry.json` in the host repo:
+
+```json
+{
+  "id": "mistakeNote",
+  "remoteName": "dnhyxc-ai-mistake-note",
+  "expose": "./MistakeNote",
+  "title": { "zh-CN": "错题备注", "en-US": "Mistake note" },
+  "description": {
+    "zh-CN": "错题集顶栏里的备注。",
+    "en-US": "A note in the mistakes toolbar."
+  },
+  "routePath": "/english-learning/mistake-note",
+  "entry": "http://127.0.0.1:9008/mf-manifest.json",
+  "version": "1.0.0",
+  "hostApiRange": "^1.0.0",
+  "injectRoute": false,
+  "host": {
+    "surface": "english.mistakes",
+    "slot": "toolbar",
+    "order": 10,
+    "icon": "https://example.com/note.svg"
+  },
+  "permissions": ["modules:point"],
+  "preload": "idle",
+  "enabled": false,
+  "trust": "first-party"
+}
+```
+
+How to fill each field:
+
+1. `id` is the unique name in the plugin center, and the value `pending.pluginId` must use.
+2. Give every plugin its own `remoteName`. Two plugins sharing one `remoteName` let the later load overwrite the earlier cache-bust mark.
+3. `expose` equals the `exposes` key, including the leading `./`.
+4. `entry` is the plugin dev server's `mf-manifest.json`. Sharing the word-detail remote means `http://127.0.0.1:9008/mf-manifest.json`.
+5. Copy `host.surface` and `host.slot` from the table.
+6. `title` is the button label and the drawer title. A toolbar plugin has no title bar; the plugin center still uses `title` as the name.
+7. `icon` is an SVG URL. The button reads `plugin.host.icon`. A toolbar plugin does not show this icon; the component draws its own content.
+8. `permissions` includes `modules:point` at minimum. Add `http:plugin-api` to call the host HTTP client, and `ui:toast` to call `showToast`. Anything you leave out is `undefined` on `api`.
+9. `injectRoute` stays `false`. Do not set `menu`. A `menu` adds a sidebar entry that opens an empty page.
+10. `routePath` is required on the descriptor. With `injectRoute: false` the user cannot open that URL.
+11. Keep `hostApiRange` at `^1.0.0`. This change does not bump the host API version.
+12. Leave `enabled` false. The page paints the plugin after the user turns it on in the plugin center.
+
+After saving, refetch the registry in the plugin center and enable the row. If the file changed but the browser still has the old permissions cached, `api.modules.point` is still `undefined`.
+
+**6. Run it.** Start the plugin dev server and confirm `entry` opens. Refresh an English-learning page in the host. After `mistakeNote` is enabled, the mistakes toolbar shows this block. Today's review does not.
+
+### 14.4 Write a toolbar plugin
+
+The component is painted in the toolbar. This is the `panel.tsx` from §14.3. Once enabled, the mistakes toolbar shows the current tab.
+
+```tsx
+import { useEffect, useState } from 'react';
+import { useHostLocale } from '@/hooks';
+import type { PointModule } from './point';
+
+type HostApi = {
+  locale?: 'zh-CN' | 'en-US';
+  event?: {
+    on: (event: string, handler: (data?: unknown) => void) => void;
+    off: (event: string, handler: (data?: unknown) => void) => void;
+  };
+  modules?: { point?: PointModule };
+};
+
+export default function MistakeNotePanel({ api }: { api: HostApi }) {
+  useHostLocale(api);
+  const point = api.modules?.point;
+  const [kind, setKind] = useState('');
+
+  useEffect(() => {
+    if (!point) return;
+    const pull = () => {
+      const ctx = point.getContext();
+      setKind(ctx && typeof ctx.kind === 'string' ? ctx.kind : '');
+    };
+    pull();
+    return point.subscribe(pull);
+  }, [point]);
+
+  if (!point) return <p className="text-sm">Missing modules:point</p>;
+
+  return (
+    <p className="px-2 text-sm text-textcolor/80">
+      {kind === 'classic' ? 'Sentence mistakes' : kind === 'vocab' ? 'Word mistakes' : 'List not open'}
+    </p>
+  );
+}
+```
+
+What each part does:
+
+- `useHostLocale(api)` follows the host language. In standalone preview, with no `event`, it does nothing.
+- Missing `api.modules?.point` means the registry omitted `modules:point`, the `surface` is not in the catalog, or the registry cache is stale. Render a missing-permission line. Do not render half a feature.
+- Call `pull` once immediately. The toolbar mounts after the context is already published. There is no second "page opened" event.
+- `subscribe` runs when the context changes, or when any slot on this point opens or closes. Return the unsubscribe function from `useEffect`. Switching the words/sentences tab changes `kind` from `'vocab'` to `'classic'`.
+- `publishSignal` does not call `subscribe`. Writing counts or a spinner does not enter `pull`.
+
+To turn this into your feature, change three things: which key you read from `getContext()` (the §14.2 row for your surface), the request URL, and what the root renders. Do not wrap the toolbar root in a Drawer or Dialog.
+
+To call the API, add `http:plugin-api` and request from `pull` using the context. `api.http` already has `/api` in its base URL. Write the path after that, send no token, and read business fields on `data`:
+
+```tsx
+const res = await api.http.get(
+  `/english-learning/vocab-detail?word=${encodeURIComponent(word)}`,
+);
+const body =
+  res && typeof res === 'object' && 'data' in res
+    ? (res as { data: unknown }).data
+    : res;
+```
+
+If `libraryId`, `kind`, or `origin` did not change, do not clear and reload. `subscribe` also runs when some other drawer on this point toggles. Keep the last id in a ref and return when it is unchanged. The vocabulary list does this in `src/views/vocab-detail-list/list.tsx`.
+
+### 14.5 Write a button-and-drawer plugin
+
+The registry `slot` is the action. The component is the drawer body. The sample is a mistakes word row: `surface` is `english.mistakes`, registry `slot` is `item-action`, and the body reads `getPayload('drawer')`. On another page, set `PAYLOAD_SLOT` to the "Rendered in" cell of §14.2 and read that row's fields.
+
+```tsx
+import { useEffect, useState } from 'react';
+import { useHostLocale } from '@/hooks';
+import type { PointModule } from './point';
+
+const PAYLOAD_SLOT = 'drawer';
+
+type HostApi = {
+  locale?: 'zh-CN' | 'en-US';
+  event?: {
+    on: (event: string, handler: (data?: unknown) => void) => void;
+    off: (event: string, handler: (data?: unknown) => void) => void;
+  };
+  http?: { get: <T = unknown>(url: string) => Promise<T> };
+  modules?: { point?: PointModule };
+};
+
+export default function RowPanel({ api }: { api: HostApi }) {
+  useHostLocale(api);
+  const point = api.modules?.point;
+  const [word, setWord] = useState('');
+
+  useEffect(() => {
+    if (!point) return;
+    const pull = () => {
+      const payload = point.getPayload(PAYLOAD_SLOT);
+      setWord(
+        payload && typeof payload.word === 'string' ? payload.word.trim() : '',
+      );
+    };
+    pull();
+    return point.subscribe(pull);
+  }, [point]);
+
+  if (!point) {
+    return (
+      <div className="flex h-full min-h-0 items-center justify-center text-sm">
+        Missing modules:point
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col px-4 py-3 text-sm">
+      {word ? word : 'This row has no word'}
+    </div>
+  );
+}
+```
+
+What the click actually does:
+
+1. The page shows an icon button first. Your component is not mounted yet.
+2. The user clicks. If this same plugin already has the drawer open for the same `word` or `english`, the host closes it. The next click opens it. The plugin does not implement that toggle.
+3. On open, the host writes the row payload into `PAYLOAD_SLOT`, then mounts your component.
+4. `pull()` reads the word immediately. Do not wait for another click. The component does not receive a click event.
+5. Closing the drawer unmounts the component. The next open is a fresh mount, and `useEffect` runs again.
+
+Word detail is this kind of plugin: `surface` `english.vocab.card`, `slot` `card-action`, `PAYLOAD_SLOT` `'drawer'`. Import is too: `slot` `library-card-action`, `PAYLOAD_SLOT` `'import-drawer'`, reading `libraryId` and `title`. A sentence card reads `payload.english` instead of `payload.word`. Daily reading reads `payload.id`.
+
+While a word-card request is in flight, hand the spinner to the host. `pluginId` is the registry `id`:
+
+```tsx
+point.publishSignal('pending', {
+  pluginId: 'vocabDetail',
+  key: word,
+  on: true,
+});
+```
+
+When the request finishes, success or failure, send `on: false`. On a point that has no `pending`, the call is dropped, the button does not spin, and the component still renders.
+
+`subscribe` also runs when another slot on the same point toggles. The import drawer is only hidden while detail is open, and `getPayload('import-drawer')` still has its value. Update from the payload itself. Do not clear your target because some other drawer opened.
+
+The drawer body root is `flex h-full min-h-0 flex-col`, or Loading sticks to the top. Use the plugin's own `Loading`, `Button`, and `ScrollArea`. Do not wrap another Drawer or Dialog, and do not set a portal container. The host already retargets overlays into the plugin style realm.
+
+### 14.6 Write a page-owned drawer plugin
+
+Only the vocabulary library `drawer` works this way. The button is on the library page. The component is the list. The current library is in the context. Switching library publishes a new `libraryId`. Leaving the page, or having no library yet, publishes `null`.
+
+```tsx
+import { useEffect, useRef, useState } from 'react';
+import { useHostLocale } from '@/hooks';
+import type { PointModule } from './point';
+
+type HostApi = {
+  locale?: 'zh-CN' | 'en-US';
+  event?: {
+    on: (event: string, handler: (data?: unknown) => void) => void;
+    off: (event: string, handler: (data?: unknown) => void) => void;
+  };
+  http?: { get: <T = unknown>(url: string) => Promise<T> };
+  modules?: { point?: PointModule };
+};
+
+export default function LibraryListPanel({ api }: { api: HostApi }) {
+  useHostLocale(api);
+  const point = api.modules?.point;
+  const libraryRef = useRef('');
+  const [libraryId, setLibraryId] = useState('');
+
+  useEffect(() => {
+    if (!point) return;
+    const apply = () => {
+      const ctx = point.getContext();
+      const next = ctx && typeof ctx.libraryId === 'string' ? ctx.libraryId : '';
+      if (next === libraryRef.current) return;
+      libraryRef.current = next;
+      setLibraryId(next);
+      point.publishSignal('stats', { total: 0, loaded: 0 });
+    };
+    apply();
+    return point.subscribe(apply);
+  }, [point]);
+
+  if (!point) {
+    return (
+      <div className="flex h-full min-h-0 items-center justify-center text-sm">
+        Missing modules:point
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col px-4 py-3 text-sm">
+      {libraryId || 'No library yet'}
+    </div>
+  );
+}
+```
+
+Keep `if (next === libraryRef.current) return`. Opening the import drawer or a row drawer on this point also calls `apply`. An unchanged library id keeps the current list. Without that line, every other drawer open clears and reloads the list.
+
+After each successful page, write the counts back. The host repaints the heading. This call does not enter `apply` again:
+
+```tsx
+point.publishSignal('stats', { total: page.total, loaded: loadedCount });
+```
+
+To open word detail from a row, call `openCard` (§14.7). It opens the word-card drawer and leaves this list open. The library list drawer covers the word-card drawer. Closing the list leaves the word-card drawer open.
+
+The shipped list is `src/views/vocab-detail-list/list.tsx`: cursor paging, `stats`, and `openCard`. The first page uses a full Loading block. Further pages use one small line. A first-page failure offers retry. A later-page failure retries at the bottom and keeps the rows already loaded.
+
+### 14.7 Commands
+
+`command` requires the second argument. Pass `undefined` when there is none. A name missing from the §14.2 command table throws `UNKNOWN_POINT_COMMAND`. A name the catalog lists but the host has not bound throws `POINT_COMMAND_UNBOUND`. Classic library and mistakes throw the first error for every command today.
+
+| Point | Call | Result |
+| --- | --- | --- |
+| Word card | `command('play', text)` | A `Promise`. `text` is the string to speak. An empty string resolves without synthesis. The host picks the cache folder |
+| Word card | `command('stop', undefined)` | Stops whatever is playing. Call it on unmount |
+| Vocabulary library | `command('pickJsonFile', undefined)` | `Promise<File \| null>`. Cancel is `null`. A non-JSON file throws `accept`. Catch it |
+| Vocabulary library | `command('openCard', lemma)` | `true` when the word-detail drawer opened. `lemma` is the word string. An empty word, or a disabled plugin whose id is `vocabDetail`, returns `false` |
+
+Calling `openCard` again with the same word does not close it. The user closes it from outside the drawer, or with the same button on the word card.
+
+```tsx
+const opened = point.command('openCard', lemma) === true;
+if (!opened) {
+  api.ui?.showToast({ message: 'Enable word detail in the plugin center', type: 'info' });
+}
+```
+
+`showToast` needs `ui:toast`. Do not call `command` when `point` is missing. Standalone preview can fall back to a hidden `<input type="file">`. Inside the host, use `pickJsonFile`.
+
+Do not `new SpeechSynthesisUtterance` yourself. Standalone preview may speak from the fake `command`. Inside the host, `play` is what uses member TTS and the disk cache.
+
+### 14.8 Styles, HTTP, and preview
+
+Keep `import '@/styles.css'` as the first line of the entry. Tooltips and dialogs from the plugin's own components are retargeted into the plugin style realm. Another drawer around them nests inside the host drawer.
+
+HTTP:
+
+- Do not hard-code the backend origin, do not prefix `/api`, and do not attach a token. A 401 shows as failure plus retry.
+- Lists use a cursor. Omitting `cursor` is the first page. Pass `nextCursor` back as a string. `null` means the end. A ref separates "not requested yet" from "already at the end", so an empty list does not request page one again.
+- On failure, hold until the user retries, so a sentinel at the bottom of the viewport does not hammer a failing request.
+- Reuse the in-flight `Promise` for the same word in a `Map`. Closing the drawer does not cancel it. The spinner follows `pending`, not the drawer.
+- `GET /english-learning/vocab-detail/list` is registered before `GET /english-learning/vocab-detail`, or `list` is captured as a word. That order is the host's. The plugin only has to request the right path.
+
+Standalone preview has no host-injected `api`. In the plugin's own router, pass a fake `point` through `mockApi`. `getContext` / `getPayload` return the fields §14.2 says this plugin reads. `subscribe` can return a no-op unsubscribe. Word detail's preview is `previewPoint` in `src/router/routes.tsx`. Preview shows layout. It does not show the button, drawer stacking, or the empty slot when the plugin is disabled. Check those on the host page.
+
+### 14.9 It does not show up
+
+Check in this order. Stop at the first failure.
+
+1. The plugin dev server is up, and the registry `entry` opens in a browser.
+2. `expose` matches the `vite.config.ts` key, and the dev server recompiled after the `exposes` edit.
+3. The plugin center shows this row enabled. `true` in the file does nothing until the center refetches.
+4. `injectRoute` is `false` and there is no `menu`. A new sidebar entry means `menu` is still set.
+5. `host.surface` and `host.slot` match §14.2, including case. Do not use `drawer` on the classic library.
+6. `permissions` includes `modules:point`. Refetch after changing permissions. If this plugin's `api.modules` has no `point`, this is the cause.
+7. An action plugin shows an icon button first. The component is inside the drawer after the click. A toolbar plugin is the toolbar content, with no button.
+8. The vocabulary `drawer` button sits beside the list heading, not on the library card. The card button is `library-card-action`.
+9. "Missing modules:point" inside the drawer: permission or surface. "This row has no word": this page's payload uses a different key. Check §14.2.
+10. `UNKNOWN_POINT_COMMAND` in the console: this surface does not have that command. Only the word card has `play`. Only the vocabulary library has `openCard`.
+
+Opening the same word twice must not fire two requests. After the drawer closes, a button whose payload has `word` keeps spinning until the request finishes.
+
+### 14.10 When the host project has to change
+
+Mounting on a slot that already exists in §14.2 is the plugin repo plus the registry. Do not add a directory under `apps/frontend/src/federation/modules/`, and do not add `modules:<plugin id>` inside `buildModules`.
+
+The host changes only for the cases below. The plugin still uses `modules:point` afterwards:
+
+1. A new place to mount. Add a slot in `apps/frontend/src/federation/points/catalog.ts`, or add a point, and render a `HostPoint` on that page. An action slot sets `opens: 'some-drawer-slot'`, and the page also renders a `HostPoint` for that drawer slot. Otherwise the button opens a drawer with nowhere to mount the component.
+2. A new payload or context field. The catalog does not define fields. Context comes from `usePointContext(pointId, data)`. Click payload comes from `<HostPoint payload={...} />`. The plugin can read only the keys those calls write.
+3. A new piece of chrome state. Add the name to that point's `signals`, then subscribe on the page and paint it. The plugin can then `publishSignal`.
+4. A new host action, such as another kind of speech or navigation. Add the name to that point's `commands`. If it does not close over page state, `bindPointCommand` in `points/command.ts`. If it needs the router or the current page, bind it in that page's effect and unbind on cleanup. The plugin then calls `command`.
+
+The vocabulary list drawer puts counts in its title and skips the enter animation when detail was already open. Those two behaviors belong to the vocabulary library page. A new plugin on some other slot uses the shared drawer. Do not copy a second drawer component.
+
+### 14.11 Acceptance
+
+- With the plugin disabled, its button or toolbar block is absent and takes no blank space.
+- Once enabled, the icon and drawer title come from the registry `icon` and `title`. The sidebar has no extra entry.
+- The bridge has `api.modules.point`. An old bundle that only declared `modules:vocabDetail` does not.
+- A toolbar plugin can read `getContext()` as soon as the page opens, and it updates when the words/sentences tab or the library changes.
+- A button plugin opened before the remote finishes downloading already has the row fields in `getPayload`.
+- Clicking the same button for the same word or sentence closes the drawer. Clicking another row replaces the body.
+- The vocabulary list reloads when the library changes. It does not reload when the import drawer or a row drawer toggles, or when it writes `stats`.
+- `openCard === true` opens word detail and leaves the list drawer open. A disabled `vocabDetail` returns `false`: toast only, no empty drawer.
+- Import does not clear its target while detail is open. After detail closes, the import target is still there.
+- A mistakes plugin does not appear on today's review. Two registry rows are required for both pages.
+- A 401 shows failure and retry. The plugin does not attach a token.
+- Opening the same word twice does not fire two requests. After the drawer closes, a button whose payload has `word` keeps spinning until the request finishes.

@@ -43,7 +43,7 @@
 |----|-------------------------|-------------------|
 | API Key | 仅 `SILICONFLOW_API_KEY` | `SILICONFLOW_API_KEY` → `DEEPSEEK_API_KEY` |
 | Base URL 默认 | `https://open.bigmodel.cn/api/paas/v4` | `https://api.siliconflow.cn/v1` |
-| 模型名回退 | 硅基 → DeepSeek → **ZHIPU** → `glm-4.7` | 硅基 → DeepSeek → 默认 `Pro/zai-org/GLM-5.1` |
+| 模型名回退 | 硅基 → DeepSeek → **ZHIPU** → `glm-4.7` | 硅基 → DeepSeek → 默认 `zai-org/GLM-5.3` |
 | 缺 Key 文案 | `硅基流动 未正确配置（SILICONFLOW_API_KEY）` | `硅基流动未配置（SILICONFLOW_API_KEY，或兼容 DEEPSEEK_API_KEY），无法发起对话` |
 
 若生产环境**仅**配置了智谱直连而未配硅基/DeepSeek 兼容键，行为可能变化；应对照 [创建LLM.md](./创建LLM.md) §5 配置硅基模型名。
@@ -128,7 +128,7 @@ const { main: mainLlm, summary: summaryLlm } = this.buildModels({
 
 ## 6. 测试与回归建议
 
-1. 配置 `SILICONFLOW_API_KEY` + `SILICONFLOW_MODEL_NAME=Pro/zai-org/GLM-5.1`，英语学习 Agent 发起对话，确认流式正文与 `internet_search` / 知识库工具回调正常。
+1. 配置 `SILICONFLOW_API_KEY` + `SILICONFLOW_MODEL_NAME=zai-org/GLM-5.3`，英语学习 Agent 发起对话，确认流式正文与 `internet_search` / 知识库工具回调正常。
 2. 故意去掉 `SILICONFLOW_API_KEY`、仅保留 `DEEPSEEK_API_KEY`（且模型名为硅基可用 ID），确认能启动或按预期 503。
 3. 长对话触发摘要中间件时，确认会话不异常中断（摘要模型非流式仍可用）。
 

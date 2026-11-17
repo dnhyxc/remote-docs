@@ -1,7 +1,7 @@
 # 大模型设置页：预设联动、可输入 Combobox 与 API Key 环境默认
 
 > **文档角色**：本轮**前端**设置页 `/setting/llm` 的 Combobox 与服务商预设联动（不含后端持久化变更）。  
-> **延伸阅读**：[LLM设置保存流程.md](./LLM设置保存流程.md)、[LLM运行时设置.md](./LLM运行时设置.md)（**API Key 回显、向量 tier 联动、切换不清 Key** — 主文档）、[创建LLM.md](./创建LLM.md)。
+> **延伸阅读**：[LLM设置保存流程.md](./LLM设置保存流程.md)、[LLM运行时设置.md](./LLM运行时设置.md)（**API Key 回显、向量 tier 联动、切换不清 Key** — 主文档）、[创建LLM.md](./创建LLM.md)、[默认模型升级GLM-5.3.md](./默认模型升级GLM-5.3.md)（预设模型名变更）。
 
 > **API Key 与 env**：早期版本用 `VITE_SILICONFLOW_API_KEY` 预填并在切换预设时清空 Key；**当前行为**见 [LLM运行时设置.md](./LLM运行时设置.md) §3.3–§3.5（仅接口回显已保存 Key，切换保留 Key）。
 
@@ -20,9 +20,9 @@
 ### 1.2 目标
 
 - **可输入 + 预设**：左侧直接编辑，右侧按钮展开与输入框**同宽**的预设列表。
-- **服务商联动**：选中硅基 URL 时自动配对 GLM-5.1；选中 DeepSeek URL 时自动配对 `deepseek-chat`（反向选模型亦同步 URL）。
+- **服务商联动**：选中硅基 URL 时自动配对 `zai-org/GLM-5.3`；选中 DeepSeek URL 时自动配对 `deepseek-chat`（反向选模型亦同步 URL）。
 - **API Key**：仅回显服务端已保存 Key；切换预设**不清空** Key（详见 [LLM运行时设置.md](./LLM运行时设置.md) §3.3–§3.4）。
-- **生效文案**：底部提示展示当前模型名，如「Pro/zai-org/GLM-5.1 模型配置生效中」。
+- **生效文案**：底部提示展示当前模型名，如「zai-org/GLM-5.3 模型配置生效中」。
 
 ---
 
@@ -83,9 +83,9 @@
 const LLM_PROVIDER_PRESETS = [
 	{
 		baseUrl: 'https://api.siliconflow.cn/v1',
-		modelName: 'Pro/zai-org/GLM-5.1',
+		modelName: 'zai-org/GLM-5.3',
 		baseUrlLabelKey: 'setting.llm.baseUrlOption.siliconflow' as const,
-		modelLabelKey: 'setting.llm.modelOption.glm51' as const,
+		modelLabelKey: 'setting.llm.modelOption.glm53' as const,
 	},
 	{
 		baseUrl: 'https://api.deepseek.com',

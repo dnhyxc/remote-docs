@@ -1,6 +1,6 @@
 阅读对象：为本平台开发 React / Vue Module Federation 子应用（插件），以及 untrusted iframe 隔离子应用的前端开发者。
 
-目标：从零搭好工程、正确导出 expose、配置 Registry，并在 Host 内获得与独立预览一致的样式（含 Tooltip / Dialog / Teleport）；多页插件须 expose 路由壳并正确挂载 activate；第三方不可信场景走 iframe + postMessage，并正确接入主题/强调色外观快照。
+目标：从零搭好工程、正确导出 expose、配置 Registry，并在 Host 内获得与独立预览一致的样式（含 Tooltip / Dialog / Teleport）；多页插件须 expose 路由壳并正确挂载 activate；不进侧栏、嵌在英语学习已有页面里的插件见第 14 章（三种挂法、从文件到启用的步骤、`modules:point`）；第三方不可信场景走 iframe + postMessage，并正确接入主题/强调色外观快照。
 
 参考实现（仓外 micro-apps）：
 - React 多页：remote-react-shadcn（端口 9010，内存 NavigationProvider）
@@ -9,7 +9,7 @@
 - 契约文档：packages/federation-kit/docs/plugin-guide（尤其 自动路由接入、Vue插件开发、iframe隔离接入）
 - Host 适配层：apps/frontend/src/federation（再导出 @dnhyxc-ai/federation-kit；外观能力见 capabilities/iframeAppearance.ts）
 
-更新日期：2026-09-08
+更新日期：2026-11-17
 
 ## 目录
 
@@ -40,6 +40,7 @@
   - [5.8 AppRouter 按 path 渲染](#58-approuter-按-path-渲染)
   - [5.9 子页跳转示例](#59-子页跳转示例)
   - [5.10 调用 Host API（权限安全）](#510-调用-host-api权限安全)
+  - [5.10.1 画出插件中心设置的图标](#5101-画出插件中心设置的图标)
   - [5.11 生命周期写法对照](#511-生命周期写法对照)
 - [6. Vue 插件实现](#6-vue-插件实现)
   - [6.1 Host 如何挂载 Vue](#61-host-如何挂载-vue)
@@ -96,6 +97,18 @@
   - [13.8 activate 没执行 / 控制台 warn？](#138-activate-没执行-控制台-warn)
   - [13.9 iframe 内强调色 / 暗色边框不跟随主站？](#139-iframe-内强调色-暗色边框不跟随主站)
   - [13.10 iframe 一直 connecting / 握手超时？](#1310-iframe-一直-connecting-握手超时)
+- [14. 开发一个页面内嵌插件](#14-开发一个页面内嵌插件)
+  - [14.1 先选挂法](#141-先选挂法)
+  - [14.2 能挂在哪](#142-能挂在哪)
+  - [14.3 要改哪些文件](#143-要改哪些文件)
+  - [14.4 顶栏插件怎么写](#144-顶栏插件怎么写)
+  - [14.5 按钮抽屉插件怎么写](#145-按钮抽屉插件怎么写)
+  - [14.6 页面抽屉插件怎么写](#146-页面抽屉插件怎么写)
+  - [14.7 命令](#147-命令)
+  - [14.8 样式、请求和预览](#148-样式请求和预览)
+  - [14.9 挂上去之后看不到](#149-挂上去之后看不到)
+  - [14.10 什么时候改主项目](#1410-什么时候改主项目)
+  - [14.11 验收](#1411-验收)
 
 ## 1. 架构与加载模型
 
@@ -114,7 +127,7 @@
 ### 1.3 加载流程（MF）
 
 1. Host PluginManager.init() 拉取 Registry（可有本地启用覆盖）。
-2. injectRoute !== false 时注入顶层路由与侧栏 icon。
+2. `injectRoute !== false` 时注入顶层路由。侧栏是另一条：只有写了 `menu` 才会加侧栏入口，和 `injectRoute` 无关。只嵌业务页的插件两项都不要（`injectRoute: false`，并且不要 `menu`）。见第 14 章。
 3. 进入插件路由 → ensurePlugin → GET 一次 mf-manifest.json 算 bust（version@manifestHash）→ 加载 remoteEntry.js?v=…。
 4. loadRemote(expose) → normalizePluginModule（pickPluginLifecycle：named export 或 default.activate）：
    - React：default 即组件（多页时须为带 NavigationProvider 的壳）；
@@ -440,6 +453,8 @@ export type HostBridgeProps = {
         accept?: string;
         multiple?: boolean;
       }) => Promise<{ path: string; name: string; src: string }[] | null>;
+      /** 插件中心图标地址 → 已上色的整段 svg。需 ui:toast */
+      readIconSvg?: (url: string) => Promise<string | null>;
     };
     modules?: Readonly<Record<string, (...args: unknown[]) => unknown>>;
   };
@@ -660,7 +675,7 @@ export default InfoPage;
 
 ### 5.10 调用 Host API（权限安全）
 
-常用：api.ui.showToast / setAppFullscreen / downloadBlob / pickLocalFiles（需 ui:toast）；api.navigate（nav:subtree，路径须带 routePath 前缀）；api.http.*；api.modules.*。
+常用：api.ui.showToast / setAppFullscreen / downloadBlob / pickLocalFiles / readIconSvg（需 ui:toast）；api.navigate（nav:subtree，路径须带 routePath 前缀）；api.http.*；api.modules.*。readIconSvg 的用法见 §5.10.1。
 
 ```tsx
 export default function App({ api, plugin }: HostBridgeProps) {
@@ -687,6 +702,90 @@ export default function App({ api, plugin }: HostBridgeProps) {
   return null;
 }
 ```
+
+### 5.10.1 画出插件中心设置的图标
+
+侧栏和 HostPoint 的图标由主项目画。插件页面要显示某个插件在插件中心上传的 SVG 时，自己读缓存，再请宿主上色。
+
+1. permissions 加上 ui:toast。否则没有 api.ui。
+2. 读 localStorage。键是 `dnhyxc.plugin.registry.${import.meta.env.PROD ? 'prod' : 'dev'}.v1`。
+3. 找到目标插件，取 `(menu?.icon ?? host?.icon)?.trim()`。
+4. `const markup = await api.ui.readIconSvg(url)`。markup 是整段 `<svg>…</svg>`，失败是 null。
+5. 放进 dangerouslySetInnerHTML。外层 `inline-flex size-4 text-current`，颜色跟按钮文字。
+6. 没有地址、没有 read、返回 null、或抛错：画 Puzzle。请求中留一个 size-4 空位。
+
+不要在插件里 fetch 这个地址，也不要安装 @tauri-apps/plugin-http。桌面生产环境的 COS 是跨域绝对地址，CSS mask 会得到空方块，img 里的 currentColor 会变成黑色。宿主的 loadPluginIconMarkup 已经做了地址改写、Tauri HTTP 和上色。iframe 的 RPC 没有 ui.readIconSvg。
+
+```tsx
+import { Puzzle } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+
+type RegistryPlugin = {
+  id: string;
+  menu?: { icon?: string };
+  host?: { icon?: string };
+};
+
+function registryIcon(id: string): string | undefined {
+  try {
+    const key = `dnhyxc.plugin.registry.${import.meta.env.PROD ? 'prod' : 'dev'}.v1`;
+    const raw = localStorage.getItem(key);
+    if (!raw) return;
+    const plugins = (JSON.parse(raw) as { plugins?: RegistryPlugin[] }).plugins;
+    const plugin = plugins?.find((item) => item.id === id);
+    return (plugin?.menu?.icon ?? plugin?.host?.icon)?.trim() || undefined;
+  } catch {
+    return;
+  }
+}
+
+function RegistryIcon({
+  id,
+  read,
+}: {
+  id: string;
+  read?: (url: string) => Promise<string | null>;
+}) {
+  const url = registryIcon(id);
+  const [svg, setSvg] = useState<string | null>(null);
+  const [miss, setMiss] = useState(false);
+  useEffect(() => {
+    if (!url || !read) {
+      setSvg(null);
+      setMiss(!url || !read);
+      return;
+    }
+    let cancel = false;
+    setMiss(false);
+    void read(url)
+      .then((markup) => {
+        if (cancel) return;
+        setSvg(markup);
+        setMiss(!markup);
+      })
+      .catch(() => {
+        if (!cancel) setMiss(true);
+      });
+    return () => {
+      cancel = true;
+    };
+  }, [url, read]);
+  const markup = useMemo(() => (svg ? { __html: svg } : null), [svg]);
+  if (!url || miss) return <Puzzle className="size-4" aria-hidden />;
+  if (!markup) return <span className="inline-block size-4" aria-hidden />;
+  return (
+    <span
+      aria-hidden
+      className="inline-flex size-4 text-current"
+      dangerouslySetInnerHTML={markup}
+    />
+  );
+}
+
+<RegistryIcon id="vocabDetailList" read={api.ui?.readIconSvg} />
+```
+
+独立预览没有 readIconSvg，按钮显示 Puzzle。嵌进宿主并保存过图标后，刷新即可看到 SVG。
 
 ### 5.11 生命周期写法对照
 
@@ -766,6 +865,8 @@ export type HostBridgeProps = {
         accept?: string;
         multiple?: boolean;
       }) => Promise<{ path: string; name: string; src: string }[] | null>;
+      /** 插件中心图标地址 → 已上色的整段 svg。需 ui:toast */
+      readIconSvg?: (url: string) => Promise<string | null>;
     };
     modules?: Readonly<Record<string, (...args: unknown[]) => unknown>>;
   };
@@ -1057,12 +1158,13 @@ export function useHostLocale(api?: {
 
 ### 9.1 权限列表
 
-- ui:toast — showToast / setAppFullscreen / downloadBlob / pickLocalFiles
+- ui:toast — showToast / setAppFullscreen / downloadBlob / pickLocalFiles / readIconSvg（插件中心图标，见 §5.10.1）
 - nav:subtree — api.navigate
 - http:plugin-api — api.http.*
-- modules:chat — 聊天模块
-- modules:ebook — 电子书模块
-原则：最小权限；用前判空。
+- modules:point — 挂到已登记扩展点，得到 `api.modules.point`。接法见第 14 章
+- modules:learningNotes — 学习笔记。不走扩展点
+- modules:chat — 打开某个会话。不走扩展点
+原则：最小权限；用前判空。没写进 permissions 的能力在 bridge 上是 undefined。
 
 ### 9.2 React 插件 Registry 示例
 
@@ -1133,7 +1235,7 @@ framework: "vue" 为上架硬性要求。remoteName 对齐 vite federation.name�
 - framework — "vue" | "react"（可省略，默认按 React；Vue 必填 vue）
 - entry — …/mf-manifest.json
 - routePath / injectRoute / menu / permissions / preload / trust / iframeUrl
-- host — 业务页自动挂载（如 ebook.read drawer/toolbar）
+- host — 嵌进业务页。`surface` 和 `slot` 必须是第 14.2 节表里已有的名字，`icon` 用 SVG URL，`order` 排序。从建文件到启用的步骤见第 14 章
 发版：部署新产物即可；Host 用 manifest 指纹 bust，不必为刷缓存改 registry updatedAt。
 
 ### 9.5 untrusted（iframe）示例
@@ -1242,7 +1344,7 @@ function UntrustedIframe({ pluginId, src, bridge, iframeBridge }) {
 | rpc | iframe→Host | `{ channel, type, id, method, args }` | 调用受限能力 |
 | rpc-result | Host→iframe | `{ channel, type, id, ok, value\|error }` | RPC 完成 |
 
-Host 内置 RPC：http.get/post/put/delete；ui.showToast；ui.downloadBlob；ui.pickLocalFiles。额外方法经 Host iframeRpcHandlers 扩展（如 ebook.*）。
+Host 内置 RPC：http.get/post/put/delete；ui.showToast；ui.downloadBlob；ui.pickLocalFiles。没有 ui.readIconSvg，iframe 插件目前不能读取插件中心图标。额外方法经 Host iframeRpcHandlers 扩展（如 ebook.*）。
 
 ready 只应答一次（readyAcked），避免 Strict Mode / 泄漏 interval 打爆主线程；load 发 init 但不占 ready 槽。
 
@@ -1749,7 +1851,7 @@ remote-untrusted 采用单入口：main 只挂 App，Host registry.iframeUrl 指
 【MF】
 1. pnpm dev 启动 Remote（确认 /mf-manifest.json 可访问）
 2. 启动 Host；Registry 指向该 entry 且 enabled
-3. 侧栏进入插件路由
+3. `injectRoute` 不为 false 时从侧栏进入插件路由。内嵌插件没有侧栏入口，到对应业务页，并在插件中心启用后再看槽位（第 14 章）
 4. Network：进入插件应主要看到 1 条 mf-manifest.json + remoteEntry.js?v=
 5. 独立预览：React 开 main 路由；Vue 开实验室 path
 
@@ -1862,3 +1964,460 @@ first-party 下应由 Host @scope。仍污染则查是否绕过 head 注入、�
 ### 13.10 iframe 一直 connecting / 握手超时？
 
 核对 channel（dnhyxc-mf-iframe）、pluginId===registry.id、iframeUrl 可访问且同 origin 与 registry 一致；DevTools 选 iframe 上下文看是否在发 ready。
+
+## 14. 开发一个页面内嵌插件
+
+这一章只讲一种插件：不进侧栏，嵌在英语学习已经有的页面里。外壳由主项目画，包括按钮、抽屉、抽屉标题。你写的是外壳里面的内容。
+
+做完一个能在页面上看到的插件，交付这四样：
+
+1. 一个 React 组件，默认导出，入参是 `{ api }`。
+2. `vite.config.ts` 的 `exposes` 里多一个键，指向该组件的入口。
+3. 注册表里多一条：`injectRoute: false`，不写 `menu`，`permissions` 含 `modules:point`，`host.surface` 和 `host.slot` 用 14.2 表里已有的名字。
+4. 插件中心启用这条，并重新拉取注册表。
+
+工程、样式隔离、联邦共享依赖沿用第 1–8 章。单词解析、解析列表、导入已经在子项目 `dnhyxc-ai-plugins` 里，和它们打在同一个 Remote 时，`entry` 继续指向同一份 `mf-manifest.json`。
+
+学习笔记、打开某个聊天会话仍走 `modules:learningNotes`、`modules:chat`，不走本章。阅读页 `ebook.read` 走本章：上下文是 `bookId`、`bookTitle`，命令是 `navigateToCfi`、`openThought`、`closeIdeasList`。阅读页的按钮和抽屉由阅读页自己画。
+
+### 14.1 先选挂法
+
+先在 14.2 里选定页面，再从下面三种里选一种。三种的组件入参一样，差别是注册表的 `slot`，以及组件挂上之后该读 `getContext` 还是 `getPayload`。
+
+**顶栏。** 注册表 `slot` 写 `toolbar`。主项目把你的组件直接画进顶栏，启用后立刻出现，没有点击。数据在 `point.getContext()`。根节点就是内容本身，宽度跟着顶栏走。
+
+**图标按钮，点开后看你的内容。** 注册表 `slot` 写动作槽的名字，例如 `card-action`、`item-action`、`library-card-action`。主项目用注册表的 `icon` 和 `title` 画一枚 28px 的图标按钮。你的组件画在该动作 `opens` 指向的抽屉里。用户点击之后，主项目先把这一下的载荷写进抽屉，再挂载你的组件。所以组件第一次执行时，点击已经发生，要立刻 `getPayload(抽屉槽名)`。抽屉槽名在 14.2 的「组件画在」一列，和注册表的 `slot` 不是同一个字符串。
+
+**页面自己有按钮的抽屉。** 目前只有单词库的解析列表是这种。注册表 `slot` 写 `drawer`。打开按钮在单词库页面上，文案和图标仍读你的注册表。组件是抽屉正文。当前词库 id 在 `point.getContext().libraryId`，不在点击载荷里。
+
+同一个 `surface` 上可以挂多个插件，每个插件一条注册表。同一个动作槽上的多个插件会并排出现多枚按钮；点哪一枚，抽屉里就只挂那一条插件。`host.order` 小的排在前面。
+
+语句库目录里也有一个名叫 `drawer` 的槽，当前页面没有按钮去打开它。语句库插件用 `toolbar`、`item-action` 或 `library-card-action`。
+
+### 14.2 能挂在哪
+
+`host.surface` 必须等于下表的 surface，`host.slot` 必须等于「注册表 slot」列。写了表里没有的名字，页面不出现这个插件，`api.modules.point` 也是 `undefined`。
+
+表里的「读」是组件里实际调用的方法。字段名是主项目现在写进去的键，多出来的键插件读不到，少写的键就是 `undefined`。要新字段，得改主项目对应页面，见 14.10。
+
+| surface | 页面 | 注册表 slot | 组件画在 | 组件里读 | 字段 |
+| --- | --- | --- | --- | --- | --- |
+| `english.vocab.card` | 每张单词卡尾部 | `card-action` | 抽屉 `drawer` | `getPayload('drawer')` | `word`、`pos`、`ipa`、`translationZh`、`example`。从词库列表用 `openCard` 打开时还有 `source: 'list'` |
+| `english.vocab.library` | 单词库顶栏 | `toolbar` | 顶栏 | `getContext()` | `libraryId`，当前词库。还没选库时上下文是 `null` |
+| `english.vocab.library` | 单词库每一行尾部 | `item-action` | 抽屉 `item-drawer` | `getPayload('item-drawer')` | 与词卡相同：`word`、`pos`、`ipa`、`translationZh`、`example` |
+| `english.vocab.library` | 单词库页面上的列表按钮 | `drawer` | 该抽屉 | `getContext()` | `libraryId`。这个点还能 `publishSignal('stats', …)`，标题上的「已加载 / 总数」读的就是它 |
+| `english.vocab.library` | 词库卡片上的导入按钮 | `library-card-action` | 抽屉 `import-drawer` | `getPayload('import-drawer')` | `libraryId`、`title` |
+| `english.classic.card` | 每张语句卡尾部 | `card-action` | 抽屉 `drawer` | `getPayload('drawer')` | `english`、`translationZh`、`source`、`noteZh` |
+| `english.classic.library` | 语句库顶栏 | `toolbar` | 顶栏 | `getContext()` | `libraryId` |
+| `english.classic.library` | 语句库每一行尾部 | `item-action` | 抽屉 `item-drawer` | `getPayload('item-drawer')` | 与语句卡相同：`english`、`translationZh`、`source`、`noteZh` |
+| `english.classic.library` | 语句库卡片上的按钮 | `library-card-action` | 抽屉 `import-drawer` | `getPayload('import-drawer')` | `libraryId`、`title` |
+| `english.mistakes` | 错题集顶栏 | `toolbar` | 顶栏 | `getContext()` | `kind`：`'vocab'` 或 `'classic'`，跟当前单词/语句页签一致 |
+| `english.mistakes` | 错题集每一行尾部 | `item-action` | 抽屉 `drawer` | `getPayload('drawer')` | 单词行是词卡那一组字段；语句行是语句卡那一组字段 |
+| `english.review` | 今日复习 | 与错题集相同 | 与错题集相同 | 与错题集相同 | `kind` 同样是 `'vocab'` 或 `'classic'` |
+| `english.favorites` | 我的收藏 | 与错题集相同 | 与错题集相同 | 与错题集相同 | `kind` |
+| `english.dailyReading` | 每日阅读顶栏 | `toolbar` | 顶栏 | `getContext()` | `origin` |
+| `english.dailyReading` | 每日阅读每一行尾部 | `item-action` | 抽屉 `drawer` | `getPayload('drawer')` | `id`、`titleEn`、`publishDate`、`origin` |
+| `ebook.read` | 阅读页顶栏，或阅读页自己的抽屉 | `toolbar` 或 `drawer` | 顶栏，或阅读页抽屉 | `getContext()` | `bookId`、`bookTitle`。命令：`navigateToCfi`、`openThought`、`closeIdeasList` |
+
+错题集、今日复习、收藏、每日阅读的行按钮和 `drawer` 共用一个抽屉。这两处不要各放一个都要一直开着的插件，后打开的会换掉先打开的正文。单词库和语句库的行按钮打开的是单独的 `item-drawer`，点一行不会换掉 `drawer` 里的列表。
+
+今日复习和错题集是两个 surface。要两页都出现，就注册两条，只改 `id`、`remoteName` 和 `host.surface`。一条插件不会自己判断「现在是不是复习页」。
+
+信号和命令按 surface 给，不按槽给。挂在单词库上的顶栏插件和导入插件，拿到的是同一份 `api.modules.point`，所以都能调 `pickJsonFile` 和 `openCard`。语句库、错题集、复习、收藏、每日阅读目前没有信号，也没有命令。
+
+| surface | 可以 `publishSignal` 的名字 | 可以 `command` 的名字 |
+| --- | --- | --- |
+| `english.vocab.card` | `pending` | `play`、`stop` |
+| `english.vocab.library` | `stats` | `pickJsonFile`、`openCard` |
+| `ebook.read` | 无 | `navigateToCfi`（CFI 字符串）、`openThought`（想法对象）、`closeIdeasList`（`undefined`）。只在 EPUB 阅读页挂着时有实现 |
+| 其余 surface | 无。写了会被丢掉 | 无。调用会抛 `UNKNOWN_POINT_COMMAND` |
+
+`pending` 的值是 `{ pluginId, key, on }`。`pluginId` 用注册表 `id`，`key` 用当前 `word`，`on` 是布尔。只有载荷里带 `word` 的按钮会转圈，语句卡的 `english` 不会转。关抽屉不会清掉转圈，请求结束把 `on` 设为 `false` 才停。
+
+`stats` 的值是 `{ total, loaded }`，或 `null` 表示清掉。`total`、`loaded` 不是有限数时，顶栏保持上次的数字。单词库标题读这一份。其它页面没有接这个信号。
+
+### 14.3 要改哪些文件
+
+下面用「错题集顶栏显示当前是单词还是语句」做最小插件。名字换成你的即可。子项目是 `dnhyxc-ai-plugins`。
+
+**1. 类型文件** `src/views/mistake-note/point.ts`
+
+主项目固定下发这五个方法。名字不要改，也不要再声明 `modules:vocabDetail`。
+
+```ts
+export type PointModule = {
+  getContext: () => Record<string, unknown> | null;
+  getPayload: (slot: string) => Record<string, unknown> | null;
+  subscribe: (listener: () => void) => () => void;
+  publishSignal: (name: string, value: unknown) => void;
+  command: (name: string, arg?: unknown) => unknown;
+};
+```
+
+单词解析目录里已有同一份类型：`src/views/vocab-detail/point.ts`。新插件可以继续从那里 import，也可以把上面几行抄到自己目录。
+
+**2. 入口** `src/views/mistake-note/index.ts`
+
+第一行必须引入样式，否则嵌进主项目后没有 Tailwind。
+
+```ts
+import '@/styles.css';
+
+export { default } from './panel';
+```
+
+**3. 组件** `src/views/mistake-note/panel.tsx`，见 14.4。按钮类插件改用 14.5 的组件，单词库列表抽屉改用 14.6。
+
+**4. 联邦导出。** `vite.config.ts` 的 `exposes` 增加一行，键和注册表 `expose` 一字不差：
+
+```ts
+exposes: {
+  './MistakeNote': './src/views/mistake-note/index.ts',
+}
+```
+
+**5. 注册表。** 本地开发追加到主项目 `apps/backend/uploads/remotes/plugins-registry.json` 的 `plugins` 数组：
+
+```json
+{
+  "id": "mistakeNote",
+  "remoteName": "dnhyxc-ai-mistake-note",
+  "expose": "./MistakeNote",
+  "title": { "zh-CN": "错题备注", "en-US": "Mistake note" },
+  "description": {
+    "zh-CN": "错题集顶栏里的备注。",
+    "en-US": "A note in the mistakes toolbar."
+  },
+  "routePath": "/english-learning/mistake-note",
+  "entry": "http://127.0.0.1:9008/mf-manifest.json",
+  "version": "1.0.0",
+  "hostApiRange": "^1.0.0",
+  "injectRoute": false,
+  "host": {
+    "surface": "english.mistakes",
+    "slot": "toolbar",
+    "order": 10,
+    "icon": "https://example.com/note.svg"
+  },
+  "permissions": ["modules:point"],
+  "preload": "idle",
+  "enabled": false,
+  "trust": "first-party"
+}
+```
+
+逐项怎么填：
+
+1. `id` 是插件中心里的唯一名字，也是 `pending.pluginId` 要写的值。
+2. `remoteName` 每个插件各写一个。两个插件共用一个 `remoteName` 时，后加载的会盖掉前一个的缓存刷新标记。
+3. `expose` 等于 `exposes` 的键，含前面的 `./`。
+4. `entry` 是插件 dev server 的 `mf-manifest.json`。和单词解析打在一起时就是 `http://127.0.0.1:9008/mf-manifest.json`。
+5. `host.surface`、`host.slot` 只从表里抄。
+6. `title` 是按钮文案和抽屉标题。顶栏插件没有标题栏，`title` 仍要填，插件中心用它做名字。
+7. `icon` 是 SVG 的 URL。按钮读 `plugin.host.icon`。顶栏插件不画这枚图标，组件自己画内容。
+8. `permissions` 至少要有 `modules:point`。要请求接口再加 `http:plugin-api`，要 `showToast` 再加 `ui:toast`。没写的能力在 `api` 上是 `undefined`。
+9. `injectRoute` 固定 `false`。不要写 `menu`，写了侧栏会多一个点进去是空的入口。
+10. `routePath` 描述符需要它。`injectRoute: false` 时用户打不开这个 URL。
+11. `hostApiRange` 保持 `^1.0.0`。这次改动没有升主项目 API 版本。
+12. `enabled` 先写 `false`。用户在插件中心打开之后，页面才会画出来。
+
+保存注册表后，到插件中心重新拉取再启用。只改文件、浏览器仍缓存着旧权限时，`api.modules.point` 仍是 `undefined`。
+
+**6. 启动。** 子项目执行它原来的 dev 命令，确认 `entry` 能打开。主项目刷新英语学习页。插件中心启用 `mistakeNote` 后，错题集顶栏出现这块内容。今日复习不会出现。
+
+### 14.4 顶栏插件怎么写
+
+组件直接出现在顶栏。下面这份就是 14.3 的 `panel.tsx`，启用后能在错题集顶栏看到当前页签。
+
+```tsx
+import { useEffect, useState } from 'react';
+import { useHostLocale } from '@/hooks';
+import type { PointModule } from './point';
+
+type HostApi = {
+  locale?: 'zh-CN' | 'en-US';
+  event?: {
+    on: (event: string, handler: (data?: unknown) => void) => void;
+    off: (event: string, handler: (data?: unknown) => void) => void;
+  };
+  modules?: { point?: PointModule };
+};
+
+export default function MistakeNotePanel({ api }: { api: HostApi }) {
+  useHostLocale(api);
+  const point = api.modules?.point;
+  const [kind, setKind] = useState('');
+
+  useEffect(() => {
+    if (!point) return;
+    const pull = () => {
+      const ctx = point.getContext();
+      setKind(ctx && typeof ctx.kind === 'string' ? ctx.kind : '');
+    };
+    pull();
+    return point.subscribe(pull);
+  }, [point]);
+
+  if (!point) return <p className="text-sm">缺少 modules:point</p>;
+
+  return (
+    <p className="px-2 text-sm text-textcolor/80">
+      {kind === 'classic' ? '语句错题' : kind === 'vocab' ? '单词错题' : '尚未进入列表'}
+    </p>
+  );
+}
+```
+
+这几行各自负责什么：
+
+- `useHostLocale(api)` 让插件文案跟着主项目语言走。独立预览没有 `event` 时它什么都不做。
+- `api.modules?.point` 没有，就是注册表没写 `modules:point`，或 `surface` 不在目录里，或注册表还是旧的。此时画一句缺少权限，不要渲染半份业务。
+- `pull` 先执行一次。顶栏挂载时上下文已经在，不会再补发一次「页面打开了」。
+- `subscribe` 在上下文变了，或这个点上任意槽开关时调用。返回值是退订函数，放进 `useEffect` 的 return。单词页签和语句页签切换时，`kind` 会从 `'vocab'` 变成 `'classic'`。
+- `publishSignal` 不会调用 `subscribe`。回写条数、转圈不会走进 `pull`。
+
+换成自己的业务时，只改三处：`surface` 决定 `getContext()` 里有哪个键（对照 14.2）；请求地址；根节点里画什么。顶栏根节点不要再包一层 Drawer 或 Dialog。
+
+要请求接口时，`permissions` 加上 `http:plugin-api`，在 `pull` 里按上下文发请求。`api.http` 的 baseURL 已经含 `/api`，路径从业务段开始写，不带 token，业务字段在响应的 `data` 上：
+
+```tsx
+const res = await api.http.get(
+  `/english-learning/vocab-detail?word=${encodeURIComponent(word)}`,
+);
+const body =
+  res && typeof res === 'object' && 'data' in res
+    ? (res as { data: unknown }).data
+    : res;
+```
+
+`libraryId`、`kind`、`origin` 没变就不要把列表清掉重拉。`subscribe` 在别的抽屉开关时也会进来，用一个 ref 记下上次的 id，相同则 return。单词库列表现成写法在 `src/views/vocab-detail-list/list.tsx`。
+
+### 14.5 按钮抽屉插件怎么写
+
+注册表 `slot` 用动作槽。组件是抽屉正文。下面以错题集单词行为例：`surface` 是 `english.mistakes`，注册表 `slot` 是 `item-action`，正文读 `getPayload('drawer')`。换页面时，把 `PAYLOAD_SLOT` 改成 14.2 的「组件画在」那一列，把读取的字段换成该行的字段。
+
+```tsx
+import { useEffect, useState } from 'react';
+import { useHostLocale } from '@/hooks';
+import type { PointModule } from './point';
+
+const PAYLOAD_SLOT = 'drawer';
+
+type HostApi = {
+  locale?: 'zh-CN' | 'en-US';
+  event?: {
+    on: (event: string, handler: (data?: unknown) => void) => void;
+    off: (event: string, handler: (data?: unknown) => void) => void;
+  };
+  http?: { get: <T = unknown>(url: string) => Promise<T> };
+  modules?: { point?: PointModule };
+};
+
+export default function RowPanel({ api }: { api: HostApi }) {
+  useHostLocale(api);
+  const point = api.modules?.point;
+  const [word, setWord] = useState('');
+
+  useEffect(() => {
+    if (!point) return;
+    const pull = () => {
+      const payload = point.getPayload(PAYLOAD_SLOT);
+      setWord(
+        payload && typeof payload.word === 'string' ? payload.word.trim() : '',
+      );
+    };
+    pull();
+    return point.subscribe(pull);
+  }, [point]);
+
+  if (!point) {
+    return (
+      <div className="flex h-full min-h-0 items-center justify-center text-sm">
+        缺少 modules:point
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col px-4 py-3 text-sm">
+      {word ? word : '这一行没有 word'}
+    </div>
+  );
+}
+```
+
+点击之后实际发生的事：
+
+1. 页面上先出现图标按钮。这一步你的组件还没挂载。
+2. 用户点击。主项目若发现同一个插件、同一个 `word` 或 `english` 的抽屉已经开着，就关掉它。再点一次是打开，不是由插件自己切换。
+3. 打开时，主项目把这一行的 payload 写进 `PAYLOAD_SLOT`，再挂载你的组件。
+4. `pull()` 马上读到这个词。不要等下一次点击，也不会有「按钮被点击」的事件传进组件。
+5. 用户关掉抽屉，组件卸载。再次打开是一次新的挂载，`useEffect` 会再跑。
+
+词卡解析就是这种插件：`surface` 为 `english.vocab.card`，`slot` 为 `card-action`，`PAYLOAD_SLOT` 为 `'drawer'`。导入插件也是：`slot` 为 `library-card-action`，`PAYLOAD_SLOT` 为 `'import-drawer'`，字段改读 `libraryId` 和 `title`。语句卡把 `payload.word` 换成 `payload.english`。每日阅读读 `payload.id`。
+
+词卡上请求这个词时，把转圈交给主项目。`pluginId` 用注册表 `id`，和 `mistakeNote` 这种自己起的名字一致：
+
+```tsx
+point.publishSignal('pending', {
+  pluginId: 'vocabDetail',
+  key: word,
+  on: true,
+});
+```
+
+请求结束，无论成功失败，再发一次 `on: false`。这个点没有 `pending` 时，这行会被丢掉，按钮不转，组件照常显示。
+
+同一个点上别的槽开关时，`subscribe` 也会进来。导入抽屉在详解还开着时只是被藏起来，`getPayload('import-drawer')` 仍有值。`pull` 里按载荷本身更新即可，不要因为「另一个抽屉开了」就把自己的目标清掉。
+
+抽屉正文的根节点用 `flex h-full min-h-0 flex-col`，否则 Loading 贴在顶部。`Loading`、`Button`、`ScrollArea` 用插件自己的组件。不要再包一层 Drawer 或 Dialog，也不要自己指定 portal 容器。主项目已经把浮层收进插件的样式域。
+
+### 14.6 页面抽屉插件怎么写
+
+这种只有单词库的 `drawer`：按钮在单词库页面，组件只负责列表。当前库在上下文里。页面一切换词库就发布新的 `libraryId`，离开或还没选库时是 `null`。
+
+```tsx
+import { useEffect, useRef, useState } from 'react';
+import { useHostLocale } from '@/hooks';
+import type { PointModule } from './point';
+
+type HostApi = {
+  locale?: 'zh-CN' | 'en-US';
+  event?: {
+    on: (event: string, handler: (data?: unknown) => void) => void;
+    off: (event: string, handler: (data?: unknown) => void) => void;
+  };
+  http?: { get: <T = unknown>(url: string) => Promise<T> };
+  modules?: { point?: PointModule };
+};
+
+export default function LibraryListPanel({ api }: { api: HostApi }) {
+  useHostLocale(api);
+  const point = api.modules?.point;
+  const libraryRef = useRef('');
+  const [libraryId, setLibraryId] = useState('');
+
+  useEffect(() => {
+    if (!point) return;
+    const apply = () => {
+      const ctx = point.getContext();
+      const next = ctx && typeof ctx.libraryId === 'string' ? ctx.libraryId : '';
+      if (next === libraryRef.current) return;
+      libraryRef.current = next;
+      setLibraryId(next);
+      point.publishSignal('stats', { total: 0, loaded: 0 });
+    };
+    apply();
+    return point.subscribe(apply);
+  }, [point]);
+
+  if (!point) {
+    return (
+      <div className="flex h-full min-h-0 items-center justify-center text-sm">
+        缺少 modules:point
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col px-4 py-3 text-sm">
+      {libraryId || '还没有词库'}
+    </div>
+  );
+}
+```
+
+`if (next === libraryRef.current) return` 必须留着。这个点的导入抽屉、行抽屉开关时也会调用 `apply`。库 id 没变就保持现有列表。去掉这行，用户每开一次别的抽屉，列表都会被清掉重拉。
+
+每一页请求成功后把条数写回去，标题由主项目重绘。这行不会再次进入 `apply`：
+
+```tsx
+point.publishSignal('stats', { total: page.total, loaded: loadedCount });
+```
+
+点一行要打开词卡详解时调用 `openCard`，见 14.7。它只打开词卡抽屉，不会把当前列表关掉。词库列表抽屉会盖住词卡抽屉；关掉列表后，词卡抽屉还在。
+
+现成列表在 `src/views/vocab-detail-list/list.tsx`：游标分页、`stats`、`openCard` 都在里面。第一页用整块 Loading，继续翻页只用一行小字。第一页失败给重试；后面页失败只在底部放重试，已经加载的行留着。
+
+### 14.7 命令
+
+`command` 的第二个参数必须传。没有参数时传 `undefined`。名字不在 14.2 的命令表里会抛 `UNKNOWN_POINT_COMMAND`。目录里有、主项目还没绑定实现会抛 `POINT_COMMAND_UNBOUND`。语句库和错题集现在调用任何命令都会抛第一种。
+
+| 点 | 调用 | 结果 |
+| --- | --- | --- |
+| 词卡 | `command('play', text)` | 返回 `Promise`。`text` 用要朗读的字符串。空字符串直接结束，不发起合成。缓存目录由主项目决定 |
+| 词卡 | `command('stop', undefined)` | 停掉当前正在播的声音。组件卸载时调用一次 |
+| 词库 | `command('pickJsonFile', undefined)` | `Promise<File \| null>`。用户取消是 `null`。选了非 JSON 会抛 `accept`，用 `try/catch` 接住 |
+| 词库 | `command('openCard', lemma)` | 返回 `true` 表示词卡详解抽屉打开了。`lemma` 是词字符串。空词，或 id 为 `vocabDetail` 的插件没启用，返回 `false` |
+
+`openCard` 再传同一个词不会关闭。关闭由用户点抽屉外侧或词卡上的同一枚按钮完成。
+
+```tsx
+const opened = point.command('openCard', lemma) === true;
+if (!opened) {
+  api.ui?.showToast({ message: '请先在插件中心启用单词解析', type: 'info' });
+}
+```
+
+`showToast` 需要权限 `ui:toast`。没有 `point` 时不要调 `command`。独立预览里文件选择可以退回页面上的隐藏 `<input type="file">`，嵌进主项目后走 `pickJsonFile`。
+
+朗读不要自己 `new SpeechSynthesisUtterance`。独立预览可以在假的 `command` 里用浏览器语音，嵌进主项目时必须走 `play`，才会使用主项目的会员语音和磁盘缓存。
+
+### 14.8 样式、请求和预览
+
+入口第一行的 `import '@/styles.css'` 不要删。组件里需要浮层时用插件自己的 Tooltip、Dialog，它们会被主项目收进插件样式域。再包一层抽屉会和主项目的抽屉套在一起。
+
+HTTP：
+
+- 路径不写死后端域名，不带 `/api` 前缀，不自己加 token。未登录时接口 401，组件显示失败和重试。
+- 列表用游标。不带 `cursor` 是第一页；`nextCursor` 为字符串就原样传回去；`null` 表示到底。用 ref 区分「还没请求」和「已经到底」，空列表不要把第一页再请求一遍。
+- 失败时设 hold，等用户点重试再清掉，避免视口底部的哨兵连续打失败请求。
+- 同一词正在请求时用 `Map` 复用这一次 Promise。关掉抽屉不要取消它。转圈跟着 `pending`，不跟着抽屉开关。
+- `GET /english-learning/vocab-detail/list` 必须注册在 `GET /english-learning/vocab-detail` 之前，否则 `list` 会被当成单词。这是主项目路由的顺序，插件只负责把路径写对。
+
+独立预览没有主项目注入的 `api`。在子项目自己的路由里用 `mockApi` 塞一份假的 `point`，让 `getContext` / `getPayload` 返回 14.2 里该插件要读的字段。`subscribe` 返回空的退订函数即可。单词解析的预览在 `src/router/routes.tsx` 的 `previewPoint`。预览能看出组件布局，看不出按钮、抽屉叠放和「未启用时不占位」，这三件要在主项目页面里看。
+
+### 14.9 挂上去之后看不到
+
+按这个顺序查，上一件没过就不用看下一件：
+
+1. 插件 dev server 开着，浏览器能打开注册表里的 `entry`。
+2. `expose` 和 `vite.config.ts` 的键一致，改完 exposes 后 dev server 已重新编译。
+3. 注册表这条 `enabled` 在插件中心是打开的。文件里写 `true` 但中心没拉取，页面仍当它是关的。
+4. `injectRoute` 是 `false`，并且没有 `menu`。侧栏多出来的入口说明 `menu` 还在。
+5. `host.surface`、`host.slot` 和 14.2 表完全一致，大小写也一致。语句库不要用 `drawer`。
+6. `permissions` 含 `modules:point`。改完权限后重新拉取注册表。控制台里这个插件的 `api.modules` 没有 `point`，就是这一条。
+7. 动作槽插件：页面上应先出现图标按钮。组件在点开之后的抽屉里。顶栏插件：内容直接在顶栏，没有按钮。
+8. 单词库 `drawer`：按钮在词库列表页的标题旁边，不在词库卡片上。卡片上那枚是 `library-card-action`。
+9. 抽屉里是「缺少 modules:point」：权限或 surface 不对。抽屉里是「这一行没有 word」：这个页面的载荷用的是别的键，回到 14.2 对字段。
+10. 控制台 `UNKNOWN_POINT_COMMAND`：这个 surface 没有该命令。词卡才能 `play`，词库才能 `openCard`。
+
+同一词重复打开不应打出两发请求。关掉抽屉后，带 `word` 的按钮继续转，请求结束才停。
+
+### 14.10 什么时候改主项目
+
+挂到 14.2 已有的槽：只改子项目和注册表。不要在 `apps/frontend/src/federation/modules/` 下为这个插件新建目录，也不要在 `buildModules` 里加 `modules:<插件 id>`。
+
+主项目要改的只有这些，改完插件仍用 `modules:point`：
+
+1. 新的挂载位置。在 `apps/frontend/src/federation/points/catalog.ts` 给那个点加槽，或新增一个点，并在对应页面放上 `HostPoint`。动作槽要写 `opens: '某个抽屉槽'`，页面还要再放一个该抽屉槽的 `HostPoint`，否则按钮打开后没有地方挂组件。
+2. 新的载荷字段或上下文字段。目录不负责字段。字段来自页面：上下文是 `usePointContext(pointId, data)`，点击载荷是 `<HostPoint payload={...} />`。插件读到的就是这里写进去的键。
+3. 新的外壳状态。该点的 `signals` 加上名字，页面再订阅并画出来。插件才能 `publishSignal`。
+4. 新的主项目动作，例如另一种朗读或另一种跳转。该点的 `commands` 加上名字。不依赖页面闭包的，在 `points/command.ts` 里 `bindPointCommand`；要路由或当前页状态的，在那个页面的 effect 里绑定并在卸载时解绑。插件再 `command`。
+
+词库列表抽屉的标题带条数、从详解切过来时不播入场，这两件是单词库页面自己的。新插件挂到别的槽，用主项目统一的抽屉，不要再复制一套抽屉组件。
+
+### 14.11 验收
+
+- 插件中心未启用时，对应按钮或顶栏片段不出现，也不占空白。
+- 启用后，图标和抽屉标题来自注册表的 `icon` 和 `title`。侧栏没有多出来的入口。
+- 桥上能读到 `api.modules.point`。只声明了 `modules:vocabDetail` 的旧包读不到。
+- 顶栏插件在页面打开时就能读到 `getContext()`，切换单词/语句页签或切换词库后内容跟着变。
+- 按钮插件在远程包返回前打开，`getPayload` 里已经有这一行的字段。
+- 再点同一枚按钮、同一个词或同一句，抽屉关闭。点另一行，抽屉换成那一行的内容。
+- 单词库列表换词库会重载；只是开关导入抽屉或行抽屉、或回写 `stats` 时不重载。
+- `openCard` 为 `true` 时词卡详解打开，列表抽屉还在。`vocabDetail` 未启用时得到 `false`，只提示，不打开空抽屉。
+- 导入在详解打开时不把目标清掉。关掉详解后导入目标还在。
+- 错题集插件不会出现在今日复习。两条注册表才会两页都有。
+- 未登录时接口 401，插件显示失败和重试，不自己拼 token。
+- 同一词重复打开不会打出两发请求。关掉抽屉后，带 `word` 的按钮继续转，请求结束后才停。
