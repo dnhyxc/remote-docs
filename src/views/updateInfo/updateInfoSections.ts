@@ -8,6 +8,7 @@ import type { Locale } from '@/i18n';
 import {
 	UPDATE_INFO_BULLETS_EN,
 	UPDATE_INFO_INTRO_EN,
+	UPDATE_INFO_LATEST_INTRO_EN,
 	UPDATE_INFO_SECTION_TITLES_EN,
 } from './updateInfoSectionsEnOverlay';
 
@@ -852,6 +853,13 @@ const UPDATE_INFO_SECTIONS_ZH: UpdateInfoSection[] = [
 				description:
 					'在文档助手输入框输入 / 可多选已保存的 Skill，发送后走带工具能力的 Agent 回复，消息仍出现在当前文档的助手历史中；回复旁可看到本轮实际应用的 Skill。未保存草稿选用 Skill 亦可对话，落库规则与已保存文档区分，避免串到其它业务会话。',
 			},
+			{
+				id: 's6-44',
+				title: '知识库文档留言',
+				dateLabel: '2026-11-23',
+				description:
+					'打开已保存的云端文档后，编辑器顶栏出现「留言」，样式与「回收站」一致（图标加文字）。抽屉标题为「文档留言」，旁边显示「共 N 条 / 已加载 N 条」。根留言滑到底每次再取 50 条；每条根先显示最早 2 条回复，其余点「还有 N 条回复」。文档未公开时，作者会看到留言仅自己可见的提示；把文档公开后，这些留言不会自动给读者看，需要点「公开这些留言」，或在单条菜单里选择「公开留言」。文档已删除或已取消公开时，标题下方显示「文档不存在或文档已取消公开」，并且不再出现输入框。',
+			},
 		],
 	},
 	{
@@ -1400,6 +1408,13 @@ const UPDATE_INFO_SECTIONS_ZH: UpdateInfoSection[] = [
 				dateLabel: '2026-05-02',
 				description:
 					'关于窗口中「更新说明」以绝对地址外开浏览器，打开即上述页面。',
+			},
+			{
+				id: 's21-4',
+				title: '打开先看本次更新',
+				dateLabel: '2026-11-25',
+				description:
+					'更新说明页打开后只列出最近一天写入的条目，页首写明这一天。更早的说明要点「了解更多历史更新」才展开；看完可点「只看最新」，或用浏览器后退返回。若链接指向某条更早的更新，会直接展开全部历史并滚到该条。',
 			},
 		],
 	},
@@ -2455,6 +2470,27 @@ const UPDATE_INFO_SECTIONS_ZH: UpdateInfoSection[] = [
 				description:
 					'在插件中心启用单词详解、单词详解列表和手动导入后，生词卡片右上角可打开该词解析，搜索框右侧可打开解析列表和导入。列表和导入只认你收集过的生词。导出 JSON 或 Word 时按当前选中的篇目和已搜索的词，不再每次导出全部；选中某一篇时，文件名用这篇的中文标题。从列表或导入点进解析时，原来的抽屉先藏起来，关掉解析后回到原位。没有符合条件的生词时只提示，不下载空文件。',
 			},
+			{
+				id: 's24-144',
+				title: '单词卡 / 语句卡可单条强制重新标注',
+				dateLabel: '2026-11-24',
+				description:
+					'单词卡和经典句卡片右上角的标注按钮现在可以对当前这一条强制重新标注，不再受整页网络请求中断影响——进行中切到别的页面、刷新浏览器甚至断网重连都不会停，服务器会在后台跑完；卡片进行中显示停止图标，刷新后会自动把正在跑的图标画回来，点停止可随时中断；跑完后卡片会自动刷新成最新结果，不用手动重进。',
+			},
+			{
+				id: 's24-145',
+				title: '经典句看中写新增句子成分色块',
+				dateLabel: '2026-11-24',
+				description:
+					'在「看中写」练习里揭示答案，或开启词性显示后，词槽会按连续的句子成分画上不同颜色的色块和标签（主语、谓语、宾语、表语、定语、状语、补语、同位语等 10 类），一眼看清句子的句法结构；还没揭示答案时不会显示色块，避免提前泄题。手动导入或在线标注产出的成分数据都会被识别。',
+			},
+			{
+				id: 's24-146',
+				title: '手动导入标注改为带生成提示词的弹窗',
+				dateLabel: '2026-11-24',
+				description:
+					'在语句库 / 句子包里选「手动导入」标注时，不再直接弹出一个空白文件选择框，而是先打开一个弹窗：里面有一段可一键复制的生成提示词，写明输出格式、词性 / 音标 / 释义与句子成分的取值规则和两个完整示例，复制到任意模型就能生成可导入的 JSON 文件；弹窗内支持点击选文件或直接把 JSON 拖进来，复制成功有「已复制」反馈。',
+			},
 		],
 	},
 	{
@@ -3247,9 +3283,15 @@ const UPDATE_INFO_SECTIONS_ZH: UpdateInfoSection[] = [
 	},
 ];
 
-/** 页首说明（与对外更新信息说明首段一致） */
+/** 页首说明（与对外更新信息说明首段一致，仅历史全文使用） */
 const UPDATE_INFO_INTRO_ZH =
 	'这里汇总了本项目目前已具备的核心能力与近期更新点，方便你快速了解「新增/优化了什么」。以下内容为产品级说明，强调可感知的功能与体验提升；正文不列出工程内部的文件或目录路径，实现与专题细节请在本地克隆的仓库中按专题自行检索配套说明。';
+
+/** 默认视图导语；{date} 替换为全表最大 dateLabel */
+const UPDATE_INFO_LATEST_INTRO_ZH =
+	'以下是 {date} 的更新。更早的能力说明在历史更新里。';
+
+export type UpdateScope = 'latest' | 'all';
 
 function mapUpdateInfoSectionsToLocale(
 	zh: UpdateInfoSection[],
@@ -3274,4 +3316,132 @@ export function getUpdateInfoSections(locale: Locale): UpdateInfoSection[] {
 /** 按界面语言返回页首说明 */
 export function getUpdateInfoIntro(locale: Locale): string {
 	return locale === 'en-US' ? UPDATE_INFO_INTRO_EN : UPDATE_INFO_INTRO_ZH;
+}
+
+/** 默认视图导语。日期来自 pickLatestUpdate，不另维护一份最新清单 */
+export function getUpdateInfoLatestIntro(locale: Locale, date: string): string {
+	const text =
+		locale === 'en-US' ? UPDATE_INFO_LATEST_INTRO_EN : UPDATE_INFO_LATEST_INTRO_ZH;
+	return text.replace('{date}', date);
+}
+
+/** 全表最大 dateLabel 的那一天。没有日期时原样返回，调用方渲染全文 */
+export function pickLatestUpdate(sections: UpdateInfoSection[]): {
+	dateLabel: string;
+	sections: UpdateInfoSection[];
+} {
+	let dateLabel = '';
+	for (const section of sections) {
+		for (const item of section.items) {
+			if (item.dateLabel > dateLabel) dateLabel = item.dateLabel;
+		}
+	}
+	if (!dateLabel) return { dateLabel: '', sections };
+	const next = sections
+		.map((section) => ({
+			...section,
+			items: section.items.filter((item) => item.dateLabel === dateLabel),
+		}))
+		.filter((section) => section.items.length > 0);
+	return { dateLabel, sections: next };
+}
+
+export function updateInfoHasId(
+	sections: UpdateInfoSection[],
+	id: string,
+): boolean {
+	return sections.some(
+		(section) => section.id === id || section.items.some((item) => item.id === id),
+	);
+}
+
+/** 只有 scope=all 是历史；缺省和外链都不带这个参数 */
+export function readUpdateScope(search: string): UpdateScope {
+	const scope = new URLSearchParams(search).get('scope');
+	return scope === 'all' ? 'all' : 'latest';
+}
+
+/**
+ * 地址栏优先。旧锚点不在最新一天、但全文里有这个 id 时直接展开，
+ * 避免先画出短列表再跳到历史。
+ */
+export function scopeFromLocation(
+	search: string,
+	hash: string,
+	all: UpdateInfoSection[],
+	latestSections: UpdateInfoSection[],
+): UpdateScope {
+	if (readUpdateScope(search) === 'all') return 'all';
+	const id = hash.replace(/^#/, '');
+	if (!id) return 'latest';
+	if (updateInfoHasId(latestSections, id)) return 'latest';
+	if (updateInfoHasId(all, id)) return 'all';
+	return 'latest';
+}
+
+/** 按钮用 push，刷新旧锚点用 replace。回到最新时清掉 hash，否则刷新又会被旧锚点展开成历史 */
+export function setUpdateScope(next: UpdateScope, mode: 'push' | 'replace') {
+	const url = new URL(window.location.href);
+	if (next === 'all') url.searchParams.set('scope', 'all');
+	else {
+		url.searchParams.delete('scope');
+		url.hash = '';
+	}
+	const write =
+		mode === 'push' ? window.history.pushState : window.history.replaceState;
+	write.call(window.history, null, '', url.toString());
+}
+
+function assertPickLatest(sections: UpdateInfoSection[]) {
+	const picked = pickLatestUpdate(sections);
+	const dates = sections.flatMap((section) =>
+		section.items.map((item) => item.dateLabel),
+	);
+	const max = dates.reduce((acc, date) => (date > acc ? date : acc), '');
+	if (picked.dateLabel !== max) {
+		throw new Error(`max date ${picked.dateLabel} !== ${max}`);
+	}
+	for (const section of picked.sections) {
+		if (section.items.length === 0) throw new Error(`empty ${section.id}`);
+		for (const item of section.items) {
+			if (item.dateLabel !== max) throw new Error(item.id);
+		}
+	}
+	const seen = new Set(
+		picked.sections.flatMap((section) => section.items.map((item) => item.id)),
+	);
+	for (const section of sections) {
+		for (const item of section.items) {
+			if (item.dateLabel === max && !seen.has(item.id)) {
+				throw new Error(`missing ${item.id}`);
+			}
+		}
+	}
+	const blank = pickLatestUpdate([
+		{
+			id: 's',
+			title: 's',
+			items: [{ id: 'i', title: 'i', dateLabel: '', description: 'd' }],
+		},
+	]);
+	if (blank.dateLabel !== '' || blank.sections.length !== 1) {
+		throw new Error('blank date should keep the full list');
+	}
+	const oldId = sections
+		.flatMap((section) => section.items)
+		.find((item) => item.dateLabel !== max)?.id;
+	if (oldId && scopeFromLocation('', `#${oldId}`, sections, picked.sections) !== 'all') {
+		throw new Error('old hash should open history');
+	}
+	if (scopeFromLocation('?scope=all', '', sections, picked.sections) !== 'all') {
+		throw new Error('scope=all');
+	}
+	if (readUpdateScope('') !== 'latest') throw new Error('default scope');
+}
+
+const directArgv = (globalThis as { process?: { argv?: string[] } }).process
+	?.argv?.[1];
+if (directArgv?.includes('updateInfoSections')) {
+	assertPickLatest(UPDATE_INFO_SECTIONS_ZH);
+	console.log('pickLatestUpdate ok', pickLatestUpdate(UPDATE_INFO_SECTIONS_ZH).dateLabel);
 }

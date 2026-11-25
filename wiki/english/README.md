@@ -173,6 +173,9 @@
 | [经典句导出与标注导入.md](./经典句导出与标注导入.md) | **原句 JSON 导出 + 标注 JSON 手动导入**：`exportClassicQuotesJson`、`parseAnnotationImportJson`、`saveFileWithPicker` JSON MIME |
 | [每日运行态与练习UI重构.md](./每日运行态与练习UI重构.md) | **每日记词 `?run=1` 运行态标记 + 会话顶栏统一**：`englishDaily` store、`SessionHeader` 三槽布局（返回/内容/操作） |
 | [主题徽章与路由i18n.md](./主题徽章与路由i18n.md) | **强调色徽章统一 + 路由/i18n**：`accentBadgeStyle`、`posToneStyle` 跟随主题、review/annotate 路由与词条 |
+| [卡片单条重标.md](./卡片单条重标.md) | **卡片单条重标**：单词卡 / 语句卡右上角标注按钮，强制重跑，脱离 HTTP 断连，刷新靠服务端在途名单恢复图标，完成自动清缓存 |
+| [句子成分标识.md](./句子成分标识.md) | **句子成分标识**：句内词标注新增可选 `roleZh`，后端闭集归一，前端词槽按连续同值画成分色块与标签 |
+| [标注导入提示词弹窗.md](./标注导入提示词弹窗.md) | **标注导入提示词弹窗**：手动导入的 Model 弹窗，可复制含 `roleZh` 规则的生成提示词 + 拖拽上传 JSON |
 
 ## UI / 目录约定
 

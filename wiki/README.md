@@ -30,7 +30,7 @@
 | [`tools/`](./tools/)         | `@dnhyxc-ai/markdown-kit` / `richtext-kit` | [tools/索引.md](./tools/索引.md)                                                                                                    |
 | [`react/`](./react/)         | React Hooks 专题                        | 按文件名检索                                                                                                                             |
 | [`setting/`](./setting/)     | 设置页（系统快捷键、主题色等）          | [setting/README.md](./setting/README.md)                                                                                                 |
-| [`meta/`](./meta/)           | 发布与更新同步                          | [meta/项目功能更新.md](./meta/项目功能更新.md)                                                                     |
+| [`meta/`](./meta/)           | 发布与更新同步                          | [meta/README.md](./meta/README.md)、[meta/更新信息只看最新.md](./meta/更新信息只看最新.md)                                                                     |
 | [`pay/`](./pay/)             | Stripe 会员充值、开通与到期             | [pay/Stripe会员计费.md](./pay/Stripe会员计费.md)、[pay/会员激活钩子.md](./pay/会员激活钩子.md) |
 | [`ebook/`](./ebook/)         | 电子书书架、EPUB/PDF 阅读与进度         | [ebook/README.md](./ebook/README.md)                                                                                                     |
 | [`ideas/`](./ideas/)         | **规划态**功能实现思路（架构/流程图）   | [ideas/README.md](./ideas/README.md)                                                                                                     |
@@ -44,6 +44,7 @@
 
 | 现象                                                              | 优先阅读                                                                                                                                                 |
 | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 更新说明打开后只有最近一天                                        | [meta/更新信息只看最新.md](./meta/更新信息只看最新.md)                                                                                                   |
 | COS 上传 AccessDenied                                             | [cos/COS对象存储.md](./cos/COS对象存储.md) §3.4、§6                                                                                        |
 | COS 能传不能显（403 / ATS）                                       | [cos/COS对象存储.md](./cos/COS对象存储.md) §3.3 + [cos/COS开发HTTP代理.md](./cos/COS开发HTTP代理.md)                                 |
 | COS 能预览但下载失败                                              | [cos/COS对象存储.md](./cos/COS对象存储.md) §3.7                                                                                            |
@@ -171,6 +172,7 @@
 | 知识库列表与回收站：按文档标题搜索（Enter 提交、不区分大小写）    | [knowledge/知识库列表搜索标题.md](./knowledge/知识库列表搜索标题.md)                                                                     |
 | 知识库自定义分类（新建/重命名/删除/排序/归档/Tab 筛选/默认分类播种） | [knowledge/知识库分类管理.md](./knowledge/知识库分类管理.md)                                                                                     |
 | 知识库/电子书列表公开优先排序 + 电子书非本人书不可改分类           | [knowledge/公开优先排序.md](./knowledge/公开优先排序.md)                                                                                       |
+| 知识库文档留言（顶栏入口、条数、分页、公开不自动放出）             | [knowledge/文档留言.md](./knowledge/文档留言.md)                                                                                               |
 | 对话运行久后 Node OOM / 附件重复解析                              | [chat/对话内存溢出.md](./chat/对话内存溢出.md)                                                                                                     |
 | 流式输出时代码块无法横向滚动                                      | [chat/流式代码块滚动.md](./chat/流式代码块滚动.md)                                                                             |
 | 对话/知识库发送钮重复实现 / 语音菜单状态机散落 ChatEntry           | [chat/消息发送按钮封装.md](./chat/消息发送按钮封装.md)（`MessageSendButton` 视觉底座 + `MessageSendControl` 三态状态机抽取） |

@@ -185,6 +185,11 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 		description:
 			'Open Skill from the sidebar (/skills) to manage personal Skills and try them on the right.\n\n• List and edit: browse saved Skills on the left; create, rename, edit description/body, save or delete\n• Try / generate: validate Skills in a side chat with multiple try-run sessions and history. Try-run history stays on this page and does not appear in the English-learning Agent drawer\n• Rename sessions: hover a session in the history drawer to reveal an edit icon; click to edit the title inline. Pressing Enter during IME composition does not submit prematurely\n• Relation to the knowledge assistant: / in the document assistant selects Skills saved here; editing and try-run stay on this page while document chats remain in the knowledge assistant shell',
 	},
+	'pg-s5-14': {
+		title: '5.14 Document comments',
+		description:
+			'After you open a saved cloud document, the editor header shows Comments. A new unsaved draft does not have this entry.\n\n• Open: click Comments to open Document comments on the right. Beside the title is “N total / N loaded”. Loaded counts roots already fetched plus replies already shown on those roots, including the two earliest replies attached by default\n• Who can read: you can always comment on your own documents. Someone else’s document can be read and commented on only after they make it public\n• Private: the author sees that comments stay visible only to them until the document is public and they agree to publish the comments. Publishing the document later still leaves those comments visible only to the author\n• Share with readers: when the document is public and some comments are still author-only, a count and “Publish these comments” appear above the list. You can also choose “Make public” or “Make private” on a single comment. That changes only that comment, not the replies under it\n• Paging: scrolling the root list to the bottom loads 50 more. Replies start with two; “N more replies” loads the next page, then “More replies”\n• Write and edit: the box at the bottom sends a new comment. Reply places the box under that row. Your own comment can be edited from the menu; Enter saves, Esc or Cancel discards\n• Missing document: if the document was deleted or is no longer public, the line under the title says the document does not exist or is no longer public, and the composer is hidden. Deleting your own document also deletes its comments',
+	},
 	'pg-s6-1': {
 		title: '6.1 Task lists',
 		description:
@@ -614,6 +619,21 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
                 description:
                         'Word Detail, Word Detail List, and Import Word Details are three separate plugins in the plugin center, and enabling only one still works: the detail plugin owns the word-card icon and the right-hand panel, the list plugin owns the summary entry in the vocabulary header, and the import plugin owns the import entry on library cards. Disabled plugins leave no empty slot. The bottom of the detail panel lists the sources available for the current word, letting you switch between Import, Original, and New; the switch is hidden when only one source exists. Regenerating adds a New version without overwriting your import or affecting other users. Each plugin updates on its own without waiting for a full English release; re-enter the page from the plugin center after an update to see the latest UI. The first click on a plugin entry on a word card or library card keeps the selected word or library while the plugin loads. Moving between the detail list, word detail, and import drawer also preserves the current context, preventing ignored first clicks or lost targets.',
         },
+        'pg-s13-61': {
+                title: '13.61 Single-item re-annotation on word and sentence cards',
+                description:
+                        'Both word cards and classic sentence cards have an annotation button in the top-right corner. Tap it to force a fresh annotation for just that one word or sentence, overwriting the previous result with the latest one. Re-annotation runs on the server in the background: while it is running, switching pages, refreshing the browser, or even reconnecting after a network drop will not interrupt it. The card shows a stop icon while running; if a task is in progress when you refresh, the icon is automatically restored to the stop state, so no progress is lost. Tap stop to interrupt at any time; when it finishes, the card refreshes to the latest annotation automatically. Single-item re-annotation does not overwrite batch annotation; while batch warm-up is running, manual import is temporarily blocked to prevent a just-imported result from being overwritten by a model write-back.',
+        },
+        'pg-s13-62': {
+                title: '13.62 Constituent color blocks in look-and-write',
+                description:
+                        'In the classic sentence look-and-write practice, after revealing the answer or turning on part-of-speech display, each word slot is painted with colored blocks and small labels by sentence constituent (subject, predicate, object, predicative, attributive, adverbial, complement, appositive, and others — 10 categories in all). Words that share the same consecutive constituent use the same color, making the subject-predicate-object-attributive-adverbial structure easy to see at a glance; constituents are limited to these 10 fixed values, with no invented labels. No constituent blocks are painted before the answer is revealed or part-of-speech display is off, to avoid leaking the sentence structure early. Constituent data can come from online annotation or from manually imported JSON; both sources are recognized and painted.',
+        },
+        'pg-s13-63': {
+                title: '13.63 Generation prompt for manual annotation import',
+                description:
+                        'When you tap the annotation button in a sentence library or pack and choose "manual import", a blank file picker no longer pops up directly — a dialog opens first. Inside is a one-click copyable generation prompt that specifies the output JSON format, the rules for part of speech / IPA / Chinese gloss, the 10 allowed constituent values, and two full examples; copy it into any model to produce a directly importable annotation file. Inside the dialog you can click to pick a file or drag a .json file in; dropping or selecting a non-JSON file warns that the file type is not accepted. After tapping copy, a "copied" notice shows for about a second before reverting; the dialog cannot be closed while an import is in progress, and can be closed normally once the import finishes.',
+        },
         'pg-s13-13': {
 		title: '13.13 Classic mistake row fields',
 		description:
@@ -622,7 +642,7 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 	'pg-s14-1': {
 		title: 'Topic notes and release overview',
 		description:
-			'This page targets everyday use. For hosting, reverse proxies, editor edge cases, or contributing, search topic-specific maintainer material in your local clone—feature index, deployment examples, desktop voice, Monaco notes, etc. The in-app Release Notes page (/update-info) is the user-facing “what changed” overview—read it alongside this guide; keep it in sync with maintainer source material before each release.',
+			'This page targets everyday use. For hosting, reverse proxies, editor edge cases, or contributing, search topic-specific maintainer material in your local clone—feature index, deployment examples, desktop voice, Monaco notes, etc. Release notes open in the system browser or a new tab and show only the latest day; earlier notes are under “See earlier updates”. The page lives on the independent docs site, so it can change without republishing the app.',
 	},
 	'pg-s15-1': {
 		title: '15.1 Service policy and user agreement',
@@ -632,7 +652,7 @@ export const PROJECT_GUIDE_ITEMS_EN: Record<
 	'pg-s15-2': {
 		title: '15.2 Release notes (independent docs site)',
 		description:
-			'About also opens Release Notes in the system browser or a new tab on the independent docs site. The app builds the URL with the current language, theme, and accent color; it no longer occupies an in-app page. Regular section layout (not a Markdown preview wall); wording stays aligned with the external release-notes write-up. Content and rendering live on the independent docs site, so updates do not require republishing the app.',
+			'About also opens Release Notes in the system browser or a new tab on the independent docs site. The app builds the URL with the current language, theme, and accent color; it no longer occupies an in-app page. Regular section layout (not a Markdown preview wall). It opens on the latest day’s notes and names that day. “See earlier updates”, or ?scope=all, unfolds the full history; “Latest only” or Back returns to that day. A link to an older note opens the full history and scrolls to it. Content lives on the independent docs site, so updates do not require republishing the app.',
 	},
 	'pg-s15-3': {
 		title: '15.3 Product guide (independent docs site)',

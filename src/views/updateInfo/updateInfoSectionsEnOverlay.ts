@@ -6,6 +6,10 @@
 export const UPDATE_INFO_INTRO_EN =
 	'This page summarizes core capabilities and recent improvements so you can quickly see what is new or better. The content is product-level and focuses on user-visible behavior. We do not list internal file or directory paths here—implementation details live alongside the source in topic-specific notes you can search after cloning the repo.';
 
+/** 默认视图导语；{date} 由页面替换为最大 dateLabel */
+export const UPDATE_INFO_LATEST_INTRO_EN =
+	'The notes below are the {date} update. Earlier capabilities are in the full history.';
+
 /** 章节标题（key = section.id） */
 export const UPDATE_INFO_SECTION_TITLES_EN: Record<string, string> = {
 	s1: '1. Releases & updates',
@@ -608,6 +612,11 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		description:
 			'Type / in the document assistant input to multi-select saved Skills. Replies use Agent tooling while messages stay in the current document assistant history; applied Skill names show on the reply. Unsaved drafts can also use Skills, with storage rules separate from saved documents so sessions do not cross into other product areas.',
 	},
+	's6-44': {
+		title: 'Comments on knowledge documents',
+		description:
+			'After you open a saved cloud document, the editor header shows Comments, styled like Trash (icon plus text). The drawer title is Document comments, with “N total / N loaded” beside it. Scrolling the root list loads 50 more at a time; each root first shows its 2 earliest replies, and the rest open with “N more replies”. While the document is private, the author sees that comments stay visible only to them. Publishing the document does not publish those comments; use “Publish these comments” or “Make public” on a single comment. If the document was deleted or is no longer public, the line under the title says the document does not exist or is no longer public, and the composer is hidden.',
+	},
 	's7-1': {
 		title: 'IME (input method editor) compatibility',
 		description:
@@ -935,6 +944,11 @@ export const UPDATE_INFO_BULLETS_EN: Record<
 		title: 'About entry point',
 		description:
 			'From About, “Release notes” opens the absolute URL in the browser as above.',
+	},
+	's21-4': {
+		title: 'Open on the latest day',
+		description:
+			'Release notes open on the most recent day’s entries, and the intro names that day. Earlier notes stay folded until you choose “See earlier updates”. “Latest only” or the browser Back button returns to that day. A link that points at an older note opens the full history and scrolls to that note.',
 	},
 	's22-1': {
 		title: '/project-guide full-screen route',
@@ -1686,6 +1700,21 @@ export const UPDATE_INFO_BULLETS_EN: Record<
                 title: 'Daily-reading saved words can open word detail and export the current filter',
                 description:
                         'After enabling Word Detail, Word Detail List, and Import Word Details in the plugin center, a saved-word card can open that word’s detail, and the search bar can open the detail list and import. The list and import only include words you have saved. JSON and Word export follow the selected passage and the search you already submitted, instead of always exporting everything. When a passage is selected, the file name uses its Chinese title. Opening a word from the list or import hides that drawer; closing the detail brings it back. If nothing matches, you only see a notice and no empty file is downloaded.',
+        },
+        's24-144': {
+                title: 'Word and sentence cards can force a single-item re-annotation',
+                description:
+                        'The annotation button in the top-right corner of word cards and classic sentence cards can now force a fresh annotation for just that one item, independent of the whole page’s network lifecycle. While it is running, switching to another page, refreshing the browser, or even reconnecting after a network drop will not stop it — the server keeps running in the background. The card shows a stop icon while running; after a refresh, the icon of any in-progress task is drawn back automatically, and tapping stop interrupts at any time. When it finishes, the card refreshes to the latest result automatically, with no need to leave and re-enter.',
+        },
+        's24-145': {
+                title: 'Constituent color blocks added to classic sentence look-and-write',
+                description:
+                        'After revealing the answer, or when part-of-speech display is turned on, in the look-and-write practice each word slot is painted with colored blocks and small labels by sentence constituent (subject, predicate, object, predicative, attributive, adverbial, complement, appositive, and others — 10 categories in all), making the syntactic structure easy to see at a glance. No blocks are shown before the answer is revealed, to avoid leaking the structure ahead of time. Constituent data from either online annotation or manually imported JSON is recognized and painted.',
+        },
+        's24-146': {
+                title: 'Manual annotation import now opens a prompt-copy dialog',
+                description:
+                        'Choosing "manual import" for annotations in a sentence library or pack no longer pops up a blank file picker directly. Instead, a dialog opens first: it contains a one-click copyable generation prompt that specifies the output JSON format, the rules for part of speech / IPA / Chinese gloss, the 10 allowed constituent values, and two full examples — copy it into any model to produce an importable annotation file. The dialog supports clicking to pick a file or dragging a .json file in; choosing or dropping a non-JSON file warns that the file type is not accepted. A successful copy shows a "copied" feedback for about a second before reverting; the dialog cannot be closed while an import is in progress.',
         },
 
         's25-1': {
