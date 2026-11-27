@@ -29,6 +29,8 @@ pnpm install
 pnpm dev   # http://127.0.0.1:9013/
 ```
 
+本机总目录：`../preview-hub`（http://127.0.0.1:8999/）。新增独立预览页时同步 `preview-hub/src/catalog.ts`。
+
 - manifest：`http://127.0.0.1:9013/mf-manifest.json`
 - 插件手册代码块与 Host `pluginDevGuide` 一致：`@/components/design/Markdown`（fenced → MarkdownParser + 围栏复制/下载）
 
